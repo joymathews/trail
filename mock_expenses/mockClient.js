@@ -1,42 +1,23 @@
 // mock_expenses/mockClient.js
-// This script will add multiple mock expenses to the backend API
+// This module provides a utility function to parse CSV lines for expense data
 
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 const API_URL = 'http://localhost:3001/expenses'; // Adjust port if needed
+const csvFilePath = path.join(__dirname, 'mock_data.csv');
 
-const categories = ['Food', 'Transport', 'Utilities', 'Entertainment', 'Health'];
-const vendors = ['Amazon', 'Uber', 'Walmart', 'Netflix', 'CVS'];
-const paymentModes = ['CreditCard', 'Cash', 'DebitCard', 'UPI'];
-const expenseTypes = ['fixed', 'dynamic'];
-
-function getRandomItem(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function getRandomDate(start, end) {
-  const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  return date.toISOString().slice(0, 10);
-}
-
-async function addMockExpenses(count = 50) {
-  for (let i = 0; i < count; i++) {
-    const expense = {
-      Date: getRandomDate(new Date('2025-06-01'), new Date('2025-06-12')),
-      Description: `Mock expense ${i + 1}`,
-      AmountSpent: (Math.random() * 100 + 1).toFixed(2),
-      Category: getRandomItem(categories),
-      Vendor: getRandomItem(vendors),
-      PaymentMode: getRandomItem(paymentModes),
-      ExpenseType: getRandomItem(expenseTypes),
-    };
-    try {
-      const res = await axios.post(API_URL, expense);
-      console.log(`Added:`, res.data.expense);
-    } catch (err) {
-      console.error('Failed to add expense:', err.response ? err.response.data : err.message);
-    }
+function parseCSVLine(line) {
+  // Handles quoted fields and commas inside quotes
+  const regex = /(?:"([^"]*)")|([^,]+)/g;
+  const result = [];
+  let match;
+  while ((match = regex.exec(line))) {
+    result.push(match[1] || match[2]);
   }
+  return result;
 }
 
-addMockExpenses(50); // Add 50 mock expenses
+// Remove the old addExpensesFromCSV call and export parseCSVLine for test reuse
+module.exports = { parseCSVLine };

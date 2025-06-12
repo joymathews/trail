@@ -1,0 +1,113 @@
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+describe('Expense API Integration Tests', () => {
+  const API_URL = 'http://localhost:3001/expenses'; // Adjust port if needed
+  const CALC_URL = 'http://localhost:3001/calculation';
+  const csvFilePath = path.join(__dirname, 'mock_data.csv');
+
+  function parseCSVLine(line) {
+    const regex = /(?:"([^"]*)")|([^,]+)/g;
+    const result = [];
+    let match;
+    while ((match = regex.exec(line))) {
+      result.push(match[1] || match[2]);
+    }
+    return result;
+  }
+
+  let expenses = [];
+
+  beforeAll(() => {
+    // Read and parse CSV
+    const data = fs.readFileSync(csvFilePath, 'utf-8');
+    const lines = data.split(/\r?\n/).filter(Boolean);
+    for (let i = 1; i < lines.length; i++) {
+      const row = parseCSVLine(lines[i]);
+      if (row.length < 6) continue;
+      const [Date, Description, AmountSpent, Category, Vendor, PaymentMode, ExpenseType] = row;
+      expenses.push({
+        Date: Date.replace(/\//g, '-').replace(/(\d{2})-(\w{3})-(\d{2})/, (m, d, mth, y) => {
+          const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+          return `20${y}-${months[mth]}-${d}`;
+        }),
+        Description: Description.trim(),
+        AmountSpent: Number(AmountSpent),
+        Category: Category.trim(),
+        Vendor: Vendor.trim(),
+        PaymentMode: PaymentMode.trim(),
+        ExpenseType: ExpenseType ? ExpenseType.trim().toLowerCase() : 'dynamic',
+      });
+    }
+  });
+
+  it('should add all expenses from CSV', async () => {
+    for (const expense of expenses) {
+      const res = await axios.post(API_URL, expense);
+      expect(res.status).toBe(201);
+      expect(res.data.expense).toMatchObject(expense);
+    }
+  }, 60000);
+
+  it('should fetch expenses for a date range', async () => {
+    const startDate = '2025-05-16';
+    const endDate = '2025-06-11';
+    const res = await axios.get(`${API_URL}/range`, {
+      params: { startDate, endDate }
+    });
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.data)).toBe(true);
+
+    // Filter CSV expenses for the same date range
+    const expected = expenses.filter(
+      exp => exp.Date >= startDate && exp.Date <= endDate
+    );
+
+    // Check that the API returns the same number of expenses
+    expect(res.data.length).toBe(expected.length);
+
+    // Optionally, check that each expected expense is present in the API response
+    expected.forEach(exp => {
+      expect(
+        res.data.some(apiExp =>
+          apiExp.Date === exp.Date &&
+          apiExp.Description === exp.Description &&
+          apiExp.AmountSpent === exp.AmountSpent &&
+          apiExp.Category === exp.Category &&
+          apiExp.Vendor === exp.Vendor &&
+          apiExp.PaymentMode === exp.PaymentMode &&
+          apiExp.ExpenseType === exp.ExpenseType
+        )
+      ).toBe(true);
+    });
+  });
+
+  it('should calculate sum by category', async () => {
+    const res = await axios.get(`${CALC_URL}/sum`, {
+      params: { startDate: '2025-05-16', endDate: '2025-06-11', field: 'Category' }
+    });
+    expect(res.status).toBe(200);
+    expect(typeof res.data).toBe('object');
+    expect(Object.keys(res.data).length).toBeGreaterThan(0);
+
+    // Check that Home Essentials sum matches expected value
+    expect(Number(res.data['Home Essentials'])).toBeCloseTo(27335.79, 2);
+  });
+
+  it('should calculate total expenses', async () => {
+    const res = await axios.get(`${CALC_URL}/total`, {
+      params: { startDate: '2025-05-16', endDate: '2025-06-11' }
+    });
+    expect(res.status).toBe(200);
+    expect(typeof res.data.total).toBe('number');
+  });
+
+  it('should forecast expenses', async () => {
+    const res = await axios.get(`${CALC_URL}/forecast`, {
+      params: { startDate: '2025-05-16', endDate: '2025-06-17' }
+    });
+    expect(res.status).toBe(200);
+    expect(typeof res.data.forecast).toBe('number');
+  });
+});

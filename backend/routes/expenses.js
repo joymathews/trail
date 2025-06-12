@@ -1,5 +1,5 @@
 const express = require('express');
-const { saveExpense, getExpenseById, getExpenseSum } = require('../services/expenseService');
+const { saveExpense, getExpenseById, getExpensesByDateRange } = require('../services/expenseService');
 
 const router = express.Router();
 
@@ -38,8 +38,26 @@ router.post('/', async (req, res) => {
   }
 });
 
+// GET /expenses/range - Retrieve all expenses for a date range
+router.get('/range', async (req, res) => {
+  console.log('Received request for expenses in range');
+  console.log('Query parameters:', req.query);
+  const { startDate, endDate } = req.query;
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: 'startDate and endDate are required.' });
+  }
+  try {
+    const expenses = await getExpensesByDateRange(startDate, endDate);
+    res.json(expenses);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to retrieve expenses.', details: err.message });
+  }
+});
+
 // GET /expenses/:id - Retrieve an expense by id
 router.get('/:id', async (req, res) => {
+  console.log('Received request for expense by ID');
+  console.log('Request parameters:', req.params);
   const { id } = req.params;
   try {
     const expense = await getExpenseById(id);
