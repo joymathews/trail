@@ -3,11 +3,28 @@ const {
   sumByFieldForExpenseTypes,
   totalSpendsForExpenseTypes,
   forecastDynamicExpense
-,
 } = require('../services/calculationService');
+const { getSpendsByDateRange } = require('../db/spendDb');
 const { validateDateRange, validateField } = require('../middleware/validation');
 
 const router = express.Router();
+
+// GET /expense - Get all expenses (fixed and dynamic) for a date range
+router.get('/', validateDateRange, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const spends = await getSpendsByDateRange(startDate, endDate);
+    // Filter only fixed and dynamic expenses
+    const expenses = spends.filter(
+      s =>
+        s.SpendType &&
+        ['fixed', 'dynamic'].includes(s.SpendType.toLowerCase())
+    );
+    res.json(expenses);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch expenses.', details: err.message });
+  }
+});
 
 // GET /expense/sum - Sum by a given field for a date range (expenses only)
 router.get('/sum', validateDateRange, validateField, async (req, res) => {

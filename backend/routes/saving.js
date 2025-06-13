@@ -3,9 +3,25 @@ const {
   sumByFieldForSavings,
   totalSpendsForSavings,
 } = require('../services/calculationService');
+const { getSpendsByDateRange } = require('../db/spendDb');
 const { validateDateRange, validateField } = require('../middleware/validation');
 
 const router = express.Router();
+
+// GET /saving - Get all savings for a date range
+router.get('/', validateDateRange, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const spends = await getSpendsByDateRange(startDate, endDate);
+    // Filter only savings
+    const savings = spends.filter(
+      s => s.SpendType && s.SpendType.toLowerCase() === 'saving'
+    );
+    res.json(savings);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch savings.', details: err.message });
+  }
+});
 
 // GET /saving/sum - Sum by a given field for a date range (savings only)
 router.get('/sum', validateDateRange, validateField, async (req, res) => {

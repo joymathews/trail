@@ -5,7 +5,7 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-const API_URL = 'http://localhost:3001/expenses'; // Adjust port if needed
+const API_URL = 'http://localhost:3001/spends'; // Adjust port if needed
 const csvFilePath = path.join(__dirname, 'mock_data.csv');
 
 function parseCSVLine(line) {
@@ -41,7 +41,7 @@ async function addExpensesFromCSV() {
     };
     try {
       const res = await axios.post(API_URL, expense);
-      console.log('Added:', res.data.expense);
+      console.log('Added:', res.data.spend);
     } catch (err) {
       console.error('Failed to add expense:', err.response ? err.response.data : err.message);
     }

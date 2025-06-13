@@ -25,8 +25,8 @@ router.post('/', validateSpendFields, async (req, res) => {
   }
 });
 
-// GET /spends/range - Retrieve all spends for a date range
-router.get('/range', validateDateRange, async (req, res) => {
+// GET /spends - Retrieve all spends for a date range
+router.get('/', validateDateRange, async (req, res) => {
   const { startDate, endDate } = req.query;
   try {
     const spends = await getSpendsByDateRange(startDate, endDate);

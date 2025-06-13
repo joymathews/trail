@@ -5,6 +5,7 @@ const path = require('path');
 describe('spend API Integration Tests', () => {
   const API_URL = 'http://localhost:3001/spends'; // Adjust port if needed
   const EXPENSE_URL = 'http://localhost:3001/expense';
+  const SAVING_URL = 'http://localhost:3001/saving';
   const csvFilePath = path.join(__dirname, 'mock_data.csv');
 
   function parseCSVLine(line) {
@@ -53,7 +54,7 @@ describe('spend API Integration Tests', () => {
   it('should fetch spends for a date range', async () => {
     const startDate = '2025-05-16';
     const endDate = '2025-06-11';
-    const res = await axios.get(`${API_URL}/range`, {
+    const res = await axios.get(`${API_URL}`, {
       params: { startDate, endDate }
     });
     expect(res.status).toBe(200);
@@ -113,5 +114,28 @@ describe('spend API Integration Tests', () => {
     expect(typeof res.data.forecast).toBe('number');
     // Check that the forecast matches expected value
     expect(Number(res.data.forecast)).toBeCloseTo(112397.55, 2);
+  });
+
+
+  it('should calculate total savings', async () => {
+  const res = await axios.get(`${SAVING_URL}/total`, {
+    params: { startDate: '2025-05-16', endDate: '2025-06-11' }
+  });
+  expect(res.status).toBe(200);
+  expect(typeof res.data.total).toBe('number');
+  // Check that the total savings matches expected value
+  expect(Number(res.data.total)).toBeCloseTo(12000, 2);
+  });
+
+  it('should calculate sum by category for saving', async () => {
+    const res = await axios.get(`${SAVING_URL}/sum`, {
+      params: { startDate: '2025-05-16', endDate: '2025-06-11', field: 'Category' }
+    });
+    expect(res.status).toBe(200);
+    expect(typeof res.data).toBe('object');
+    expect(Object.keys(res.data).length).toBeGreaterThan(0);
+
+    // Check that Home Essentials sum matches expected value
+    expect(Number(res.data['MutualFund'])).toBeCloseTo(12000, 2);
   });
 });
