@@ -3,4 +3,5 @@ module.exports = {
   TABLE_NAME: process.env.EXPENSES_TABLE || 'Expenses',
   DYNAMODB_ENDPOINT: process.env.DYNAMODB_ENDPOINT, // Optional: for local development
   IS_LOCAL: process.env.IS_LOCAL === 'true', // Read as boolean
+  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000',
 };

@@ -1,4 +1,4 @@
-const { getExpensesByDateRange } = require('./expenseService');
+const { getExpensesByDateRange } = require('../db/expenseDb');
 
 async function sumByField({ startDate, endDate, field }) {
   const expenses = await getExpensesByDateRange(startDate, endDate);

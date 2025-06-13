@@ -1,5 +1,5 @@
 const express = require('express');
-const { saveExpense, getExpenseById, getExpensesByDateRange } = require('../services/expenseService');
+const { saveExpense, getExpenseById, getExpensesByDateRange } = require('../db/expenseDb');
 const { validateExpenseFields, validateDateRange } = require('../middleware/validation');
 
 const router = express.Router();
