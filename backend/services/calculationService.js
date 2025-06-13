@@ -1,7 +1,14 @@
-const { getExpenseSumByField, getExpensesByDateRange } = require('./expenseService');
+const { getExpensesByDateRange } = require('./expenseService');
 
 async function sumByField({ startDate, endDate, field }) {
-  return await getExpenseSumByField({ startDate, endDate, field });
+  const expenses = await getExpensesByDateRange(startDate, endDate);
+  const sumByField = {};
+  for (const item of expenses) {
+    const key = item[field];
+    if (!key) continue;
+    sumByField[key] = (sumByField[key] || 0) + Number(item.AmountSpent);
+  }
+  return sumByField;
 }
 
 async function totalExpenses({ startDate, endDate }) {
