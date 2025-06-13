@@ -4,7 +4,7 @@ const path = require('path');
 
 describe('spend API Integration Tests', () => {
   const API_URL = 'http://localhost:3001/spends'; // Adjust port if needed
-  const CALC_URL = 'http://localhost:3001/calculation';
+  const EXPENSE_URL = 'http://localhost:3001/expense';
   const csvFilePath = path.join(__dirname, 'mock_data.csv');
 
   function parseCSVLine(line) {
@@ -84,7 +84,7 @@ describe('spend API Integration Tests', () => {
   });
 
   it('should calculate sum by category', async () => {
-    const res = await axios.get(`${CALC_URL}/sum`, {
+    const res = await axios.get(`${EXPENSE_URL}/sum`, {
       params: { startDate: '2025-05-16', endDate: '2025-06-11', field: 'Category' }
     });
     expect(res.status).toBe(200);
@@ -96,7 +96,7 @@ describe('spend API Integration Tests', () => {
   });
 
   it('should calculate total spends', async () => {
-    const res = await axios.get(`${CALC_URL}/total`, {
+    const res = await axios.get(`${EXPENSE_URL}/total`, {
       params: { startDate: '2025-05-16', endDate: '2025-06-11' }
     });
     expect(res.status).toBe(200);
@@ -106,7 +106,7 @@ describe('spend API Integration Tests', () => {
   });
 
   it('should forecast spends', async () => {
-    const res = await axios.get(`${CALC_URL}/forecast`, {
+    const res = await axios.get(`${EXPENSE_URL}/forecast`, {
       params: { startDate: '2025-05-16', endDate: '2025-06-13' }
     });
     expect(res.status).toBe(200);

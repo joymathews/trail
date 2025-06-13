@@ -1,9 +1,9 @@
 const { getSpendsByDateRange } = require('../db/spendDb');
 
-async function sumByField({ startDate, endDate, field }) {
-  const spends = await getSpendsByDateRange(startDate, endDate);
+function sumByFieldWithFilter(spends, field, filterFn) {
   const sumByField = {};
   for (const item of spends) {
+    if (!filterFn(item)) continue;
     const key = item[field];
     if (!key) continue;
     sumByField[key] = (sumByField[key] || 0) + Number(item.AmountSpent);
@@ -11,10 +11,48 @@ async function sumByField({ startDate, endDate, field }) {
   return sumByField;
 }
 
-async function totalSpends({ startDate, endDate }) {
+async function sumByFieldForExpenseTypes({ startDate, endDate, field }) {
   const spends = await getSpendsByDateRange(startDate, endDate);
-  // Only include spends that are not savings
-  return spends.filter(s => s.SpendType !== 'saving').reduce((sum, s) => sum + Number(s.AmountSpent), 0);
+  return sumByFieldWithFilter(
+    spends,
+    field,
+    item =>
+      item.SpendType &&
+      ['fixed', 'dynamic'].includes(item.SpendType.toLowerCase())
+  );
+}
+
+async function sumByFieldForSavings({ startDate, endDate, field }) {
+  const spends = await getSpendsByDateRange(startDate, endDate);
+  return sumByFieldWithFilter(
+    spends,
+    field,
+    item => item.SpendType && item.SpendType.toLowerCase() === 'saving'
+  );
+}
+
+function totalSpendsWithFilter(spends, filterFn) {
+  return spends
+    .filter(filterFn)
+    .reduce((sum, s) => sum + Number(s.AmountSpent), 0);
+}
+
+async function totalSpendsForExpenseTypes({ startDate, endDate }) {
+  const spends = await getSpendsByDateRange(startDate, endDate);
+  return totalSpendsWithFilter(
+    spends,
+    s =>
+      s.SpendType &&
+      ['fixed', 'dynamic'].includes(s.SpendType.toLowerCase())
+  );
+}
+
+async function totalSpendsForSavings({ startDate, endDate }) {
+  const spends = await getSpendsByDateRange(startDate, endDate);
+  return totalSpendsWithFilter(
+    spends,
+    s => s.SpendType && s.SpendType.toLowerCase() === 'saving'
+  );
 }
 
 async function forecastDynamicExpense({ startDate, endDate }) {
@@ -52,4 +90,10 @@ async function forecastDynamicExpense({ startDate, endDate }) {
   };
 }
 
-module.exports = { sumByField, totalSpends, forecastSpends: forecastDynamicExpense };
+module.exports = { 
+    sumByFieldForExpenseTypes,
+    sumByFieldForSavings,
+    totalSpendsForExpenseTypes,
+    totalSpendsForSavings,
+    forecastDynamicExpense
+};
