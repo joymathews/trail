@@ -26,7 +26,7 @@ async function addExpensesFromCSV() {
   for (let i = 1; i < lines.length; i++) {
     const row = parseCSVLine(lines[i]);
     if (row.length < 6) continue;
-    const [Date, Description, AmountSpent, Category, Vendor, PaymentMode, ExpenseType] = row;
+    const [Date, Description, AmountSpent, Category, Vendor, PaymentMode, SpendType] = row;
     const expense = {
       Date: Date.replace(/\//g, '-').replace(/(\d{2})-(\w{3})-(\d{2})/, (m, d, mth, y) => {
         const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
@@ -37,7 +37,7 @@ async function addExpensesFromCSV() {
       Category: Category.trim(),
       Vendor: Vendor.trim(),
       PaymentMode: PaymentMode.trim(),
-      ExpenseType: ExpenseType ? ExpenseType.trim().toLowerCase() : 'dynamic',
+      SpendType: SpendType ? SpendType.trim().toLowerCase() : 'dynamic',
     };
     try {
       const res = await axios.post(API_URL, expense);

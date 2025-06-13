@@ -1,8 +1,8 @@
 const express = require('express');
 const {
   sumByField,
-  totalExpenses,
-  forecastExpenses,
+  totalSpends,
+  forecastSpends,
 } = require('../services/calculationService');
 const { validateDateRange, validateField } = require('../middleware/validation');
 
@@ -19,22 +19,22 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
   }
 });
 
-// GET /calculation/total - Sum of all expenses for a date range
+// GET /calculation/total - Sum of all spends (excluding savings) for a date range
 router.get('/total', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const total = await totalExpenses({ startDate, endDate });
+    const total = await totalSpends({ startDate, endDate });
     res.json({ total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate total sum.', details: err.message });
   }
 });
 
-// GET /calculation/forecast - Forecast expenses for a date range
+// GET /calculation/forecast - Forecast spends for a date range (dynamic only)
 router.get('/forecast', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const forecast = await forecastExpenses({ startDate, endDate });
+    const forecast = await forecastSpends({ startDate, endDate });
     res.json(forecast);
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate forecast.', details: err.message });

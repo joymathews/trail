@@ -1,19 +1,20 @@
+// Renamed from expenseDb.js. All logic is the same, but now uses 'spend' terminology.
 const { PutCommand, GetCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
 const { TABLE_NAME } = require('../config');
 const { createDynamoDBDocumentClient } = require('../awsFactory');
 
 const ddbDocClient = createDynamoDBDocumentClient();
 
-async function saveExpense(expense) {
+async function saveSpend(spend) {
   await ddbDocClient.send(
     new PutCommand({
       TableName: TABLE_NAME,
-      Item: expense,
+      Item: spend,
     })
   );
 }
 
-async function getExpenseById(id) {
+async function getSpendById(id) {
   const result = await ddbDocClient.send(
     new GetCommand({
       TableName: TABLE_NAME,
@@ -23,13 +24,7 @@ async function getExpenseById(id) {
   return result.Item;
 }
 
-/**
- * Get all expenses for a date range.
- * @param {string} startDate - Inclusive start date (YYYY-MM-DD)
- * @param {string} endDate - Inclusive end date (YYYY-MM-DD)
- * @returns {Promise<Array>} Array of expense objects
- */
-async function getExpensesByDateRange(startDate, endDate) {
+async function getSpendsByDateRange(startDate, endDate) {
   const result = await ddbDocClient.send(
     new ScanCommand({ TableName: TABLE_NAME })
   );
@@ -37,4 +32,4 @@ async function getExpensesByDateRange(startDate, endDate) {
   return items.filter(item => item.Date >= startDate && item.Date <= endDate);
 }
 
-module.exports = { saveExpense, getExpenseById, getExpensesByDateRange };
+module.exports = { saveSpend, getSpendById, getSpendsByDateRange };

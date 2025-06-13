@@ -2,8 +2,8 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-describe('Expense API Integration Tests', () => {
-  const API_URL = 'http://localhost:3001/expenses'; // Adjust port if needed
+describe('spend API Integration Tests', () => {
+  const API_URL = 'http://localhost:3001/spends'; // Adjust port if needed
   const CALC_URL = 'http://localhost:3001/calculation';
   const csvFilePath = path.join(__dirname, 'mock_data.csv');
 
@@ -17,7 +17,7 @@ describe('Expense API Integration Tests', () => {
     return result;
   }
 
-  let expenses = [];
+  let spends = [];
 
   beforeAll(() => {
     // Read and parse CSV
@@ -26,8 +26,8 @@ describe('Expense API Integration Tests', () => {
     for (let i = 1; i < lines.length; i++) {
       const row = parseCSVLine(lines[i]);
       if (row.length < 6) continue;
-      const [Date, Description, AmountSpent, Category, Vendor, PaymentMode, ExpenseType] = row;
-      expenses.push({
+      const [Date, Description, AmountSpent, Category, Vendor, PaymentMode, SpendType] = row;
+      spends.push({
         Date: Date.replace(/\//g, '-').replace(/(\d{2})-(\w{3})-(\d{2})/, (m, d, mth, y) => {
           const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
           return `20${y}-${months[mth]}-${d}`;
@@ -37,20 +37,20 @@ describe('Expense API Integration Tests', () => {
         Category: Category.trim(),
         Vendor: Vendor.trim(),
         PaymentMode: PaymentMode.trim(),
-        ExpenseType: ExpenseType ? ExpenseType.trim().toLowerCase() : 'dynamic',
+        SpendType: SpendType ? SpendType.trim().toLowerCase() : 'dynamic',
       });
     }
   });
 
-  it('should add all expenses from CSV', async () => {
-    for (const expense of expenses) {
-      const res = await axios.post(API_URL, expense);
+  it('should add all spends from CSV', async () => {
+    for (const spend of spends) {
+      const res = await axios.post(API_URL, spend);
       expect(res.status).toBe(201);
-      expect(res.data.expense).toMatchObject(expense);
+      expect(res.data.spend).toMatchObject(spend);
     }
   }, 60000);
 
-  it('should fetch expenses for a date range', async () => {
+  it('should fetch spends for a date range', async () => {
     const startDate = '2025-05-16';
     const endDate = '2025-06-11';
     const res = await axios.get(`${API_URL}/range`, {
@@ -59,15 +59,15 @@ describe('Expense API Integration Tests', () => {
     expect(res.status).toBe(200);
     expect(Array.isArray(res.data)).toBe(true);
 
-    // Filter CSV expenses for the same date range
-    const expected = expenses.filter(
+    // Filter CSV spends for the same date range
+    const expected = spends.filter(
       exp => exp.Date >= startDate && exp.Date <= endDate
     );
 
-    // Check that the API returns the same number of expenses
+    // Check that the API returns the same number of spends
     expect(res.data.length).toBe(expected.length);
 
-    // Optionally, check that each expected expense is present in the API response
+    // Optionally, check that each expected spend is present in the API response
     expected.forEach(exp => {
       expect(
         res.data.some(apiExp =>
@@ -77,7 +77,7 @@ describe('Expense API Integration Tests', () => {
           apiExp.Category === exp.Category &&
           apiExp.Vendor === exp.Vendor &&
           apiExp.PaymentMode === exp.PaymentMode &&
-          apiExp.ExpenseType === exp.ExpenseType
+          apiExp.spendType === exp.spendType
         )
       ).toBe(true);
     });
@@ -95,7 +95,7 @@ describe('Expense API Integration Tests', () => {
     expect(Number(res.data['Home Essentials'])).toBeCloseTo(27335.79, 2);
   });
 
-  it('should calculate total expenses', async () => {
+  it('should calculate total spends', async () => {
     const res = await axios.get(`${CALC_URL}/total`, {
       params: { startDate: '2025-05-16', endDate: '2025-06-11' }
     });
@@ -105,7 +105,7 @@ describe('Expense API Integration Tests', () => {
     expect(Number(res.data.total)).toBeCloseTo(112397.55, 2);
   });
 
-  it('should forecast expenses', async () => {
+  it('should forecast spends', async () => {
     const res = await axios.get(`${CALC_URL}/forecast`, {
       params: { startDate: '2025-05-16', endDate: '2025-06-13' }
     });

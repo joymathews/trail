@@ -8,7 +8,7 @@ function validateDateRange(req, res, next) {
 
 function validateField(req, res, next) {
   const { field } = req.query;
-  const allowedFields = ['Category', 'Vendor', 'PaymentMode', 'ExpenseType'];
+  const allowedFields = ['Category', 'Vendor', 'PaymentMode', 'SpendType'];
   if (!field) {
     return res.status(400).json({ error: 'field is required.' });
   }
@@ -18,19 +18,19 @@ function validateField(req, res, next) {
   next();
 }
 
-const allowedExpenseTypes = ['fixed', 'dynamic'];
+const allowedSpendTypes = ['fixed', 'dynamic', 'saving'];
 
-function validateExpenseFields(req, res, next) {
-  const { Date, Description, AmountSpent, Category, Vendor, PaymentMode, ExpenseType } = req.body;
-  if (!Date || !Description || !AmountSpent || !Category || !Vendor || !PaymentMode || !ExpenseType) {
+function validateSpendFields(req, res, next) {
+  const { Date, Description, AmountSpent, Category, Vendor, PaymentMode, SpendType } = req.body;
+  if (!Date || !Description || !AmountSpent || !Category || !Vendor || !PaymentMode || !SpendType) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
-  const normalizedExpenseType = ExpenseType.toLowerCase();
-  if (!allowedExpenseTypes.includes(normalizedExpenseType)) {
-    return res.status(400).json({ error: 'ExpenseType must be "fixed" or "dynamic".' });
+  const normalizedSpendType = SpendType.toLowerCase();
+  if (!allowedSpendTypes.includes(normalizedSpendType)) {
+    return res.status(400).json({ error: 'SpendType must be "fixed", "dynamic", or "saving".' });
   }
-  req.body.ExpenseType = normalizedExpenseType; // Normalize for downstream use
+  req.body.SpendType = normalizedSpendType; // Normalize for downstream use
   next();
 }
 
-module.exports = { validateDateRange, validateField, validateExpenseFields };
+module.exports = { validateDateRange, validateField, validateSpendFields };

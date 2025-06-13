@@ -1,4 +1,4 @@
-﻿Date,Description,Amount Spent,Category,Vendor,Payment Mode,ExpenseType
+﻿Date,Description,Amount Spent,Category,Vendor,Payment Mode,SpendType
 16-May-25,Uber,487.55,Cabs & Auto,Uber,HDFC Credit Card,dynamic
 16-May-25,Uber,158.81,Cabs & Auto,Uber,HDFC Credit Card,dynamic
 17-May-25,Blinkit,334,Home Essentials,Blinkit,HDFC Credit Card,dynamic

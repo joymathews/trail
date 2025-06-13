@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const expensesRouter = require('./routes/expenses');
+const spendsRouter = require('./routes/spends');
 const calculationRouter = require('./routes/calculation');
 const { CORS_ORIGIN } = require('./config');
 
@@ -10,7 +10,7 @@ function createApp() {
   app.use(express.json());
   app.use(cors({ origin: CORS_ORIGIN }));
 
-  app.use('/expenses', expensesRouter);
+  app.use('/spends', spendsRouter);
   app.use('/calculation', calculationRouter);
 
   return app;

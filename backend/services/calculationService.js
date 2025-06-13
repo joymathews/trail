@@ -1,9 +1,9 @@
-const { getExpensesByDateRange } = require('../db/expenseDb');
+const { getSpendsByDateRange } = require('../db/spendDb');
 
 async function sumByField({ startDate, endDate, field }) {
-  const expenses = await getExpensesByDateRange(startDate, endDate);
+  const spends = await getSpendsByDateRange(startDate, endDate);
   const sumByField = {};
-  for (const item of expenses) {
+  for (const item of spends) {
     const key = item[field];
     if (!key) continue;
     sumByField[key] = (sumByField[key] || 0) + Number(item.AmountSpent);
@@ -11,20 +11,21 @@ async function sumByField({ startDate, endDate, field }) {
   return sumByField;
 }
 
-async function totalExpenses({ startDate, endDate }) {
-  const expenses = await getExpensesByDateRange(startDate, endDate);
-  return expenses.reduce((sum, exp) => sum + Number(exp.AmountSpent), 0);
+async function totalSpends({ startDate, endDate }) {
+  const spends = await getSpendsByDateRange(startDate, endDate);
+  // Only include spends that are not savings
+  return spends.filter(s => s.SpendType !== 'saving').reduce((sum, s) => sum + Number(s.AmountSpent), 0);
 }
 
-async function forecastExpenses({ startDate, endDate }) {
+async function forecastDynamicExpense({ startDate, endDate }) {
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
   const actualEnd = today < endDate ? today : endDate;
-  const expenses = await getExpensesByDateRange(startDate, actualEnd);
-  // Only include expenses where ExpenseType is 'dynamic'
-  const dynamicExpenses = expenses.filter(
-    exp => exp.ExpenseType && exp.ExpenseType.toLowerCase() === 'dynamic'
+  const spends = await getSpendsByDateRange(startDate, actualEnd);
+  // Only include spends where SpendType is 'dynamic'
+  const dynamicSpends = spends.filter(
+    s => s.SpendType && s.SpendType.toLowerCase() === 'dynamic'
   );
-  const totalSpent = dynamicExpenses.reduce((sum, exp) => sum + Number(exp.AmountSpent), 0);
+  const totalSpent = dynamicSpends.reduce((sum, s) => sum + Number(s.AmountSpent), 0);
   // Calculate days so far (inclusive)
   const daysSoFar = Math.max(
     1,
@@ -40,21 +41,15 @@ async function forecastExpenses({ startDate, endDate }) {
       (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1
     )
   );
-  // Forecast = dailyAverage * totalDays
-  const forecast = dailyAverage * totalDays;
   return {
+    forecast: dailyAverage * totalDays,
     startDate,
     endDate,
-    totalSpent,
-    daysSoFar,
     dailyAverage,
+    daysSoFar,
     totalDays,
-    forecast: Number(forecast.toFixed(2))
+    totalSpent,
   };
 }
 
-module.exports = {
-  sumByField,
-  totalExpenses,
-  forecastExpenses,
-};
+module.exports = { sumByField, totalSpends, forecastSpends: forecastDynamicExpense };
