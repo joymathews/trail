@@ -138,4 +138,36 @@ describe('spend API Integration Tests', () => {
     // Check that Home Essentials sum matches expected value
     expect(Number(res.data['MutualFund'])).toBeCloseTo(12000, 2);
   });
+
+  it('should fetch all expenses (fixed and dynamic) for a date range', async () => {
+    const startDate = '2025-05-16';
+    const endDate = '2025-06-11';
+    const res = await axios.get(`${EXPENSE_URL}`, {
+      params: { startDate, endDate }
+    });
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.data)).toBe(true);
+    // Only fixed and dynamic expenses should be returned
+    res.data.forEach(exp => {
+      expect(['fixed', 'dynamic']).toContain(exp.SpendType?.toLowerCase());
+    });
+    // Should not include any savings
+    expect(res.data.some(exp => exp.SpendType?.toLowerCase() === 'saving')).toBe(false);
+  });
+
+  it('should fetch all savings for a date range', async () => {
+    const startDate = '2025-05-16';
+    const endDate = '2025-06-11';
+    const res = await axios.get(`${SAVING_URL}`, {
+      params: { startDate, endDate }
+    });
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.data)).toBe(true);
+    // Only savings should be returned
+    res.data.forEach(saving => {
+      expect(saving.SpendType?.toLowerCase()).toBe('saving');
+    });
+    // Should not include any fixed or dynamic expenses
+    expect(res.data.some(saving => ['fixed', 'dynamic'].includes(saving.SpendType?.toLowerCase()))).toBe(false);
+  });
 });

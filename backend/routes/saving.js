@@ -5,6 +5,7 @@ const {
 } = require('../services/calculationService');
 const { getSpendsByDateRange } = require('../db/spendDb');
 const { validateDateRange, validateField } = require('../middleware/validation');
+const { filterSaving } = require('../services/filterService');
 
 const router = express.Router();
 
@@ -13,10 +14,8 @@ router.get('/', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     const spends = await getSpendsByDateRange(startDate, endDate);
-    // Filter only savings
-    const savings = spends.filter(
-      s => s.SpendType && s.SpendType.toLowerCase() === 'saving'
-    );
+    // Filter only savings using filterService
+    const savings = spends.filter(filterSaving);
     res.json(savings);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch savings.', details: err.message });

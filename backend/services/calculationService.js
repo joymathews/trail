@@ -1,4 +1,5 @@
 const { getSpendsByDateRange } = require('../db/spendDb');
+const { filterExpenseType, filterSaving, filterDynamic } = require('./filterService');
 
 function sumByFieldWithFilter(spends, field, filterFn) {
   const sumByField = {};
@@ -16,9 +17,7 @@ async function sumByFieldForExpenseTypes({ startDate, endDate, field }) {
   return sumByFieldWithFilter(
     spends,
     field,
-    item =>
-      item.SpendType &&
-      ['fixed', 'dynamic'].includes(item.SpendType.toLowerCase())
+    filterExpenseType
   );
 }
 
@@ -27,7 +26,7 @@ async function sumByFieldForSavings({ startDate, endDate, field }) {
   return sumByFieldWithFilter(
     spends,
     field,
-    item => item.SpendType && item.SpendType.toLowerCase() === 'saving'
+    filterSaving
   );
 }
 
@@ -41,9 +40,7 @@ async function totalSpendsForExpenseTypes({ startDate, endDate }) {
   const spends = await getSpendsByDateRange(startDate, endDate);
   return totalSpendsWithFilter(
     spends,
-    s =>
-      s.SpendType &&
-      ['fixed', 'dynamic'].includes(s.SpendType.toLowerCase())
+    filterExpenseType
   );
 }
 
@@ -51,7 +48,7 @@ async function totalSpendsForSavings({ startDate, endDate }) {
   const spends = await getSpendsByDateRange(startDate, endDate);
   return totalSpendsWithFilter(
     spends,
-    s => s.SpendType && s.SpendType.toLowerCase() === 'saving'
+    filterSaving
   );
 }
 
@@ -60,9 +57,7 @@ async function forecastDynamicExpense({ startDate, endDate }) {
   const actualEnd = today < endDate ? today : endDate;
   const spends = await getSpendsByDateRange(startDate, actualEnd);
   // Only include spends where SpendType is 'dynamic'
-  const dynamicSpends = spends.filter(
-    s => s.SpendType && s.SpendType.toLowerCase() === 'dynamic'
-  );
+  const dynamicSpends = spends.filter(filterDynamic);
   const totalSpent = dynamicSpends.reduce((sum, s) => sum + Number(s.AmountSpent), 0);
   // Calculate days so far (inclusive)
   const daysSoFar = Math.max(
