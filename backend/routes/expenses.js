@@ -1,24 +1,12 @@
 const express = require('express');
 const { saveExpense, getExpenseById, getExpensesByDateRange } = require('../services/expenseService');
+const { validateExpenseFields, validateDateRange } = require('../middleware/validation');
 
 const router = express.Router();
 
-const allowedExpenseTypes = ['fixed', 'dynamic'];
-
 // POST /expenses - Store an expense
-router.post('/', async (req, res) => {
+router.post('/', validateExpenseFields, async (req, res) => {
   const { Date, Description, AmountSpent, Category, Vendor, PaymentMode, ExpenseType } = req.body;
-
-  if (!Date || !Description || !AmountSpent || !Category || !Vendor || !PaymentMode || !ExpenseType) {
-    return res.status(400).json({ error: 'All fields are required.' });
-  }
-
-  const normalizedExpenseType = ExpenseType.toLowerCase();
-
-  if (!allowedExpenseTypes.includes(normalizedExpenseType)) {
-    return res.status(400).json({ error: 'ExpenseType must be "fixed" or "dynamic".' });
-  }
-
   const expense = {
     id: `${Date}-${Vendor}-${Math.random().toString(36).slice(2, 11)}`,
     Date,
@@ -27,9 +15,8 @@ router.post('/', async (req, res) => {
     Category,
     Vendor,
     PaymentMode,
-    ExpenseType: normalizedExpenseType,
+    ExpenseType, // Already normalized by middleware
   };
-
   try {
     await saveExpense(expense);
     res.status(201).json({ message: 'Expense stored successfully.', expense });
@@ -39,13 +26,10 @@ router.post('/', async (req, res) => {
 });
 
 // GET /expenses/range - Retrieve all expenses for a date range
-router.get('/range', async (req, res) => {
+router.get('/range', validateDateRange, async (req, res) => {
   console.log('Received request for expenses in range');
   console.log('Query parameters:', req.query);
   const { startDate, endDate } = req.query;
-  if (!startDate || !endDate) {
-    return res.status(400).json({ error: 'startDate and endDate are required.' });
-  }
   try {
     const expenses = await getExpensesByDateRange(startDate, endDate);
     res.json(expenses);

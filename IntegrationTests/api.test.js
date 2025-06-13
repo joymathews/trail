@@ -101,13 +101,17 @@ describe('Expense API Integration Tests', () => {
     });
     expect(res.status).toBe(200);
     expect(typeof res.data.total).toBe('number');
+    // Check that the total matches expected value
+    expect(Number(res.data.total)).toBeCloseTo(112397.55, 2);
   });
 
   it('should forecast expenses', async () => {
     const res = await axios.get(`${CALC_URL}/forecast`, {
-      params: { startDate: '2025-05-16', endDate: '2025-06-17' }
+      params: { startDate: '2025-05-16', endDate: '2025-06-13' }
     });
     expect(res.status).toBe(200);
     expect(typeof res.data.forecast).toBe('number');
+    // Check that the forecast matches expected value
+    expect(Number(res.data.forecast)).toBeCloseTo(112397.55, 2);
   });
 });
