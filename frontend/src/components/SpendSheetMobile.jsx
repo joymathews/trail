@@ -6,8 +6,6 @@ function SpendSheetMobile({
   onChange,
   onSave,
   saving,
-  spends,
-  loading,
   error,
 }) {
   return (

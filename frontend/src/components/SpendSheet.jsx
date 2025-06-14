@@ -91,18 +91,11 @@ function SpendSheet() {
   if (isMobile) {
     return (
       <div className="spend-sheet-container">
-        <DateRangePicker
-          onChange={handleDateChange}
-          startDate={startDate}
-          endDate={endDate}
-        />
         <SpendSheetMobile
           inputRow={inputRow}
           onChange={handleInputRowChange}
           onSave={handleSaveInputRow}
           saving={saving}
-          spends={spends}
-          loading={loading}
           error={error}
         />
       </div>
