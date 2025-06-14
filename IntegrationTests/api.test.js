@@ -6,6 +6,7 @@ describe('spend API Integration Tests', () => {
   const API_URL = 'http://localhost:3001/spends'; // Adjust port if needed
   const EXPENSE_URL = 'http://localhost:3001/expense';
   const SAVING_URL = 'http://localhost:3001/saving';
+  const AUTOCOMPLETE_URL = 'http://localhost:3001/autocomplete';
   const csvFilePath = path.join(__dirname, 'mock_data.csv');
 
   function parseCSVLine(line) {
@@ -30,7 +31,7 @@ describe('spend API Integration Tests', () => {
       const [Date, Description, AmountSpent, Category, Vendor, PaymentMode, SpendType] = row;
       spends.push({
         Date: Date.replace(/\//g, '-').replace(/(\d{2})-(\w{3})-(\d{2})/, (m, d, mth, y) => {
-          const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+          const months = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
           return `20${y}-${months[mth]}-${d}`;
         }),
         Description: Description.trim(),
@@ -118,13 +119,13 @@ describe('spend API Integration Tests', () => {
 
 
   it('should calculate total savings', async () => {
-  const res = await axios.get(`${SAVING_URL}/total`, {
-    params: { startDate: '2025-05-16', endDate: '2025-06-11' }
-  });
-  expect(res.status).toBe(200);
-  expect(typeof res.data.total).toBe('number');
-  // Check that the total savings matches expected value
-  expect(Number(res.data.total)).toBeCloseTo(12000, 2);
+    const res = await axios.get(`${SAVING_URL}/total`, {
+      params: { startDate: '2025-05-16', endDate: '2025-06-11' }
+    });
+    expect(res.status).toBe(200);
+    expect(typeof res.data.total).toBe('number');
+    // Check that the total savings matches expected value
+    expect(Number(res.data.total)).toBeCloseTo(12000, 2);
   });
 
   it('should calculate sum by category for saving', async () => {
@@ -170,4 +171,15 @@ describe('spend API Integration Tests', () => {
     // Should not include any fixed or dynamic expenses
     expect(res.data.some(saving => ['fixed', 'dynamic'].includes(saving.SpendType?.toLowerCase()))).toBe(false);
   });
+
+  it('should return description suggestions', async () => {
+    const searchString = 'Swiggy';
+    const res = await axios.get(`${AUTOCOMPLETE_URL}/description`, { params: { q: searchString } });
+    expect(res.status).toBe(200);
+    // Check that each result contains the search string (case-insensitive)
+    res.data.forEach(desc => {
+      expect(desc.toLowerCase()).toContain(searchString.toLowerCase());
+    });
+  });
+
 });
