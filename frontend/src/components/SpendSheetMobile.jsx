@@ -16,15 +16,7 @@ function SpendSheetMobile({
           e.preventDefault();
           onSave();
         }}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          background: "#fff",
-          padding: "1rem",
-          borderRadius: "8px",
-          boxShadow: "0 2px 8px rgba(44,62,80,0.06)",
-        }}
+        className="spend-sheet-mobile-form"
       >
         <label>
           Date

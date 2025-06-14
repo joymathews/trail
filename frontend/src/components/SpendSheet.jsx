@@ -31,7 +31,7 @@ function SpendSheet() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const { spends, loading, error: fetchError } = useSpends(startDate, endDate);
+  const { spends, setSpends, loading, error: fetchError } = useSpends(startDate, endDate);
   // Use a larger breakpoint (e.g., 1024px)
   const isMobile = useIsMobile(1024);
 
