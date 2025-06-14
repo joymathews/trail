@@ -31,7 +31,7 @@ function SpendSheet() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const { spends, setSpends, loading } = useSpends(startDate, endDate);
+  const { spends, loading, error: fetchError } = useSpends(startDate, endDate);
   // Use a larger breakpoint (e.g., 1024px)
   const isMobile = useIsMobile(1024);
 
@@ -158,7 +158,11 @@ function SpendSheet() {
           </tbody>
         </table>
       </div>
-      {error && <div className="error">{error}</div>}
+      {fetchError && (
+        <div style={{ color: "red", margin: "1em 0" }}>
+          Error fetching spends: {fetchError}
+        </div>
+      )}
     </div>
   );
 }

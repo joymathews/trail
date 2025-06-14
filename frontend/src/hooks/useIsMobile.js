@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { debounce } from "lodash";
 
 export default function useIsMobile(breakpoint = 600) {
   const [isMobile, setIsMobile] = useState(
@@ -6,8 +7,12 @@ export default function useIsMobile(breakpoint = 600) {
   );
   useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth <= breakpoint);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
+    const debouncedHandler = debounce(handler, 200); // Adjust delay as needed
+    window.addEventListener("resize", debouncedHandler);
+    return () => {
+      window.removeEventListener("resize", debouncedHandler);
+      debouncedHandler.cancel();
+    };
   }, [breakpoint]);
   return isMobile;
 }
