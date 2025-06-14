@@ -17,6 +17,8 @@ const blankSpend = {
   SpendType: "",
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function SpendSheet() {
   const [startDate, setStartDate] = useState(() => {
     const today = new Date();
@@ -81,7 +83,7 @@ function SpendSheet() {
       // Insert the new spend at the top of the spends list
       setSpends((prev) => [{ ...spend }, ...prev]);
       setInputRow({ ...blankSpend });
-      fetchSpends(startDate, endDate); // Optionally refresh from backend
+      // Removed: useSpends hook handles refresh
     } catch (err) {
       setError(err.message || "Error adding spend");
     }
