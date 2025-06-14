@@ -4,6 +4,8 @@ import SpendInputRow from "./SpendInputRow";
 import { useSpends } from "../hooks/useSpends";
 import { formatDate } from "../utils/date";
 import "./SpendSheet.scss";
+import useIsMobile from "../hooks/useIsMobile";
+import SpendSheetMobile from "./SpendSheetMobile";
 
 const blankSpend = {
   Date: formatDate(new Date()),
@@ -25,8 +27,11 @@ function SpendSheet() {
   const [endDate, setEndDate] = useState(formatDate(new Date()));
   const [inputRow, setInputRow] = useState({ ...blankSpend });
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
-  const { spends, setSpends, loading, error } = useSpends(startDate, endDate);
+  const { spends, setSpends, loading } = useSpends(startDate, endDate);
+  // Use a larger breakpoint (e.g., 1024px)
+  const isMobile = useIsMobile(1024);
 
   const handleDateChange = (start, end) => {
     setStartDate(start);
@@ -82,6 +87,27 @@ function SpendSheet() {
     }
     setSaving(false);
   };
+
+  if (isMobile) {
+    return (
+      <div className="spend-sheet-container">
+        <DateRangePicker
+          onChange={handleDateChange}
+          startDate={startDate}
+          endDate={endDate}
+        />
+        <SpendSheetMobile
+          inputRow={inputRow}
+          onChange={handleInputRowChange}
+          onSave={handleSaveInputRow}
+          saving={saving}
+          spends={spends}
+          loading={loading}
+          error={error}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="spend-sheet-container wide">
