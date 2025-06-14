@@ -9,7 +9,7 @@ const {
   DB_NAME,
   REGION,
   IS_LOCAL,
-} = require('./config');
+} = require('../../config');
 
 async function createPgClient() {
   if (!IS_LOCAL) {

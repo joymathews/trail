@@ -2,7 +2,7 @@ const { DB_USED } = require('../config');
 
 let db;
 if (DB_USED === 'dynamodb') {
-  const dynamo = require('./dynamoDBInterface');
+  const dynamo = require('./dynamodb/dynamoDBInterface');
   db = {
     saveSpend: dynamo.dynamoDBSaveSpend,
     getSpendById: dynamo.dynamoDBGetSpendById,
@@ -14,7 +14,7 @@ if (DB_USED === 'dynamodb') {
     forecastDynamicExpense: dynamo.dynamoDBForecastDynamicExpense,
   };
 } else if (DB_USED === 'postgres') {
-  const pg = require('./postgresInterface');
+  const pg = require('./postgreSQL/postgreSQLInterface');
   db = {
     saveSpend: pg.pgSaveSpend,
     getSpendById: pg.pgGetSpendById,

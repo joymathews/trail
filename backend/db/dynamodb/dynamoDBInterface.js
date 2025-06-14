@@ -6,7 +6,7 @@ const {
   totalSpendsForSavings
 } = require('./calculationService');
 
-const { saveSpend, getSpendById, getSpendsByDateRange } = require('../db/spendDb');
+const { saveSpend, getSpendById, getSpendsByDateRange } = require('./spendDb');
 
 async function dynamoDBSaveSpend(spend) {
     return await saveSpend(spend);

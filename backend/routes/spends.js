@@ -3,7 +3,7 @@ const {
   saveSpend,
   getSpendById,
   getSpendsByDateRange
-} = require('../services/dbInterface');
+} = require('../db/dbInterface');
 const { validateSpendFields, validateDateRange } = require('../middleware/validation');
 
 const router = express.Router();

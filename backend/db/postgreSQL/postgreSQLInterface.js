@@ -1,4 +1,4 @@
-const { createPgClient } = require('../pgFactory');
+const { createPgClient } = require('./pgFactory');
 
 // Helper to ensure client is connected and closed properly
 async function withPgClient(fn) {

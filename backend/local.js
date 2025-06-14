@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { ensureTableExists } = require('./awsEnsure');
+const { ensureTableExists } = require('./db/dynamodb/dynamodbManager');
 const createApp = require('./app');
 const { CORS_ORIGIN, DB_USED } = require('./config');
 

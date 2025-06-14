@@ -1,5 +1,5 @@
-const { createDynamoDBClient } = require('./awsFactory');
-const { TABLE_NAME } = require('./config');
+const { createDynamoDBClient } = require('./dynamodbFactory');
+const { TABLE_NAME } = require('../../config');
 const { CreateTableCommand } = require('@aws-sdk/client-dynamodb');
 
 async function ensureTableExists() {

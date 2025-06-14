@@ -3,7 +3,7 @@ const { sumByFieldForExpenseTypes,
   totalSpendsForExpenseTypes,
   forecastDynamicExpense,
   getSpendsByDateRange
-} = require('../services/dbInterface');
+} = require('../db/dbInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterExpenseType } = require('../services/filterService');
 
