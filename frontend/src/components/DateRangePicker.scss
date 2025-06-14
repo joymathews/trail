@@ -1,24 +1,31 @@
+$primary: #2c3e50;
+$accent: #18bc9c;
+$background: #ecf0f1;
+$text: #2c3e50;
+
 .date-range-picker {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: #23272f;
+  background: #fff;
   padding: 0.7rem 1.2rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
 
   label {
-    color: #f5f6fa;
+    color: $primary;
     font-size: 1rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    font-weight: 500;
   }
 
   input[type="date"] {
-    background: #181a20;
-    color: #f5f6fa;
-    border: 1px solid #353b48;
+    background: $background;
+    color: $primary;
+    border: 1px solid #bfc9d1;
     border-radius: 4px;
     padding: 0.3rem 0.7rem;
     font-size: 1rem;
@@ -26,7 +33,16 @@
     transition: border 0.2s;
 
     &:focus {
-      border: 1.5px solid #4f8cff;
+      border: 1.5px solid $accent;
     }
+  }
+}
+
+@media (max-width: 600px) {
+  .date-range-picker {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.7rem 0.5rem;
   }
 }

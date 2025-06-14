@@ -1,8 +1,8 @@
-$background: #181a20;
-$card-bg: #23272f;
-$primary: #4f8cff;
-$text: #f5f6fa;
-$error: #ff4d4f;
+$primary: #2c3e50;
+$accent: #18bc9c;
+$background: #ecf0f1;
+$text: #2c3e50;
+$error: #e74c3c;
 
 .login-container {
   min-height: 100vh;
@@ -12,56 +12,60 @@ $error: #ff4d4f;
   background: $background;
 
   .login-card {
-    background: $card-bg;
+    background: #fff;
     padding: 2.5rem 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
     width: 100%;
     max-width: 350px;
     color: $text;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 
     h2 {
       text-align: center;
       margin-bottom: 2rem;
       color: $primary;
       letter-spacing: 1px;
+      font-weight: 700;
     }
 
     input {
       width: 100%;
       padding: 0.8rem;
       margin-bottom: 1.2rem;
-      border: none;
-      border-radius: 5px;
-      background: #1a1d23;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      background: $background;
       color: $text;
       font-size: 1rem;
       outline: none;
-      transition: box-shadow 0.2s;
+      transition: border 0.2s;
 
       &:focus {
-        box-shadow: 0 0 0 2px $primary;
+        border: 1.5px solid $accent;
       }
     }
 
     button {
       width: 100%;
       padding: 0.8rem;
-      background: $primary;
+      background: $accent;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       font-weight: bold;
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.2s;
 
       &:hover:not(:disabled) {
-        background: darken($primary, 10%);
+        background: darken($accent, 8%);
       }
 
       &:disabled {
-        background: lighten($primary, 20%);
+        background: lighten($accent, 20%);
         cursor: not-allowed;
       }
     }
@@ -72,5 +76,12 @@ $error: #ff4d4f;
       text-align: center;
       font-size: 0.95rem;
     }
+  }
+}
+
+@media (max-width: 500px) {
+  .login-container .login-card {
+    padding: 1.5rem 0.5rem;
+    max-width: 95vw;
   }
 }
