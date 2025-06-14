@@ -1,71 +1,95 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DateRangePicker from "./DateRangePicker";
+import SpendInputRow from "./SpendInputRow";
+import { useSpends } from "../hooks/useSpends";
+import { formatDate } from "../utils/date";
 import "./SpendSheet.scss";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-// Helper to get YYYY-MM-DD string
-function formatDate(date) {
-  return date.toISOString().slice(0, 10);
-}
+const blankSpend = {
+  Date: formatDate(new Date()),
+  Category: "",
+  Description: "",
+  AmountSpent: "",
+  Vendor: "",
+  PaymentMode: "",
+  SpendType: "",
+};
 
 function SpendSheet() {
-  const [spends, setSpends] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  // Set default date range to previous 7 days
-  useEffect(() => {
+  const [startDate, setStartDate] = useState(() => {
     const today = new Date();
     const prev7 = new Date();
     prev7.setDate(today.getDate() - 6);
-    setStartDate(formatDate(prev7));
-    setEndDate(formatDate(today));
-  }, []);
+    return formatDate(prev7);
+  });
+  const [endDate, setEndDate] = useState(formatDate(new Date()));
+  const [inputRow, setInputRow] = useState({ ...blankSpend });
+  const [saving, setSaving] = useState(false);
 
-  // Fetch spends from backend using date range
-  const fetchSpends = async (start = startDate, end = endDate) => {
-    setLoading(true);
-    setError("");
-    try {
-      if (!start || !end) {
-        setSpends([]);
-        setLoading(false);
-        return;
-      }
-      const url = `${API_URL}/spends?startDate=${start}&endDate=${end}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch spends");
-      let data = await res.json();
-      // Sort by date descending (latest first)
-      data = data.sort((a, b) => new Date(b.Date) - new Date(a.Date));
-      setSpends(data);
-    } catch (err) {
-      setError(err.message || "Error loading spends");
-    }
-    setLoading(false);
-  };
-
-  // Fetch spends when date range changes
-  useEffect(() => {
-    if (startDate && endDate) {
-      fetchSpends(startDate, endDate);
-    } else {
-      setSpends([]);
-    }
-    // eslint-disable-next-line
-  }, [startDate, endDate]);
+  const { spends, setSpends, loading, error } = useSpends(startDate, endDate);
 
   const handleDateChange = (start, end) => {
     setStartDate(start);
     setEndDate(end);
   };
 
+  const handleInputRowChange = (field, value) => {
+    setInputRow((row) => ({
+      ...row,
+      [field]: value,
+    }));
+  };
+
+  const handleSaveInputRow = async () => {
+    const spend = inputRow;
+    // Basic validation
+    if (
+      !spend.Date ||
+      !spend.Category ||
+      !spend.Description ||
+      !spend.AmountSpent ||
+      !spend.SpendType
+    ) {
+      setError(
+        "Please fill all required fields (Date, Category, Description, Amount, Spend Type)."
+      );
+      return;
+    }
+    setSaving(true);
+    setError("");
+    try {
+      const payload = {
+        Date: spend.Date,
+        Category: spend.Category,
+        Description: spend.Description,
+        AmountSpent: parseFloat(spend.AmountSpent),
+        Vendor: spend.Vendor,
+        PaymentMode: spend.PaymentMode,
+        SpendType: spend.SpendType,
+      };
+      const res = await fetch(`${API_URL}/spends`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Failed to add spend");
+      // Insert the new spend at the top of the spends list
+      setSpends((prev) => [{ ...spend }, ...prev]);
+      setInputRow({ ...blankSpend });
+      fetchSpends(startDate, endDate); // Optionally refresh from backend
+    } catch (err) {
+      setError(err.message || "Error adding spend");
+    }
+    setSaving(false);
+  };
+
   return (
     <div className="spend-sheet-container wide">
-      <DateRangePicker onChange={handleDateChange} startDate={startDate} endDate={endDate} />
+      <DateRangePicker
+        onChange={handleDateChange}
+        startDate={startDate}
+        endDate={endDate}
+      />
       <h3>Spends Sheet</h3>
       <div className="spend-table-wrapper">
         <table className="spend-table">
@@ -78,12 +102,20 @@ function SpendSheet() {
               <th>Vendor</th>
               <th>Payment Mode</th>
               <th>Spend Type</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
+            <SpendInputRow
+              inputRow={inputRow}
+              onChange={handleInputRowChange}
+              onSave={handleSaveInputRow}
+              saving={saving}
+            />
+            {/* Existing spends */}
             {spends.length === 0 && !loading && (
               <tr>
-                <td colSpan={7} style={{ textAlign: "center" }}>
+                <td colSpan={8} style={{ textAlign: "center" }}>
                   {startDate && endDate
                     ? "No spends found."
                     : "Please select a start and end date."}
@@ -99,6 +131,7 @@ function SpendSheet() {
                 <td>{spend.Vendor}</td>
                 <td>{spend.PaymentMode}</td>
                 <td>{spend.SpendType}</td>
+                <td></td>
               </tr>
             ))}
           </tbody>
