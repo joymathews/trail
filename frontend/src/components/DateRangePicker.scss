@@ -1,0 +1,32 @@
+.date-range-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: #23272f;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+
+  label {
+    color: #f5f6fa;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  input[type="date"] {
+    background: #181a20;
+    color: #f5f6fa;
+    border: 1px solid #353b48;
+    border-radius: 4px;
+    padding: 0.3rem 0.7rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+
+    &:focus {
+      border: 1.5px solid #4f8cff;
+    }
+  }
+}

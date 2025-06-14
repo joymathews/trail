@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #23272f;
+  color: #f5f6fa;
+  padding: 0.5rem 1.2rem;
+  min-height: 48px;
+
+  .header-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4f8cff;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+
+  .signout-btn {
+    background: none;
+    border: none;
+    color: #f5f6fa;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #353b48;
+    }
+  }
+}
