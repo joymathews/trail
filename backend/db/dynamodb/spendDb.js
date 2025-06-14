@@ -1,7 +1,7 @@
 // Renamed from expenseDb.js. All logic is the same, but now uses 'spend' terminology.
 const { PutCommand, GetCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
-const { TABLE_NAME } = require('../config');
-const { createDynamoDBDocumentClient } = require('../awsFactory');
+const { TABLE_NAME } = require('../../config');
+const { createDynamoDBDocumentClient } = require('./dynamodbFactory');
 
 const ddbDocClient = createDynamoDBDocumentClient();
 

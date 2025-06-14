@@ -1,10 +1,9 @@
 const express = require('express');
-const {
-  sumByFieldForExpenseTypes,
+const { sumByFieldForExpenseTypes,
   totalSpendsForExpenseTypes,
-  forecastDynamicExpense
-} = require('../services/calculationService');
-const { getSpendsByDateRange } = require('../db/spendDb');
+  forecastDynamicExpense,
+  getSpendsByDateRange
+} = require('../db/dbInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterExpenseType } = require('../services/filterService');
 
@@ -39,7 +38,7 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
 router.get('/total', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const total = await totalSpendsForExpenseTypes({ startDate, endDate});
+    const total = await totalSpendsForExpenseTypes({ startDate, endDate });
     res.json({ total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate total sum.', details: err.message });

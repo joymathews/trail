@@ -1,5 +1,5 @@
-const { getSpendsByDateRange } = require('../db/spendDb');
-const { filterExpenseType, filterSaving, filterDynamic } = require('./filterService');
+const { getSpendsByDateRange } = require('./spendDb');
+const { filterExpenseType, filterSaving, filterDynamic } = require('../../services/filterService');
 
 function sumByFieldWithFilter(spends, field, filterFn) {
   const sumByField = {};

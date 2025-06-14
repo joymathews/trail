@@ -1,5 +1,9 @@
 const express = require('express');
-const { saveSpend, getSpendById, getSpendsByDateRange } = require('../db/spendDb');
+const {
+  saveSpend,
+  getSpendById,
+  getSpendsByDateRange
+} = require('../db/dbInterface');
 const { validateSpendFields, validateDateRange } = require('../middleware/validation');
 
 const router = express.Router();

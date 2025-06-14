@@ -1,6 +1,6 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
-const { REGION, DYNAMODB_ENDPOINT, IS_LOCAL } = require('./config');
+const { REGION, DYNAMODB_ENDPOINT, IS_LOCAL } = require('../../config');
 
 function createDynamoDBClient() {
   const options = { region: REGION };
