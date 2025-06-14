@@ -1,10 +1,9 @@
 const express = require('express');
-const {
-  sumByFieldForExpenseTypes,
-  totalSpendsForExpenseTypes,
-  forecastDynamicExpense
-} = require('../services/calculationService');
-const { getSpendsByDateRange } = require('../db/spendDb');
+const { dynamoDBSumByFieldForExpenseTypes,
+  dynamoDBTotalSpendsForExpenseTypes,
+  dynamoDBForecastDynamicExpense,
+  dynamoDBGetSpendsByDateRange
+} = require('../services/dynamoDBInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterExpenseType } = require('../services/filterService');
 
@@ -14,7 +13,7 @@ const router = express.Router();
 router.get('/', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const spends = await getSpendsByDateRange(startDate, endDate);
+    const spends = await dynamoDBGetSpendsByDateRange(startDate, endDate);
     // Filter only fixed and dynamic expenses using filterService
     const expenses = spends.filter(filterExpenseType);
     res.json(expenses);
@@ -28,7 +27,7 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
   try {
     const { startDate, endDate, field } = req.query;
     // Only include spends where SpendType is not 'saving'
-    const sum = await sumByFieldForExpenseTypes({ startDate, endDate, field });
+    const sum = await dynamoDBSumByFieldForExpenseTypes({ startDate, endDate, field });
     res.json(sum);
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate sum.', details: err.message });
@@ -39,7 +38,7 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
 router.get('/total', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const total = await totalSpendsForExpenseTypes({ startDate, endDate});
+    const total = await dynamoDBTotalSpendsForExpenseTypes({ startDate, endDate });
     res.json({ total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate total sum.', details: err.message });
@@ -50,7 +49,7 @@ router.get('/total', validateDateRange, async (req, res) => {
 router.get('/forecast', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const forecast = await forecastDynamicExpense({ startDate, endDate, onlyExpenses: true });
+    const forecast = await dynamoDBForecastDynamicExpense({ startDate, endDate, onlyExpenses: true });
     res.json(forecast);
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate forecast.', details: err.message });

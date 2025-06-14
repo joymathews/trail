@@ -1,9 +1,9 @@
 const express = require('express');
 const {
-  sumByFieldForSavings,
-  totalSpendsForSavings,
-} = require('../services/calculationService');
-const { getSpendsByDateRange } = require('../db/spendDb');
+  dynamoDBSumByFieldForSavings,
+  dynamoDBTotalSpendsForSavings,
+  dynamoDBGetSpendsByDateRange
+} = require('../services/dynamoDBInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterSaving } = require('../services/filterService');
 
@@ -13,7 +13,7 @@ const router = express.Router();
 router.get('/', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const spends = await getSpendsByDateRange(startDate, endDate);
+    const spends = await dynamoDBGetSpendsByDateRange(startDate, endDate);
     // Filter only savings using filterService
     const savings = spends.filter(filterSaving);
     res.json(savings);
@@ -27,7 +27,7 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
   try {
     const { startDate, endDate, field } = req.query;
     // Only include spends where SpendType is 'saving'
-    const sum = await sumByFieldForSavings({ startDate, endDate, field});
+    const sum = await dynamoDBSumByFieldForSavings({ startDate, endDate, field });
     res.json(sum);
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate sum.', details: err.message });
@@ -38,7 +38,7 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
 router.get('/total', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const total = await totalSpendsForSavings({ startDate, endDate});
+    const total = await dynamoDBTotalSpendsForSavings({ startDate, endDate });
     res.json({ total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate total sum.', details: err.message });

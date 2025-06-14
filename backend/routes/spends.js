@@ -1,5 +1,9 @@
 const express = require('express');
-const { saveSpend, getSpendById, getSpendsByDateRange } = require('../db/spendDb');
+const {
+  dynamoDBSaveSpend,
+  dynamoDBGetSpendById,
+  dynamoDBGetSpendsByDateRange
+} = require('../services/dynamoDBInterface');
 const { validateSpendFields, validateDateRange } = require('../middleware/validation');
 
 const router = express.Router();
@@ -18,7 +22,7 @@ router.post('/', validateSpendFields, async (req, res) => {
     SpendType, // Already normalized by middleware
   };
   try {
-    await saveSpend(spend);
+    await dynamoDBSaveSpend(spend);
     res.status(201).json({ message: 'Spend stored successfully.', spend });
   } catch (err) {
     res.status(500).json({ error: 'Failed to store spend.', details: err.message });
@@ -29,7 +33,7 @@ router.post('/', validateSpendFields, async (req, res) => {
 router.get('/', validateDateRange, async (req, res) => {
   const { startDate, endDate } = req.query;
   try {
-    const spends = await getSpendsByDateRange(startDate, endDate);
+    const spends = await dynamoDBGetSpendsByDateRange(startDate, endDate);
     res.json(spends);
   } catch (err) {
     res.status(500).json({ error: 'Failed to retrieve spends.', details: err.message });
@@ -40,7 +44,7 @@ router.get('/', validateDateRange, async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const spend = await getSpendById(id);
+    const spend = await dynamoDBGetSpendById(id);
     if (!spend) {
       return res.status(404).json({ error: 'Spend not found.' });
     }
