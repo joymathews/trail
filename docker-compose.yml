@@ -9,9 +9,9 @@ services:
     image: postgres:16
     container_name: local-postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: trail
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
 
@@ -19,7 +19,7 @@ services:
     image: flyway/flyway
     depends_on:
       - postgres
-    command: -url=jdbc:postgresql://postgres:5432/trail -user=postgres -password=password migrate
+    command: -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB} -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} migrate
     volumes:
       - ./backend/db/postgreSQL/migrations:/flyway/sql
     environment:

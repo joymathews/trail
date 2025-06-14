@@ -8,39 +8,36 @@ const {
 
 const { saveSpend, getSpendById, getSpendsByDateRange } = require('./spendDb');
 
-async function dynamoDBSaveSpend(spend) {
-    return await saveSpend(spend);
+function dynamoDBSaveSpend(spend) {
+    return saveSpend(spend);
 }
 
-async function dynamoDBGetSpendById(id) {
-    return await getSpendById(id);
+function dynamoDBGetSpendById(id) {
+    return getSpendById(id);
 }
 
-async function dynamoDBGetSpendsByDateRange(startDate, endDate) {
-    return await getSpendsByDateRange(startDate, endDate);
+function dynamoDBGetSpendsByDateRange(startDate, endDate) {
+    return getSpendsByDateRange(startDate, endDate);
 }
 
-
-async function dynamoDBSumByFieldForExpenseTypes({ startDate, endDate, field }) {
-   return await sumByFieldForExpenseTypes({ startDate, endDate, field });
+function dynamoDBSumByFieldForExpenseTypes({ startDate, endDate, field }) {
+   return sumByFieldForExpenseTypes({ startDate, endDate, field });
 }
 
-async function dynamoDBSumByFieldForSavings({ startDate, endDate, field }) {
-    return await sumByFieldForSavings({ startDate, endDate, field });
+function dynamoDBSumByFieldForSavings({ startDate, endDate, field }) {
+    return sumByFieldForSavings({ startDate, endDate, field });
 }
 
-
-
-async function dynamoDBTotalSpendsForExpenseTypes({ startDate, endDate }) {
-    return await totalSpendsForExpenseTypes({ startDate, endDate });
+function dynamoDBTotalSpendsForExpenseTypes({ startDate, endDate }) {
+    return totalSpendsForExpenseTypes({ startDate, endDate });
 }
 
-async function dynamoDBTotalSpendsForSavings({ startDate, endDate }) {
-    return await totalSpendsForSavings({ startDate, endDate });
+function dynamoDBTotalSpendsForSavings({ startDate, endDate }) {
+    return totalSpendsForSavings({ startDate, endDate });
 }
 
-async function dynamoDBForecastDynamicExpense({ startDate, endDate }) {
-    return await forecastDynamicExpense({ startDate, endDate, onlyExpenses: true });
+function dynamoDBForecastDynamicExpense({ startDate, endDate }) {
+    return forecastDynamicExpense({ startDate, endDate, onlyExpenses: true });
 }
 
 module.exports = { 
