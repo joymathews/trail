@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DateRangePicker.scss";
 
 function DateRangePicker({ onChange }) {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [dates, setDates] = useState({ startDate: null, endDate: null });
 
-  const handleStartChange = (e) => {
-    setStartDate(e.target.value);
-    if (onChange) onChange(e.target.value, endDate);
+  useEffect(() => {
+    if (dates.startDate && dates.endDate) {
+      onChange(dates.startDate, dates.endDate);
+    }
+  }, [dates.startDate, dates.endDate, onChange]);
+
+  const handleStartDateChange = (e) => {
+    setDates((prev) => ({ ...prev, startDate: e.target.value }));
   };
 
-  const handleEndChange = (e) => {
-    setEndDate(e.target.value);
-    if (onChange) onChange(startDate, e.target.value);
+  const handleEndDateChange = (e) => {
+    setDates((prev) => ({ ...prev, endDate: e.target.value }));
   };
 
   return (
@@ -21,8 +24,8 @@ function DateRangePicker({ onChange }) {
         Start Date:
         <input
           type="date"
-          value={startDate}
-          onChange={handleStartChange}
+          value={dates.startDate || ""}
+          onChange={handleStartDateChange}
         />
       </label>
       <span style={{ margin: "0 0.5rem" }}>to</span>
@@ -30,8 +33,8 @@ function DateRangePicker({ onChange }) {
         End Date:
         <input
           type="date"
-          value={endDate}
-          onChange={handleEndChange}
+          value={dates.endDate || ""}
+          onChange={handleEndDateChange}
         />
       </label>
     </div>
