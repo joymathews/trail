@@ -1,6 +1,32 @@
+version: '3.8'
 services:
-  dynamodb:
-    image: amazon/dynamodb-local
+  postgres:
+    image: postgres:16
+    container_name: local-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: trail
     ports:
-      - "8000:8000"
-    command: -jar DynamoDBLocal.jar -inMemory -sharedDb
+      - "5432:5432"
+
+  flyway:
+    image: flyway/flyway
+    depends_on:
+      - postgres
+    command: -url=jdbc:postgresql://postgres:5432/trail -user=postgres -password=password migrate
+    volumes:
+      - ./db-migrations:/flyway/sql
+    environment:
+      FLYWAY_CONNECT_RETRIES: 10
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres

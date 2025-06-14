@@ -74,7 +74,7 @@ describe('spend API Integration Tests', () => {
         res.data.some(apiExp =>
           apiExp.Date === exp.Date &&
           apiExp.Description === exp.Description &&
-          apiExp.AmountSpent === exp.AmountSpent &&
+          Number(apiExp.AmountSpent) === Number(exp.AmountSpent) &&
           apiExp.Category === exp.Category &&
           apiExp.Vendor === exp.Vendor &&
           apiExp.PaymentMode === exp.PaymentMode &&
