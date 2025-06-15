@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./AutoCompleteInput.scss";
 
 /**
@@ -23,6 +23,17 @@ function AutoCompleteInput({
   type = "text",
   activeSuggestion = -1
 }) {
+  const itemRefs = useRef([]);
+
+  useEffect(() => {
+    if (
+      activeSuggestion >= 0 &&
+      itemRefs.current[activeSuggestion]
+    ) {
+      itemRefs.current[activeSuggestion].scrollIntoView({ block: "nearest" });
+    }
+  }, [activeSuggestion]);
+
   return (
     <div className="autocomplete-wrapper">
       <label htmlFor={id} className="visually-hidden">{label}</label>
@@ -43,6 +54,7 @@ function AutoCompleteInput({
           {suggestions.map((s, i) => (
             <li
               key={s}
+              ref={el => (itemRefs.current[i] = el)}
               className={i === activeSuggestion ? "active" : ""}
               onMouseDown={() => onSuggestionClick(s)}
             >
