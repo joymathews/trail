@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import './ExpenseSumBarChart.scss';
 
 function formatDayMonth(dateStr) {
@@ -21,7 +21,9 @@ export default function ExpenseSumBarChart({ data }) {
           />
           <YAxis />
           <Tooltip labelFormatter={isDate ? formatDayMonth : undefined} />
-          <Bar dataKey="value" fill="#8884d8" />
+          <Bar dataKey="value" fill="#8884d8">
+            <LabelList dataKey="value" position="top" className="bar-value-label" />
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
