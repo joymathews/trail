@@ -1,0 +1,35 @@
+.spend-field-select-wrapper {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+
+  label {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+  }
+}
+
+.spend-field-select {
+  height: 40px;
+  padding: 0 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #f7f8fa;
+  font-size: 1rem;
+  color: #222;
+  box-shadow: none;
+  outline: none;
+  margin-left: 1rem;
+  transition: border 0.2s;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+
+  &:focus {
+    border: 1.5px solid #a0aec0;
+  }
+}
