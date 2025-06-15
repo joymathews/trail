@@ -1,9 +1,16 @@
 .expense-sum-line-chart {
+  width: 100%;
+  height: 60vh;
+  min-height: 350px;
+  max-height: 75vh;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 1.5rem;
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   h3 {
     margin-bottom: 1rem;
     color: #333;

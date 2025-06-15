@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import DateRangePicker from '../components/DateRangePicker';
 import ExpenseSumLineChart from '../components/ExpenseSumLineChart';
+import ExpenseSumBarChart from '../components/ExpenseSumBarChart';
 import SpendFieldSelect from '../components/SpendFieldSelect';
+import ChartTypeSelector from '../components/ChartTypeSelector';
 import { SpendFields } from '../utils/fieldEnums';
 import './SpendChartsPage.scss';
 
@@ -25,6 +27,7 @@ const SpendChartsPage = () => {
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [expenseData, setExpenseData] = useState([]);
   const [spendField, setSpendField] = useState(SpendFields.DATE);
+  const [chartType, setChartType] = useState('LineChart');
 
   useEffect(() => {
     if (dateRange.start && dateRange.end && spendField) {
@@ -56,11 +59,16 @@ const SpendChartsPage = () => {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
             <DateRangePicker onChange={handleDateRangeChange} />
             <SpendFieldSelect value={spendField} onChange={handleSpendFieldChange} />
+            <ChartTypeSelector selectedType={chartType} onChange={setChartType} />
           </div>
         </div>
         <div className="charts-section">
           <div className="chart-1">
-            <ExpenseSumLineChart data={expenseData} spendField={spendField} />
+            {chartType === 'LineChart' ? (
+              <ExpenseSumLineChart data={expenseData} spendField={spendField} />
+            ) : (
+              <ExpenseSumBarChart data={expenseData} />
+            )}
           </div>
         </div>
       </div>
