@@ -1,7 +1,5 @@
-// src/utils/fieldEnums.js
-// Enum-like object for spend fields to ensure consistency and avoid typos
-
-export const SpendFields = Object.freeze({
+// Enum for spend fields (should match backend)
+const SpendFields = Object.freeze({
   CATEGORY: "category",
   VENDOR: "vendor",
   PAYMENT_MODE: "paymentMode",
@@ -10,3 +8,5 @@ export const SpendFields = Object.freeze({
   AMOUNT_SPENT: "amountSpent",
   SPEND_TYPE: "spendType"
 });
+
+module.exports = { SpendFields };

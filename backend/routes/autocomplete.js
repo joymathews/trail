@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/dbInterface');
+const { SpendFields } = require('../utils/fieldEnums');
 
 // GET /autocomplete/:field?q=searchText
 router.get('/:field', async (req, res) => {
@@ -10,16 +11,16 @@ router.get('/:field', async (req, res) => {
   try {
     let results;
     switch (field) {
-      case 'category':
+      case SpendFields.CATEGORY:
         results = await db.getCategorySuggestions(q);
         break;
-      case 'vendor':
+      case SpendFields.VENDOR:
         results = await db.getVendorSuggestions(q);
         break;
-      case 'paymentMode':
+      case SpendFields.PAYMENT_MODE:
         results = await db.getPaymentModeSuggestions(q);
         break;
-      case 'description':
+      case SpendFields.DESCRIPTION:
         results = await db.getDescriptionSuggestions(q);
         break;
       default:

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { SpendFields } = require('../utils/fieldEnums');
 
 describe('saving API Integration Tests', () => {
   const SAVING_URL = 'http://localhost:3001/saving';
@@ -14,7 +15,7 @@ describe('saving API Integration Tests', () => {
 
   it('should calculate sum by category for saving', async () => {
     const res = await axios.get(`${SAVING_URL}/sum`, {
-      params: { startDate: '2025-05-16', endDate: '2025-06-11', field: 'Category' }
+      params: { startDate: '2025-05-16', endDate: '2025-06-11', field: SpendFields.CATEGORY }
     });
     expect(res.status).toBe(200);
     expect(typeof res.data).toBe('object');
@@ -31,8 +32,8 @@ describe('saving API Integration Tests', () => {
     expect(res.status).toBe(200);
     expect(Array.isArray(res.data)).toBe(true);
     res.data.forEach(saving => {
-      expect(saving.SpendType?.toLowerCase()).toBe('saving');
+      expect(saving[SpendFields.SPEND_TYPE]?.toLowerCase()).toBe('saving');
     });
-    expect(res.data.some(saving => ['fixed', 'dynamic'].includes(saving.SpendType?.toLowerCase()))).toBe(false);
+    expect(res.data.some(saving => ['fixed', 'dynamic'].includes(saving[SpendFields.SPEND_TYPE]?.toLowerCase()))).toBe(false);
   });
 });

@@ -1,4 +1,4 @@
-// src/utils/fieldEnums.js
+// backend/utils/fieldEnums.js
 // Enum-like object for spend fields to ensure consistency and avoid typos
 
 export const SpendFields = Object.freeze({

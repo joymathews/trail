@@ -3,18 +3,19 @@ import DateRangePicker from "./DateRangePicker";
 import SpendInputRow from "./SpendInputRow";
 import { useSpends } from "../hooks/useSpends";
 import { formatDate } from "../utils/date";
+import { SpendFields } from "../utils/fieldEnums";
 import "./SpendSheet.scss";
 import useIsMobile from "../hooks/useIsMobile";
 import SpendSheetMobile from "./SpendSheetMobile";
 
 const blankSpend = {
-  Date: formatDate(new Date()),
-  Category: "",
-  Description: "",
-  AmountSpent: "",
-  Vendor: "",
-  PaymentMode: "",
-  SpendType: "",
+  [SpendFields.DATE]: formatDate(new Date()),
+  [SpendFields.CATEGORY]: "",
+  [SpendFields.DESCRIPTION]: "",
+  [SpendFields.AMOUNT_SPENT]: "",
+  [SpendFields.VENDOR]: "",
+  [SpendFields.PAYMENT_MODE]: "",
+  [SpendFields.SPEND_TYPE]: "",
 };
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -51,43 +52,35 @@ function SpendSheet() {
     const spend = inputRow;
     // Basic validation
     if (
-      !spend.Date ||
-      !spend.Category ||
-      !spend.Description ||
-      !spend.AmountSpent ||
-      !spend.SpendType
+      !spend[SpendFields.DATE] ||
+      !spend[SpendFields.CATEGORY] ||
+      !spend[SpendFields.DESCRIPTION] ||
+      !spend[SpendFields.AMOUNT_SPENT] ||
+      !spend[SpendFields.SPEND_TYPE]
     ) {
-      setError(
-        "Please fill all required fields (Date, Category, Description, Amount, Spend Type)."
-      );
+      setError("Please fill all required fields.");
       return;
     }
     setSaving(true);
     setError("");
     try {
-      const payload = {
-        Date: spend.Date,
-        Category: spend.Category,
-        Description: spend.Description,
-        AmountSpent: parseFloat(spend.AmountSpent),
-        Vendor: spend.Vendor,
-        PaymentMode: spend.PaymentMode,
-        SpendType: spend.SpendType,
-      };
       const res = await fetch(`${API_URL}/spends`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(spend),
       });
-      if (!res.ok) throw new Error("Failed to add spend");
-      // Insert the new spend at the top of the spends list
-      setSpends((prev) => [{ ...spend }, ...prev]);
-      setInputRow({ ...blankSpend });
-      // Removed: useSpends hook handles refresh
-    } catch (err) {
-      setError(err.message || "Error adding spend");
+      if (res.ok) {
+        const { spend: newSpend } = await res.json();
+        setInputRow({ ...blankSpend });
+        setSpends((prev) => [newSpend, ...prev]);
+      } else {
+        setError("Failed to save spend.");
+      }
+    } catch {
+      setError("Server error.");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   if (isMobile) {
@@ -145,13 +138,13 @@ function SpendSheet() {
             )}
             {spends.map((spend, idx) => (
               <tr key={spend.id || idx}>
-                <td>{spend.Date}</td>
-                <td>{spend.Category}</td>
-                <td>{spend.Description}</td>
-                <td style={{ textAlign: "right" }}>{spend.AmountSpent}</td>
-                <td>{spend.Vendor}</td>
-                <td>{spend.PaymentMode}</td>
-                <td>{spend.SpendType}</td>
+                <td>{spend[SpendFields.DATE]}</td>
+                <td>{spend[SpendFields.CATEGORY]}</td>
+                <td>{spend[SpendFields.DESCRIPTION]}</td>
+                <td style={{ textAlign: "right" }}>{spend[SpendFields.AMOUNT_SPENT]}</td>
+                <td>{spend[SpendFields.VENDOR]}</td>
+                <td>{spend[SpendFields.PAYMENT_MODE]}</td>
+                <td>{spend[SpendFields.SPEND_TYPE]}</td>
                 <td></td>
               </tr>
             ))}

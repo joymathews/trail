@@ -9,7 +9,7 @@ import "./AutoCompleteInput.scss";
 function AutoCompleteInput({
   id,
   label,
-  value,
+  value = "",
   onChange,
   placeholder,
   suggestions = [],
@@ -40,7 +40,7 @@ function AutoCompleteInput({
       <input
         id={id}
         type={type}
-        value={value}
+        value={value ?? ""}
         ref={inputRef}
         onChange={onChange}
         onFocus={onFocus}

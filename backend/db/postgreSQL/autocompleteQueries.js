@@ -1,5 +1,13 @@
 // PostgreSQL queries for autocomplete fields
 const { createPgClient } = require('./pgFactory');
+const { SpendFields } = require('../../utils/fieldEnums');
+
+const SpendFieldToDbColumn = {
+  [SpendFields.CATEGORY]: "Category",
+  [SpendFields.VENDOR]: "Vendor",
+  [SpendFields.PAYMENT_MODE]: "PaymentMode",
+  [SpendFields.DESCRIPTION]: "Description"
+};
 
 // Helper to ensure client is connected and closed properly
 async function withPgClient(fn) {
@@ -18,7 +26,7 @@ async function getCategorySuggestions(query) {
       `SELECT DISTINCT "Category" FROM spends WHERE "Category" ILIKE $1 ORDER BY "Category" LIMIT 10`,
       [query ? `%${query}%` : '%']
     );
-    return res.rows.map(r => r.Category);
+    return res.rows.map(r => r[SpendFieldToDbColumn[SpendFields.CATEGORY]]);
   });
 }
 
@@ -28,7 +36,7 @@ async function getVendorSuggestions(query) {
       `SELECT DISTINCT "Vendor" FROM spends WHERE "Vendor" ILIKE $1 ORDER BY "Vendor" LIMIT 10`,
       [query ? `%${query}%` : '%']
     );
-    return res.rows.map(r => r.Vendor);
+    return res.rows.map(r => r[SpendFieldToDbColumn[SpendFields.VENDOR]]);
   });
 }
 
@@ -38,7 +46,7 @@ async function getPaymentModeSuggestions(query) {
       `SELECT DISTINCT "PaymentMode" FROM spends WHERE "PaymentMode" ILIKE $1 ORDER BY "PaymentMode" LIMIT 10`,
       [query ? `%${query}%` : '%']
     );
-    return res.rows.map(r => r.PaymentMode);
+    return res.rows.map(r => r[SpendFieldToDbColumn[SpendFields.PAYMENT_MODE]]);
   });
 }
 
@@ -48,7 +56,7 @@ async function getDescriptionSuggestions(query) {
       `SELECT DISTINCT "Description" FROM spends WHERE "Description" ILIKE $1 ORDER BY "Description" LIMIT 10`,
       [query ? `%${query}%` : '%']
     );
-    return res.rows.map(r => r.Description);
+    return res.rows.map(r => r[SpendFieldToDbColumn[SpendFields.DESCRIPTION]]);
   });
 }
 

@@ -1,4 +1,15 @@
 const { createPgClient } = require('./pgFactory');
+const { SpendFields } = require('../../utils/fieldEnums');
+
+const SpendFieldToDbColumn = {
+  [SpendFields.CATEGORY]: "Category",
+  [SpendFields.VENDOR]: "Vendor",
+  [SpendFields.PAYMENT_MODE]: "PaymentMode",
+  [SpendFields.DESCRIPTION]: "Description",
+  [SpendFields.DATE]: "Date",
+  [SpendFields.AMOUNT_SPENT]: "AmountSpent",
+  [SpendFields.SPEND_TYPE]: "SpendType"
+};
 
 // Helper to ensure client is connected and closed properly
 async function withPgClient(fn) {
@@ -28,13 +39,13 @@ async function pgSaveSpend(spend) {
     `;
     const values = [
       spend.id,
-      spend.Date,
-      spend.Description,
-      spend.AmountSpent,
-      spend.Category,
-      spend.Vendor,
-      spend.PaymentMode,
-      spend.SpendType
+      spend[SpendFields.DATE],
+      spend[SpendFields.DESCRIPTION],
+      spend[SpendFields.AMOUNT_SPENT],
+      spend[SpendFields.CATEGORY],
+      spend[SpendFields.VENDOR],
+      spend[SpendFields.PAYMENT_MODE],
+      spend[SpendFields.SPEND_TYPE]
     ];
     await client.query(query, values);
   });
@@ -43,8 +54,23 @@ async function pgSaveSpend(spend) {
 // Get spend by ID
 async function pgGetSpendById(id) {
   return withPgClient(async (client) => {
-    const res = await client.query('SELECT id, "Date"::text AS "Date", "Description", "AmountSpent", "Category", "Vendor", "PaymentMode", "SpendType" FROM spends WHERE id = $1', [id]);
-    return res.rows[0];
+    const res = await client.query(
+      'SELECT id, "Date"::text AS "Date", "Description", "AmountSpent", "Category", "Vendor", "PaymentMode", "SpendType" FROM spends WHERE id = $1',
+      [id]
+    );
+    if (!res.rows[0]) return undefined;
+    const row = res.rows[0];
+    // Map DB fields to enum keys for consistency
+    return {
+      id: row.id,
+      [SpendFields.DATE]: row.Date,
+      [SpendFields.DESCRIPTION]: row.Description,
+      [SpendFields.AMOUNT_SPENT]: row.AmountSpent,
+      [SpendFields.CATEGORY]: row.Category,
+      [SpendFields.VENDOR]: row.Vendor,
+      [SpendFields.PAYMENT_MODE]: row.PaymentMode,
+      [SpendFields.SPEND_TYPE]: row.SpendType
+    };
   });
 }
 
@@ -55,38 +81,52 @@ async function pgGetSpendsByDateRange(startDate, endDate) {
       'SELECT id, "Date"::text AS "Date", "Description", "AmountSpent", "Category", "Vendor", "PaymentMode", "SpendType" FROM spends WHERE "Date" >= $1 AND "Date" <= $2',
       [startDate, endDate]
     );
-    return res.rows;
+    // Map DB fields to enum keys for consistency
+    return res.rows.map(row => ({
+      id: row.id,
+      [SpendFields.DATE]: row.Date,
+      [SpendFields.DESCRIPTION]: row.Description,
+      [SpendFields.AMOUNT_SPENT]: row.AmountSpent,
+      [SpendFields.CATEGORY]: row.Category,
+      [SpendFields.VENDOR]: row.Vendor,
+      [SpendFields.PAYMENT_MODE]: row.PaymentMode,
+      [SpendFields.SPEND_TYPE]: row.SpendType
+    }));
   });
 }
 
 // Sum by field for expense types (SpendType: fixed or dynamic)
 async function pgSumByFieldForExpenseTypes({ startDate, endDate, field }) {
   return withPgClient(async (client) => {
+    const dbField = SpendFieldToDbColumn[field];
+    if (!dbField) throw new Error(`Invalid field for sum: ${field}`);
     const res = await client.query(
-      `SELECT "${field}", SUM("AmountSpent") AS total
+      `SELECT "${dbField}", SUM("AmountSpent") AS total
        FROM spends
        WHERE "Date" >= $1 AND "Date" <= $2
          AND LOWER("SpendType") IN ('fixed', 'dynamic')
-       GROUP BY "${field}"`,
+       GROUP BY "${dbField}"`,
       [startDate, endDate]
     );
     // Return as { fieldValue: total, ... }
-    return Object.fromEntries(res.rows.map(row => [row[field], Number(row.total)]));
+    return Object.fromEntries(res.rows.map(row => [row[dbField], Number(row.total)]));
   });
 }
 
 // Sum by field for savings (SpendType: saving)
 async function pgSumByFieldForSavings({ startDate, endDate, field }) {
   return withPgClient(async (client) => {
+    const dbField = SpendFieldToDbColumn[field];
+    if (!dbField) throw new Error(`Invalid field for sum: ${field}`);
     const res = await client.query(
-      `SELECT "${field}", SUM("AmountSpent") AS total
+      `SELECT "${dbField}", SUM("AmountSpent") AS total
        FROM spends
        WHERE "Date" >= $1 AND "Date" <= $2
          AND LOWER("SpendType") = 'saving'
-       GROUP BY "${field}"`,
+       GROUP BY "${dbField}"`,
       [startDate, endDate]
     );
-    return Object.fromEntries(res.rows.map(row => [row[field], Number(row.total)]));
+    return Object.fromEntries(res.rows.map(row => [row[dbField], Number(row.total)]));
   });
 }
 

@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { getSpends } = require('../testData/spends');
+const { SpendFields } = require('../utils/fieldEnums');
 
 describe('spend API Integration Tests', () => {
   const API_URL = 'http://localhost:3001/spends';
@@ -16,7 +17,7 @@ describe('spend API Integration Tests', () => {
 
     // Filter CSV spends for the same date range
     const expected = spends.filter(
-      exp => exp.Date >= startDate && exp.Date <= endDate
+      exp => exp[SpendFields.DATE] >= startDate && exp[SpendFields.DATE] <= endDate
     );
 
     // Check that the API returns the same number of spends
@@ -26,13 +27,13 @@ describe('spend API Integration Tests', () => {
     expected.forEach(exp => {
       expect(
         res.data.some(apiExp =>
-          apiExp.Date === exp.Date &&
-          apiExp.Description === exp.Description &&
-          Number(apiExp.AmountSpent) === Number(exp.AmountSpent) &&
-          apiExp.Category === exp.Category &&
-          apiExp.Vendor === exp.Vendor &&
-          apiExp.PaymentMode === exp.PaymentMode &&
-          apiExp.spendType === exp.spendType
+          apiExp[SpendFields.DATE] === exp[SpendFields.DATE] &&
+          apiExp[SpendFields.DESCRIPTION] === exp[SpendFields.DESCRIPTION] &&
+          Number(apiExp[SpendFields.AMOUNT_SPENT]) === Number(exp[SpendFields.AMOUNT_SPENT]) &&
+          apiExp[SpendFields.CATEGORY] === exp[SpendFields.CATEGORY] &&
+          apiExp[SpendFields.VENDOR] === exp[SpendFields.VENDOR] &&
+          apiExp[SpendFields.PAYMENT_MODE] === exp[SpendFields.PAYMENT_MODE] &&
+          apiExp[SpendFields.SPEND_TYPE] === exp[SpendFields.SPEND_TYPE]
         )
       ).toBe(true);
     });

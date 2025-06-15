@@ -41,14 +41,6 @@ function SpendInputForm({
     [SpendFields.PAYMENT_MODE]: useRef(null)
   };
 
-  // Map SpendFields to backend route segments
-  const backendFieldMap = {
-    [SpendFields.CATEGORY]: "category",
-    [SpendFields.VENDOR]: "vendor",
-    [SpendFields.PAYMENT_MODE]: "paymentMode",
-    [SpendFields.DESCRIPTION]: "description"
-  };
-
   // Fetch suggestions from backend
   const fetchSuggestions = async (field, value) => {
     if (!value) {
@@ -56,9 +48,8 @@ function SpendInputForm({
       return;
     }
     try {
-      const backendField = backendFieldMap[field];
-      if (!backendField) return;
-      const url = `${import.meta.env.VITE_API_URL}/autocomplete/${backendField}?q=${encodeURIComponent(value)}`;
+      // Use field directly (matches backend route)
+      const url = `${import.meta.env.VITE_API_URL}/autocomplete/${field}?q=${encodeURIComponent(value)}`;
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -125,8 +116,8 @@ function SpendInputForm({
       key: SpendFields.DATE,
       label: "Date",
       type: "date",
-      value: inputRow.Date,
-      onChange: e => onChange("Date", e.target.value),
+      value: inputRow[SpendFields.DATE],
+      onChange: e => onChange(SpendFields.DATE, e.target.value),
       required: true
     },
     {
@@ -149,8 +140,8 @@ function SpendInputForm({
       key: SpendFields.AMOUNT_SPENT,
       label: "Amount",
       type: "number",
-      value: inputRow.AmountSpent,
-      onChange: e => onChange("AmountSpent", e.target.value),
+      value: inputRow[SpendFields.AMOUNT_SPENT],
+      onChange: e => onChange(SpendFields.AMOUNT_SPENT, e.target.value),
       min: 0,
       step: 0.01,
       required: true
@@ -173,7 +164,7 @@ function SpendInputForm({
       key: SpendFields.SPEND_TYPE,
       label: "Spend Type",
       type: "select",
-      value: inputRow.SpendType,
+      value: inputRow[SpendFields.SPEND_TYPE],
       required: true
     }
   ];
@@ -209,7 +200,7 @@ function SpendInputForm({
           {as === "form" && <label className="input-label">{field.label}</label>}
           <select
             value={field.value}
-            onChange={e => onChange("SpendType", e.target.value)}
+            onChange={e => onChange(SpendFields.SPEND_TYPE, e.target.value)}
             required={field.required}
           >
             <option value="">Type</option>
