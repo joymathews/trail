@@ -1,0 +1,36 @@
+.spend-charts-page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  .charts-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    .charts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      h2 {
+        font-size: 2rem;
+        color: #333;
+      }
+    }
+    .charts-section {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      .chart-placeholder {
+        flex: 1 1 300px;
+        min-height: 250px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #aaa;
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

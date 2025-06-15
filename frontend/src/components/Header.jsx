@@ -8,6 +8,10 @@ function Header({ onSignOut }) {
       <Link to="/" className="header-title">
         Trail
       </Link>
+      <nav className="header-nav">
+        <Link to="/">Home</Link>
+        <Link to="/charts">Spend Charts</Link>
+      </nav>
       <button className="signout-btn" onClick={onSignOut}>
         Sign Out
       </button>
