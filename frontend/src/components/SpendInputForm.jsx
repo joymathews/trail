@@ -79,11 +79,30 @@ function SpendInputForm({
     setActiveSuggestion(a => ({ ...a, [field]: -1 }));
   };
 
+  // Helper: get next field key in form order
+  const getNextFieldKey = (currentKey) => {
+    const order = [
+      SpendFields.CATEGORY,
+      SpendFields.DESCRIPTION,
+      SpendFields.AMOUNT_SPENT,
+      SpendFields.VENDOR,
+      SpendFields.PAYMENT_MODE,
+      SpendFields.SPEND_TYPE
+    ];
+    const idx = order.indexOf(currentKey);
+    return idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
+  };
+
   // Handle suggestion click
   const handleSuggestionClick = (field, suggestion) => {
     onChange(field, suggestion);
     setShowSuggestions(s => ({ ...s, [field]: false }));
     setSuggestions(s => ({ ...s, [field]: [] }));
+    // Focus next input in form order (for mobile/tab)
+    const nextKey = getNextFieldKey(field);
+    if (nextKey && inputRefs[nextKey] && inputRefs[nextKey].current) {
+      setTimeout(() => inputRefs[nextKey].current.focus(), 0);
+    }
   };
 
   // Handle keyboard navigation
