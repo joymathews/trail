@@ -20,7 +20,8 @@ function AutoCompleteInput({
   onKeyDown,
   inputRef,
   autoComplete = "off",
-  type = "text"
+  type = "text",
+  activeSuggestion = -1
 }) {
   return (
     <div className="autocomplete-wrapper">
@@ -42,7 +43,7 @@ function AutoCompleteInput({
           {suggestions.map((s, i) => (
             <li
               key={s}
-              className={i === showSuggestions ? "active" : ""}
+              className={i === activeSuggestion ? "active" : ""}
               onMouseDown={() => onSuggestionClick(s)}
             >
               {s}

@@ -176,6 +176,7 @@ function SpendInputForm({
             onKeyDown={e => handleKeyDown(field.key, e)}
             suggestions={suggestions[field.key]}
             showSuggestions={showSuggestions[field.key]}
+            activeSuggestion={activeSuggestion[field.key]}
             onSuggestionClick={s => handleSuggestionClick(field.key, s)}
             placeholder={field.label}
             autoComplete="off"
