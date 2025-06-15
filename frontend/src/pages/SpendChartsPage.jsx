@@ -6,12 +6,12 @@ import SpendFieldSelect from '../components/SpendFieldSelect';
 import { SpendFields } from '../utils/fieldEnums';
 import './SpendChartsPage.scss';
 
-const fetchExpenseSum = async (startDate, endDate) => {
-  if (!startDate || !endDate) return [];
+const fetchExpenseSum = async (startDate, endDate, field) => {
+  if (!startDate || !endDate || !field) return [];
   const params = new URLSearchParams({
     startDate,
     endDate,
-    field: SpendFields.DATE,
+    field,
   });
   const apiUrl = import.meta.env.VITE_API_URL || '';
   const res = await fetch(`${apiUrl}/expense/sum?${params}`);
@@ -25,12 +25,19 @@ const SpendChartsPage = () => {
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [expenseData, setExpenseData] = useState([]);
   const [spendField, setSpendField] = useState(SpendFields.DATE);
-  // Prevent infinite loop by only updating if values actually change
+
   useEffect(() => {
-    if (dateRange.start && dateRange.end) {
-      fetchExpenseSum(dateRange.start, dateRange.end).then(setExpenseData);
+    if (dateRange.start && dateRange.end && spendField) {
+      fetchExpenseSum(dateRange.start, dateRange.end, spendField).then((data) => {
+        // If spendField is DATE, keep as {date, value}, else use {key, value}
+        if (spendField === SpendFields.DATE) {
+          setExpenseData(data);
+        } else {
+          setExpenseData(data.map(({ date, value }) => ({ key: date, value })));
+        }
+      });
     }
-  }, [dateRange.start, dateRange.end]);
+  }, [dateRange.start, dateRange.end, spendField]);
 
   const handleDateRangeChange = (startDate, endDate) => {
     setDateRange({ start: startDate, end: endDate });
@@ -38,7 +45,6 @@ const SpendChartsPage = () => {
 
   const handleSpendFieldChange = (field) => {
     setSpendField(field);
-    // Optionally, trigger fetch here if needed
   };
 
   return (
@@ -54,7 +60,7 @@ const SpendChartsPage = () => {
         </div>
         <div className="charts-section">
           <div className="chart-1">
-            <ExpenseSumLineChart data={expenseData} />
+            <ExpenseSumLineChart data={expenseData} spendField={spendField} />
           </div>
         </div>
       </div>
