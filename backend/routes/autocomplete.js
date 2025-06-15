@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/dbInterface');
 
-// GET /api/autocomplete/:field?q=searchText
+// GET /autocomplete/:field?q=searchText
 router.get('/:field', async (req, res) => {
   const { field } = req.params;
   const { q } = req.query;
