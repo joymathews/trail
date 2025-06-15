@@ -1,7 +1,6 @@
 // src/components/SpendInputRow.jsx
 import React from "react";
 import SpendInputForm from "./SpendInputForm";
-import "./SpendInputRow.scss";
 
 function SpendInputRow({ inputRow, onChange, onSave, saving }) {
   return (
