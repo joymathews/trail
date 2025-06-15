@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $primary: #2c3e50;
 $accent: #18bc9c;
 $background: #ecf0f1;
@@ -22,7 +24,7 @@ $text: #2c3e50;
     transition: color 0.2s;
 
     &:hover {
-      color: darken($accent, 10%);
+      color: color.adjust($accent, $lightness: -10%);
     }
   }
 
