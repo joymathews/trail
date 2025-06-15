@@ -2,6 +2,7 @@
 const { PutCommand, GetCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
 const { TABLE_NAME } = require('../../config');
 const { createDynamoDBDocumentClient } = require('./dynamodbFactory');
+const { SpendFields } = require('../../utils/fieldEnums');
 
 const ddbDocClient = createDynamoDBDocumentClient();
 
@@ -29,7 +30,7 @@ async function getSpendsByDateRange(startDate, endDate) {
     new ScanCommand({ TableName: TABLE_NAME })
   );
   let items = result.Items || [];
-  return items.filter(item => item.Date >= startDate && item.Date <= endDate);
+  return items.filter(item => item[SpendFields.DATE] >= startDate && item[SpendFields.DATE] <= endDate);
 }
 
 module.exports = { saveSpend, getSpendById, getSpendsByDateRange };

@@ -1,3 +1,5 @@
+const { SpendFields } = require('../utils/fieldEnums');
+
 function validateDateRange(req, res, next) {
   const { startDate, endDate } = req.query;
   if (!startDate || !endDate) {
@@ -8,7 +10,12 @@ function validateDateRange(req, res, next) {
 
 function validateField(req, res, next) {
   const { field } = req.query;
-  const allowedFields = ['Category', 'Vendor', 'PaymentMode', 'SpendType'];
+  const allowedFields = [
+    SpendFields.CATEGORY,
+    SpendFields.VENDOR,
+    SpendFields.PAYMENT_MODE,
+    SpendFields.SPEND_TYPE
+  ];
   if (!field) {
     return res.status(400).json({ error: 'field is required.' });
   }
@@ -18,18 +25,25 @@ function validateField(req, res, next) {
   next();
 }
 
-const allowedSpendTypes = ['fixed', 'dynamic', 'saving'];
-
 function validateSpendFields(req, res, next) {
-  const { Date, Description, AmountSpent, Category, Vendor, PaymentMode, SpendType } = req.body;
-  if (!Date || !Description || !AmountSpent || !Category || !Vendor || !PaymentMode || !SpendType) {
-    return res.status(400).json({ error: 'All fields are required.' });
+  if (
+    !req.body[SpendFields.DATE] ||
+    !req.body[SpendFields.DESCRIPTION] ||
+    !req.body[SpendFields.AMOUNT_SPENT] ||
+    !req.body[SpendFields.CATEGORY] ||
+    !req.body[SpendFields.VENDOR] ||
+    !req.body[SpendFields.PAYMENT_MODE] ||
+    !req.body[SpendFields.SPEND_TYPE]
+  ) {
+    return res.status(400).json({ error: 'All spend fields are required.' });
   }
+  const SpendType = req.body[SpendFields.SPEND_TYPE];
+  const allowedSpendTypes = ['fixed', 'dynamic', 'saving'];
   const normalizedSpendType = SpendType.toLowerCase();
   if (!allowedSpendTypes.includes(normalizedSpendType)) {
     return res.status(400).json({ error: 'SpendType must be "fixed", "dynamic", or "saving".' });
   }
-  req.body.SpendType = normalizedSpendType; // Normalize for downstream use
+  req.body[SpendFields.SPEND_TYPE] = normalizedSpendType; // Normalize for downstream use
   next();
 }
 

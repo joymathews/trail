@@ -2,22 +2,43 @@
 
 This folder contains all the files and scripts needed to run integration tests for the expense backend API.
 
-## Files and Their Purpose
+## Folder Structure and Purpose
 
-- **api.test.js**  
-  Contains integration test cases for the backend API. It reads data from `mock_data.csv`, inserts it into the backend, and verifies API functionality (such as range queries, sum, and forecast).
+- **tests/**  
+  Contains all integration test files, split by feature:
+  - `spends.test.js`  
+    Tests for the `/spends` endpoint (fetching, filtering, etc.)
+  - `expense.test.js`  
+    Tests for the `/expense` endpoint (sum, total, forecast, etc.)
+  - `saving.test.js`  
+    Tests for the `/saving` endpoint (total, sum by category, etc.)
+  - `autocomplete.test.js`  
+    Tests for the `/autocomplete` endpoint (suggestions, error handling, etc.)
+
+- **testData/**  
+  Contains test data preparation scripts:
+  - `spends.js`  
+    Reads and parses `mock_data.csv` to provide spend data for tests.
+
+- **utils/**  
+  Utility functions for tests:
+  - `csvUtils.js`  
+    CSV parsing helper used by test data scripts.
 
 - **mock_data.csv**  
-  CSV file with mock expense data. This data is used by the tests to populate the backend and validate API results.
+  CSV file with mock expense data. Used to populate the backend and validate API results.
 
 - **mockClient.js**  
-  Utility script for parsing the CSV and preparing expense data. This script can be used to add data manually to the backend and is helpful for debugging or testing locally by posting expenses from the CSV without running the full test suite.
-  
+  Utility script for parsing the CSV and preparing expense data. Can be used to add data manually to the backend for debugging or local testing.
+
+- **setup.js**  
+  Jest global setup script. Adds all spends from the CSV to the backend before any tests run (runs only once per test session).
+
+- **jest.config.js**  
+  Jest configuration file. Configures global setup and test file location.
+
 - **package.json**  
   Defines dependencies (like Jest and Axios) and scripts for running tests in this folder.
-
-- **ReadMe.md**  
-  (This file) Documentation for the integration tests.
 
 - **start_test.bat**  
   Batch script to automate the full integration test workflow:
@@ -39,7 +60,7 @@ This folder contains all the files and scripts needed to run integration tests f
    This will:
    - Install dependencies (if needed)
    - Start DynamoDB and the backend server
-   - Run all integration tests
+   - Run all integration tests in the `tests/` folder
    - Clean up by stopping the backend and DynamoDB
    - Show whether the tests passed or failed
 

@@ -1,18 +1,19 @@
 // backend/services/filterService.js
+const { SpendFields } = require('../utils/fieldEnums');
 
 function filterExpenseType(spend) {
   return (
-    spend.SpendType &&
-    ['fixed', 'dynamic'].includes(spend.SpendType.toLowerCase())
+    spend[SpendFields.SPEND_TYPE] &&
+    ['fixed', 'dynamic'].includes(spend[SpendFields.SPEND_TYPE].toLowerCase())
   );
 }
 
 function filterSaving(spend) {
-  return spend.SpendType && spend.SpendType.toLowerCase() === 'saving';
+  return spend[SpendFields.SPEND_TYPE] && spend[SpendFields.SPEND_TYPE].toLowerCase() === 'saving';
 }
 
 function filterDynamic(spend) {
-  return spend.SpendType && spend.SpendType.toLowerCase() === 'dynamic';
+  return spend[SpendFields.SPEND_TYPE] && spend[SpendFields.SPEND_TYPE].toLowerCase() === 'dynamic';
 }
 
 module.exports = {

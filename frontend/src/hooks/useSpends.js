@@ -1,5 +1,6 @@
 // src/hooks/useSpends.js
 import { useState, useEffect } from "react";
+import { SpendFields } from "../utils/fieldEnums";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export function useSpends(startDate, endDate) {
@@ -23,7 +24,7 @@ export function useSpends(startDate, endDate) {
         let data = await res.json();
         // Convert date strings to timestamps once for efficient sorting
         data.forEach(item => {
-          item._dateTs = new Date(item.Date).getTime();
+          item._dateTs = new Date(item[SpendFields.DATE]).getTime();
         });
         data = data.sort((a, b) => b._dateTs - a._dateTs);
         setSpends(data);

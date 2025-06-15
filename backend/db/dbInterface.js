@@ -15,6 +15,7 @@ if (DB_USED === 'dynamodb') {
   };
 } else if (DB_USED === 'postgres') {
   const pg = require('./postgreSQL/postgreSQLInterface');
+  const autocomplete = require('./postgreSQL/autocompleteQueries');
   db = {
     saveSpend: pg.pgSaveSpend,
     getSpendById: pg.pgGetSpendById,
@@ -24,6 +25,10 @@ if (DB_USED === 'dynamodb') {
     totalSpendsForExpenseTypes: pg.pgTotalSpendsForExpenseTypes,
     totalSpendsForSavings: pg.pgTotalSpendsForSavings,
     forecastDynamicExpense: pg.pgForecastDynamicExpense,
+    getCategorySuggestions: autocomplete.getCategorySuggestions,
+    getVendorSuggestions: autocomplete.getVendorSuggestions,
+    getPaymentModeSuggestions: autocomplete.getPaymentModeSuggestions,
+    getDescriptionSuggestions: autocomplete.getDescriptionSuggestions,
   };
 } else {
   throw new Error('Unsupported DB_USED value: ' + DB_USED);

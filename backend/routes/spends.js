@@ -5,23 +5,32 @@ const {
   getSpendsByDateRange
 } = require('../db/dbInterface');
 const { validateSpendFields, validateDateRange } = require('../middleware/validation');
+const { SpendFields } = require('../utils/fieldEnums');
 
 const router = express.Router();
 
 // POST /spends - Store a spend (expense or saving)
 router.post('/', validateSpendFields, async (req, res) => {
-  const { Date, Description, AmountSpent, Category, Vendor, PaymentMode, SpendType } = req.body;
-  const spend = {
-    id: `${Date}-${Vendor}-${Math.random().toString(36).slice(2, 11)}`,
-    Date,
-    Description,
-    AmountSpent,
-    Category,
-    Vendor,
-    PaymentMode,
-    SpendType, // Already normalized by middleware
-  };
+  const {
+    [SpendFields.DATE]: Date,
+    [SpendFields.DESCRIPTION]: Description,
+    [SpendFields.AMOUNT_SPENT]: AmountSpent,
+    [SpendFields.CATEGORY]: Category,
+    [SpendFields.VENDOR]: Vendor,
+    [SpendFields.PAYMENT_MODE]: PaymentMode,
+    [SpendFields.SPEND_TYPE]: SpendType
+  } = req.body;
   try {
+    const spend = {
+      id: `${Date}-${Vendor}-${Math.random().toString(36).slice(2, 11)}`,
+      [SpendFields.DATE]: Date,
+      [SpendFields.DESCRIPTION]: Description,
+      [SpendFields.AMOUNT_SPENT]: AmountSpent,
+      [SpendFields.CATEGORY]: Category,
+      [SpendFields.VENDOR]: Vendor,
+      [SpendFields.PAYMENT_MODE]: PaymentMode,
+      [SpendFields.SPEND_TYPE]: SpendType // Already normalized by middleware
+    };
     await saveSpend(spend);
     res.status(201).json({ message: 'Spend stored successfully.', spend });
   } catch (err) {
