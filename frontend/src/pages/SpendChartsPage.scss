@@ -16,20 +16,21 @@
       }
     }
     .charts-section {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      .chart-placeholder {
-        flex: 1 1 300px;
-        min-height: 250px;
+      width: 100%;
+      display: block;
+      overflow-x: auto;
+      .chart-1, .expense-sum-line-chart {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow-x: auto;
+        min-height: 350px;
         background: #fff;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #aaa;
-        font-size: 1.2rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
       }
     }
   }
