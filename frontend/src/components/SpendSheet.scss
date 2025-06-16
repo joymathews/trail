@@ -47,12 +47,14 @@ $table-bg: #fff;
     border-spacing: 0;
     background: $table-bg;
     border-radius: 12px;
-    overflow: hidden;
     margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
 
     thead {
       th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
         background: #234;
         color: #fff;
         font-weight: 700;
