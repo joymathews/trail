@@ -38,11 +38,17 @@ $text: #2c3e50;
 }
 
 @media (max-width: 600px) {
+  html, body, #root {
+    overflow-y: auto !important;
+    max-height: none;
+  }
   .home-container {
     padding: 0.5rem 0.2rem 1rem 0.2rem;
     gap: 0.3rem;
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: auto;
+    max-height: none;
+    align-items: stretch;
   }
   .home-container p {
     padding: 0.7rem 0.5rem;
