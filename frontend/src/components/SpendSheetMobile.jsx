@@ -1,28 +1,33 @@
 import React from "react";
 import "./SpendSheetMobile.scss";
 import SpendInputForm from "./SpendInputForm";
+import { useSpendInput } from "../hooks/useSpendInput";
 
-function SpendSheetMobile({
-  inputRow,
-  onChange,
-  onSave,
-  saving,
-  error,
-}) {
+function SpendSheetMobile() {
+  // Use today's date for both start and end, so the form works
+  const today = new Date().toISOString().slice(0, 10);
+  const {
+    inputRow,
+    handleInputRowChange,
+    handleSaveInputRow,
+    saving,
+    error,
+  } = useSpendInput(today, today);
+
   return (
     <div className="spend-sheet-mobile">
       <h3>Spends Sheet</h3>
       <form
         onSubmit={e => {
           e.preventDefault();
-          onSave();
+          handleSaveInputRow();
         }}
         className="spend-sheet-mobile-form"
       >
         <SpendInputForm
           inputRow={inputRow}
-          onChange={onChange}
-          onSave={onSave}
+          onChange={handleInputRowChange}
+          onSave={handleSaveInputRow}
           saving={saving}
           as="form"
           error={error}

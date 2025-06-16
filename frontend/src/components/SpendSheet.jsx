@@ -1,101 +1,32 @@
 import React, { useState } from "react";
 import DateRangePicker from "./DateRangePicker";
 import SpendInputRow from "./SpendInputRow";
-import { useSpends } from "../hooks/useSpends";
-import { formatDate } from "../utils/date";
 import { SpendFields } from "../utils/fieldEnums";
 import "./SpendSheet.scss";
-import useIsMobile from "../hooks/useIsMobile";
-import SpendSheetMobile from "./SpendSheetMobile";
-
-const blankSpend = {
-  [SpendFields.DATE]: formatDate(new Date()),
-  [SpendFields.CATEGORY]: "",
-  [SpendFields.DESCRIPTION]: "",
-  [SpendFields.AMOUNT_SPENT]: "",
-  [SpendFields.VENDOR]: "",
-  [SpendFields.PAYMENT_MODE]: "",
-  [SpendFields.SPEND_TYPE]: "",
-};
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { useSpendInput } from "../hooks/useSpendInput";
 
 function SpendSheet() {
   const [startDate, setStartDate] = useState(() => {
     const today = new Date();
     const prev7 = new Date();
     prev7.setDate(today.getDate() - 6);
-    return formatDate(prev7);
+    return prev7.toISOString().slice(0, 10);
   });
-  const [endDate, setEndDate] = useState(formatDate(new Date()));
-  const [inputRow, setInputRow] = useState({ ...blankSpend });
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-
-  const { spends, setSpends, loading, error: fetchError } = useSpends(startDate, endDate);
-  // Use a larger breakpoint (e.g., 1024px)
-  const isMobile = useIsMobile(1024);
-
+  const [endDate, setEndDate] = useState(() => new Date().toISOString().slice(0, 10));
   const handleDateChange = (start, end) => {
     setStartDate(start);
     setEndDate(end);
   };
-
-  const handleInputRowChange = (field, value) => {
-    setInputRow((row) => ({
-      ...row,
-      [field]: value,
-    }));
-  };
-
-  const handleSaveInputRow = async () => {
-    const spend = inputRow;
-    // Basic validation
-    if (
-      !spend[SpendFields.DATE] ||
-      !spend[SpendFields.CATEGORY] ||
-      !spend[SpendFields.DESCRIPTION] ||
-      !spend[SpendFields.AMOUNT_SPENT] ||
-      !spend[SpendFields.SPEND_TYPE]
-    ) {
-      setError("Please fill all required fields.");
-      return;
-    }
-    setSaving(true);
-    setError("");
-    try {
-      const res = await fetch(`${API_URL}/spends`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(spend),
-      });
-      if (res.ok) {
-        const { spend: newSpend } = await res.json();
-        setInputRow({ ...blankSpend });
-        setSpends((prev) => [newSpend, ...prev]);
-      } else {
-        setError("Failed to save spend.");
-      }
-    } catch {
-      setError("Server error.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (isMobile) {
-    return (
-      <div className="spend-sheet-container">
-        <SpendSheetMobile
-          inputRow={inputRow}
-          onChange={handleInputRowChange}
-          onSave={handleSaveInputRow}
-          saving={saving}
-          error={error}
-        />
-      </div>
-    );
-  }
+  const {
+    inputRow,
+    handleInputRowChange,
+    handleSaveInputRow,
+    saving,
+    error,
+    spends,
+    loading,
+    fetchError,
+  } = useSpendInput(startDate, endDate);
 
   return (
     <div className="spend-sheet-container wide">
