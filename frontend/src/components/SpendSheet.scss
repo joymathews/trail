@@ -10,6 +10,7 @@ $table-bg: #fff;
   background: $background;
   color: $text;
   padding: 1.2rem 0.5rem;
+  padding-bottom: 2rem; // Add extra space at the bottom
   border-radius: 10px;
   margin: 1.2rem 0 0 0;
   max-width: 100%;
@@ -36,6 +37,7 @@ $table-bg: #fff;
     max-height: 100%;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 1rem; // Add space below the scrollable area
   }
 
   .spend-table {
