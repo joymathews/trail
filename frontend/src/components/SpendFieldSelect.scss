@@ -19,10 +19,10 @@
   height: 40px;
   padding: 0 1rem;
   border: 1px solid $border-light;
-  border-radius: 6px;
+  border-radius: $border-radius-sm;
   background: $input-bg;
   font-size: $font-size-base;
-  color: #222;
+  color: $text;
   box-shadow: none;
   outline: none;
   margin-left: 1rem;
@@ -32,6 +32,6 @@
   align-items: center;
 
   &:focus {
-    border: 1.5px solid #a0aec0;
+    border: 1.5px solid $accent;
   }
 }

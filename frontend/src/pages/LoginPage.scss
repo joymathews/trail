@@ -11,7 +11,7 @@
   .login-card {
     background: $white;
     padding: $card-padding;
-    border-radius: 14px;
+    border-radius: $border-radius-lg;
     box-shadow: $box-shadow-lg;
     width: 100%;
     max-width: 350px;
@@ -33,7 +33,7 @@
       padding: $input-padding;
       margin-bottom: 1.2rem;
       border: 1px solid $border-light;
-      border-radius: 6px;
+      border-radius: $border-radius-sm;
       background: $background;
       color: $text;
       font-size: $font-size-base;
@@ -51,11 +51,13 @@
       background: $accent;
       color: $white;
       border: none;
-      border-radius: 6px;
+      border-radius: $border-radius-sm;
       font-weight: bold;
       font-size: $font-size-base;
       cursor: pointer;
-      transition: background 0.2s;      &:hover {
+      transition: background 0.2s;
+
+      &:hover {
         background: $accent-dark;
       }
     }

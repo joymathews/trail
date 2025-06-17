@@ -31,7 +31,7 @@
         transform: translateX(-50%);
         width: 60%;
         height: 3px;
-        background: $gradient-primary-var;
+        background: $gradient-primary;
         border-radius: 2px;
       }
     }
@@ -99,31 +99,24 @@
 
     .stat-card {
       background: $white;
-      padding: 1.5rem;
       border-radius: $border-radius;
       box-shadow: $box-shadow;
+      padding: 1.2rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: $transition-base;
-
-      &:hover {
-        transform: translateY(-3px);
-        box-shadow: $box-shadow-lg;
-      }
+      text-align: center;
 
       .stat-value {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 700;
         color: $accent;
-        margin-bottom: 0.5rem;
       }
 
       .stat-label {
-        font-size: $font-size-sm;
+        font-size: $font-size-base;
         color: $label-dark;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        margin-top: 0.5rem;
       }
     }
   }
