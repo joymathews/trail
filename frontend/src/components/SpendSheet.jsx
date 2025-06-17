@@ -31,9 +31,8 @@ function SpendSheet() {
   return (
     <div className="spend-sheet-container wide">
       <DateRangePicker
+        value={{ start: startDate, end: endDate }}
         onChange={handleDateChange}
-        startDate={startDate}
-        endDate={endDate}
       />
       <h3>Spends Sheet</h3>
       <div className="spend-table-wrapper">
