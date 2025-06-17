@@ -107,6 +107,10 @@
         align-items: center;
         justify-content: center;
         overflow: auto;
+        
+        &.dynamic-width {
+          width: var(--dynamic-width);
+        }
       }
     }
   }

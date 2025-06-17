@@ -193,7 +193,10 @@ const SpendChartsPage = () => {
                   {chartTypes.date === 'LineChart' ? 'Bar' : 'Line'}
                 </button>
               </div>
-              <div className="chart-container" style={isLargeDataset.date ? {width: `${Math.max(100, chartData.date.length * 15)}px`} : {}}>
+              <div
+                className={`chart-container${isLargeDataset.date ? ' dynamic-width' : ''}`}
+                style={isLargeDataset.date ? { '--dynamic-width': `${Math.max(100, chartData.date.length * 15)}px` } : {}}
+              >
                 {chartTypes.date === 'LineChart' ? (
                   <ExpenseSumLineChart data={chartData.date} spendField={SpendFields.DATE} />
                 ) : (
@@ -214,7 +217,10 @@ const SpendChartsPage = () => {
                   {chartTypes.category === 'LineChart' ? 'Bar' : 'Line'}
                 </button>
               </div>
-              <div className="chart-container" style={isLargeDataset.category ? {width: `${Math.max(100, chartData.category.length * 15)}px`} : {}}>
+              <div
+                className={`chart-container${isLargeDataset.category ? ' dynamic-width' : ''}`}
+                style={isLargeDataset.category ? { '--dynamic-width': `${Math.max(100, chartData.category.length * 15)}px` } : {}}
+              >
                 {chartTypes.category === 'LineChart' ? (
                   <ExpenseSumLineChart data={chartData.category} spendField={SpendFields.CATEGORY} />
                 ) : (
@@ -235,7 +241,10 @@ const SpendChartsPage = () => {
                   {chartTypes.vendor === 'LineChart' ? 'Bar' : 'Line'}
                 </button>
               </div>
-              <div className="chart-container" style={isLargeDataset.vendor ? {width: `${Math.max(100, chartData.vendor.length * 15)}px`} : {}}>
+              <div
+                className={`chart-container${isLargeDataset.vendor ? ' dynamic-width' : ''}`}
+                style={isLargeDataset.vendor ? { '--dynamic-width': `${Math.max(100, chartData.vendor.length * 15)}px` } : {}}
+              >
                 {chartTypes.vendor === 'LineChart' ? (
                   <ExpenseSumLineChart data={chartData.vendor} spendField={SpendFields.VENDOR} />
                 ) : (
@@ -256,7 +265,10 @@ const SpendChartsPage = () => {
                   {chartTypes.paymentMode === 'LineChart' ? 'Bar' : 'Line'}
                 </button>
               </div>
-              <div className="chart-container" style={isLargeDataset.paymentMode ? {width: `${Math.max(100, chartData.paymentMode.length * 15)}px`} : {}}>
+              <div
+                className={`chart-container${isLargeDataset.paymentMode ? ' dynamic-width' : ''}`}
+                style={isLargeDataset.paymentMode ? { '--dynamic-width': `${Math.max(100, chartData.paymentMode.length * 15)}px` } : {}}
+              >
                 {chartTypes.paymentMode === 'LineChart' ? (
                   <ExpenseSumLineChart data={chartData.paymentMode} spendField={SpendFields.PAYMENT_MODE} />
                 ) : (
@@ -277,7 +289,10 @@ const SpendChartsPage = () => {
                   {chartTypes.spendType === 'LineChart' ? 'Bar' : 'Line'}
                 </button>
               </div>
-              <div className="chart-container" style={isLargeDataset.spendType ? {width: `${Math.max(100, chartData.spendType.length * 15)}px`} : {}}>
+              <div
+                className={`chart-container${isLargeDataset.spendType ? ' dynamic-width' : ''}`}
+                style={isLargeDataset.spendType ? { '--dynamic-width': `${Math.max(100, chartData.spendType.length * 15)}px` } : {}}
+              >
                 {chartTypes.spendType === 'LineChart' ? (
                   <ExpenseSumLineChart data={chartData.spendType} spendField={SpendFields.SPEND_TYPE} />
                 ) : (

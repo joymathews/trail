@@ -10,7 +10,7 @@ export default function ChartTypeSelector({ selectedType, onChange }) {
   return (
     <div className="chart-type-selector">
       {chartTypes.map((type) => (
-        <label key={type.value} style={{ marginRight: '1rem' }}>
+        <label key={type.value}>
           <input
             type="radio"
             name="chartType"

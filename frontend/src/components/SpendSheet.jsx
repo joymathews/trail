@@ -59,7 +59,7 @@ function SpendSheet() {
             {/* Existing spends */}
             {spends.length === 0 && !loading && (
               <tr>
-                <td colSpan={8} style={{ textAlign: "center" }}>
+                <td colSpan={8} className="center">
                   {startDate && endDate
                     ? "No spends found."
                     : "Please select a start and end date."}
@@ -71,7 +71,7 @@ function SpendSheet() {
                 <td>{spend[SpendFields.DATE]}</td>
                 <td>{spend[SpendFields.CATEGORY]}</td>
                 <td>{spend[SpendFields.DESCRIPTION]}</td>
-                <td style={{ textAlign: "right" }}>{spend[SpendFields.AMOUNT_SPENT]}</td>
+                <td className="right">{spend[SpendFields.AMOUNT_SPENT]}</td>
                 <td>{spend[SpendFields.VENDOR]}</td>
                 <td>{spend[SpendFields.PAYMENT_MODE]}</td>
                 <td>{spend[SpendFields.SPEND_TYPE]}</td>
@@ -82,7 +82,7 @@ function SpendSheet() {
         </table>
       </div>
       {fetchError && (
-        <div style={{ color: "red", margin: "1em 0" }}>
+        <div className="spend-sheet-error">
           Error fetching spends: {fetchError}
         </div>
       )}

@@ -35,6 +35,10 @@
   }
 }
 
+.date-range-separator {
+  margin: 0 0.5rem;
+}
+
 @media (max-width: 600px) {
   .date-range-picker {
     flex-direction: column;

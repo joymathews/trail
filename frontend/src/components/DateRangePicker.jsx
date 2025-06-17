@@ -32,7 +32,7 @@ function DateRangePicker({ value, onChange }) {
           onChange={handleStartDateChange}
         />
       </label>
-      <span style={{ margin: "0 0.5rem" }}>to</span>
+      <span className="date-range-separator">to</span>
       <label>
         End Date:
         <input

@@ -95,6 +95,19 @@
         border: 1.5px solid $accent;
       }
     }
+
+    td.center {
+      text-align: center;
+    }
+
+    td.right {
+      text-align: right;
+    }
+  }
+
+  .spend-sheet-error {
+    color: $error;
+    margin: 1em 0;
   }
 }
 
