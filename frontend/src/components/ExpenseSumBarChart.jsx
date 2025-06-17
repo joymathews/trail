@@ -96,7 +96,7 @@ export default function ExpenseSumBarChart({ data = [] }) {
           />
           <Bar 
             dataKey="value" 
-            fill="#38b2ac" // Using accent color from our theme
+            className="bar-theme-accent"
             radius={[2, 2, 0, 0]} // Slightly rounded tops
           >
             {showLabels && (

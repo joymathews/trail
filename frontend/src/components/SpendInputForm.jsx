@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import AutoCompleteInput from "./AutoCompleteInput";
+import SpendInputField from "./SpendInputField";
 import { SpendFields } from "../utils/fieldEnums";
 
 /**
@@ -169,75 +169,27 @@ function SpendInputForm({
     }
   ];
 
-  // Render helpers
-  const renderField = field => {
-    if (field.autoComplete) {
-      return (
-        <div className={as === "form" ? "form-field" : "table-field"} key={field.key}>
-          {as === "form" && <label className="input-label">{field.label}</label>}
-          <AutoCompleteInput
-            id={`spend-${field.key.toLowerCase()}`}
-            label={as === "row" ? field.label : undefined}
-            value={field.value}
-            inputRef={inputRefs[field.key]}
-            onChange={e => handleInputChange(field.key, e.target.value)}
-            onFocus={() => field.value && fetchSuggestions(field.key, field.value)}
-            onBlur={() => setTimeout(() => setShowSuggestions(s => ({ ...s, [field.key]: false })), 100)}
-            onKeyDown={e => handleKeyDown(field.key, e)}
-            suggestions={suggestions[field.key]}
-            showSuggestions={showSuggestions[field.key]}
-            activeSuggestion={activeSuggestion[field.key]}
-            onSuggestionClick={s => handleSuggestionClick(field.key, s)}
-            placeholder={field.label}
-            autoComplete="off"
-            type={field.type}
-          />
-        </div>
-      );
-    } else if (field.type === "select") {
-      return (
-        <div className={as === "form" ? "form-field" : "table-field"} key={field.key}>
-          {as === "form" && <label className="input-label">{field.label}</label>}
-          <select
-            value={field.value}
-            onChange={e => onChange(SpendFields.SPEND_TYPE, e.target.value)}
-            required={field.required}
-          >
-            <option value="">Type</option>
-            <option value="fixed">Fixed</option>
-            <option value="dynamic">Dynamic</option>
-            <option value="saving">Saving</option>
-          </select>
-        </div>
-      );
-    } else {
-      return (
-        <div className={as === "form" ? "form-field" : "table-field"} key={field.key}>
-          {as === "form" && <label className="input-label">{field.label}</label>}
-          <input
-            type={field.type}
-            value={field.value}
-            onChange={field.onChange}
-            min={field.min}
-            step={field.step}
-            required={field.required}
-          />
-        </div>
-      );
-    }
-  };
-
   if (as === "row") {
-    // Render as table row (tds)
     return (
       <>
-        <td className="spend-td">{renderField(fields[0])}</td>
-        <td className="spend-td">{renderField(fields[1])}</td>
-        <td className="spend-td">{renderField(fields[2])}</td>
-        <td className="spend-td">{renderField(fields[3])}</td>
-        <td className="spend-td">{renderField(fields[4])}</td>
-        <td className="spend-td">{renderField(fields[5])}</td>
-        <td className="spend-td">{renderField(fields[6])}</td>
+        {fields.map((field, idx) => (
+          <td className="spend-td" key={field.key}>
+            <SpendInputField
+              field={field}
+              as="row"
+              inputRefs={inputRefs}
+              suggestions={suggestions}
+              showSuggestions={showSuggestions}
+              activeSuggestion={activeSuggestion}
+              onChange={onChange}
+              onInputChange={handleInputChange}
+              onSuggestionClick={handleSuggestionClick}
+              onKeyDown={handleKeyDown}
+              onFocus={(key, value) => value && fetchSuggestions(key, value)}
+              onBlur={key => setTimeout(() => setShowSuggestions(s => ({ ...s, [key]: false })), 100)}
+            />
+          </td>
+        ))}
         <td className="spend-td spend-btn-cell">
           <button className="save-spend-btn" onClick={onSave} disabled={saving}>
             {saving ? "Saving..." : "Save"}
@@ -247,10 +199,25 @@ function SpendInputForm({
     );
   }
 
-  // Render as form fields (for mobile)
   return (
     <>
-      {fields.map(renderField)}
+      {fields.map(field => (
+        <SpendInputField
+          key={field.key}
+          field={field}
+          as="form"
+          inputRefs={inputRefs}
+          suggestions={suggestions}
+          showSuggestions={showSuggestions}
+          activeSuggestion={activeSuggestion}
+          onChange={onChange}
+          onInputChange={handleInputChange}
+          onSuggestionClick={handleSuggestionClick}
+          onKeyDown={handleKeyDown}
+          onFocus={(key, value) => value && fetchSuggestions(key, value)}
+          onBlur={key => setTimeout(() => setShowSuggestions(s => ({ ...s, [key]: false })), 100)}
+        />
+      ))}
       <button type="submit" disabled={saving}>
         {saving ? "Saving..." : "Save"}
       </button>

@@ -139,7 +139,7 @@ const ExpenseSumLineChart = ({ data = [], spendField }) => {
           <Line 
             type="monotone" 
             dataKey="value" 
-            stroke="#38b2ac" // Using accent color from our theme
+            className="line-theme-accent"
             strokeWidth={1.5}
             dot={validData.length > 30 ? false : { r: 2 }}
             activeDot={{ r: 5 }}

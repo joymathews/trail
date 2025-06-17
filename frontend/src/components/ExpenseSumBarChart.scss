@@ -101,6 +101,10 @@
   }
 }
 
+.bar-theme-accent {
+  fill: $accent;
+}
+
 @media (max-width: 768px) {
   .expense-sum-bar-chart {
     padding: 1.5rem 1rem 1rem;
