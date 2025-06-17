@@ -6,19 +6,124 @@
   min-height: 350px;
   max-height: 75vh;
   background: $white;
-  border-radius: 10px;
+  border-radius: $border-radius-lg;
   box-shadow: $box-shadow;
-  padding: 1.5rem 1rem 1rem 1rem;
+  padding: 2rem 1.5rem 1.5rem;
   margin-top: 1.5rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  transition: $transition-base;
+
+  &:hover {
+    box-shadow: $box-shadow-lg;
+    transform: translateY(-2px);
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h3 {
+      font-size: $font-size-lg;
+      margin: 0;
+      color: $primary;
+    }
+
+    .chart-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .chart-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
   .bar-value-label {
     fill: $bar-label;
-    font-size: $font-size-base;
+    font-size: $font-size-sm;
     font-weight: 600;
-    text-shadow: 0 1px 2px $bar-label-shadow;
+    filter: drop-shadow(0px 1px 1px rgba($white, 0.7));
     pointer-events: none;
+  }
+
+  .chart-tooltip {
+    position: absolute;
+    background: rgba($primary, 0.95);
+    color: $white;
+    padding: 0.75rem 1rem;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    pointer-events: none;
+    z-index: 5;
+    box-shadow: $shadow-md;
+    transform: translateY(-100%) translateX(-50%);
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid rgba($primary, 0.95);
+    }
+  }
+
+  .axis-label {
+    font-size: $font-size-xs;
+    fill: $label-dark;
+    text-anchor: middle;
+  }
+
+  .grid line {
+    stroke: $border-light;
+    stroke-opacity: 0.2;
+    shape-rendering: crispEdges;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: $font-size-sm;
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .expense-sum-bar-chart {
+    padding: 1.5rem 1rem 1rem;
+    height: 50vh;
+
+    .chart-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
   }
 }

@@ -145,10 +145,8 @@
       color: $white;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
-
-      &:hover:not(:disabled) {
-        background: color.adjust($accent, $lightness: -8%);
+      transition: background 0.2s;      &:hover:not(:disabled) {
+        background: $accent-dark;
       }
       &:disabled {
         background: $button-disabled;

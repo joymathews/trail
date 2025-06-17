@@ -1,53 +1,169 @@
 @use "../styles/variables.scss" as *;
 
 .home-container {
-  min-height: calc(100vh - 48px);
+  flex: 1;
   background: $background;
   color: $text;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0.5rem 0.5rem 1rem 0.5rem;
-  gap: 0.5rem;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
 
-  h1 {
-    color: $primary;
-    margin-bottom: 0.5rem;
-    font-size: 2rem;
-    letter-spacing: 1px;
-    font-weight: 700;
+  .page-header {
+    text-align: center;
+    margin-bottom: 1rem;
+
+    h1 {
+      color: $primary;
+      font-size: 2.2rem;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 3px;
+        background: $gradient-primary-var;
+        border-radius: 2px;
+      }
+    }
+
+    .subtitle {
+      color: $label-dark;
+      font-size: $font-size-lg;
+      margin-top: 1rem;
+      font-weight: 400;
+      max-width: 600px;
+    }
   }
 
-  p {
-    background: #fff;
-    padding: 1rem 1.2rem;
+  .content-section {
+    width: 100%;
+    max-width: 1000px;
+    background: $white;
+    padding: 2rem;
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow;
+    transition: $transition-base;
+
+    &:hover {
+      box-shadow: $box-shadow-lg;
+      transform: translateY(-2px);
+    }
+  }
+
+  .info-card {
+    background: $white;
+    padding: 1.5rem;
     border-radius: $border-radius;
-    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
-    font-size: 1.1rem;
+    box-shadow: $box-shadow;
+    font-size: $font-size-base;
     color: $text;
     margin: 0;
-    max-width: 600px;
+    max-width: 700px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid $accent;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: $gradient-primary;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 1rem;
+
+    .stat-card {
+      background: $white;
+      padding: 1.5rem;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: $transition-base;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: $box-shadow-lg;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: $accent;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: $font-size-sm;
+        color: $label-dark;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
   }
 }
 
-@media (max-width: 600px) {
-  html, body, #root {
-    overflow-y: auto !important;
-    max-height: none;
-  }
+@media (max-width: 768px) {
   .home-container {
-    padding: 0.5rem 0.2rem 1rem 0.2rem;
-    gap: 0.3rem;
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: none;
-    align-items: stretch;
+    padding: 1.5rem 1rem;
+
+    .page-header {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        font-size: $font-size-base;
+      }
+    }
+
+    .content-section {
+      padding: 1.5rem;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
   }
-  .home-container p {
-    padding: 0.7rem 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 1rem 0.75rem;
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .content-section {
+      padding: 1rem;
+    }
   }
 }

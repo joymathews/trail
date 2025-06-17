@@ -1,26 +1,150 @@
-// Centralized theme variables
-$primary: #2c3e50;
-$accent: #18bc9c;
-$background: #ecf0f1;
-$text: #2c3e50;
-$error: #e74c3c;
-$table-bg: #fff;
-$white: #fff;
-$blue-action: #2c7be5; // Primary action button
-$label-dark: #34495e; // Label text
-$link-hover: #007bff; // Link hover color
-$border-light: #d1d5db;
-$input-bg: #f8fafc;
-$thead-bg: #234;
-$thead-border: #234;
-$bar-label: #333;
-$bar-label-shadow: #fff;
-$button-disabled: #b2dfdb;
-$box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
-$box-shadow-lg: 0 4px 24px rgba(44, 62, 80, 0.08);
+// SASS color variables for manipulation
+// These are used when we need color functions like darken, lighten, etc
+$primary-color: #1a202c; // Deeper, more modern dark
+$accent-color: #38b2ac; // More vibrant teal
+$accent-dark-color: #2c9490; // Pre-darkened accent color
+$accent-light-color: #4fd1c5; // Pre-lightened accent color
+$background-color: #f7fafc; // Lighter, cleaner background
+$text-color: #2d3748; // Slightly lighter text for better readability
+$error-color: #f56565; // More vibrant error
+$table-bg-color: #fff;
+$white-color: #fff;
+$blue-action-color: #4299e1; // Updated action button blue
+$blue-action-dark-color: #3182ce; // Pre-darkened blue action
+$label-dark-color: #2d3748; // Updated label text
+$link-hover-color: #3182ce; // Updated link hover
+$border-light-color: #e2e8f0; // Lighter border
+$input-bg-color: #edf2f7; // Lighter input background
+$thead-bg-color: #2d3748; // Lighter table header
+$thead-border-color: #2d3748;
+$bar-label-color: #4a5568; // Lighter label for better readability
+$bar-label-shadow-color: rgba(255, 255, 255, 0.5); // Softer shadow
+$button-disabled-color: #cbd5e0;
+
+// Dark mode palette
+$primary-dark-color: #0d1117; 
+$accent-dark-mode-color: #4fd1c5;
+$accent-dark-dark-color: #38b2ac;
+$background-dark-color: #171923;
+$text-dark-color: #e2e8f0;
+$error-dark-color: #fc8181;
+$table-bg-dark-color: #2d3748;
+$white-dark-color: #2d3748;
+$blue-action-dark-mode-color: #63b3ed;
+$label-dark-dark-color: #cbd5e0;
+$link-hover-dark-color: #4299e1;
+$border-light-dark-color: #4a5568;
+$input-bg-dark-color: #2d3748;
+$button-disabled-dark-color: #718096;
+
+// Adding new modern UI variables
+$gradient-primary: linear-gradient(135deg, $accent-color 0%, $accent-dark-color 100%);
+$gradient-secondary: linear-gradient(135deg, $blue-action-color 0%, $blue-action-dark-color 100%);
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05);
+$box-shadow: $shadow-md;
+$box-shadow-lg: $shadow-lg;
 $border-radius: 8px;
-$card-padding: 2.5rem 2rem;
-$input-padding: 0.8rem;
+$border-radius-lg: 12px;
+$border-radius-sm: 4px;
+$card-padding: 1.5rem;
+$input-padding: 0.75rem 1rem;
+$transition-base: all 0.2s ease;
 $font-size-base: 1rem;
-$font-size-lg: 1.3rem;
-$font-size-sm: 0.9rem;
+$font-size-lg: 1.25rem;
+$font-size-sm: 0.875rem;
+$font-size-xs: 0.75rem;
+
+// Dark theme equivalents
+$gradient-primary-dark: linear-gradient(135deg, $accent-dark-mode-color 0%, $accent-dark-dark-color 100%);
+$gradient-secondary-dark: linear-gradient(135deg, $blue-action-dark-mode-color 0%, $link-hover-dark-color 100%);
+$shadow-sm-dark: 0 1px 3px rgba(0, 0, 0, 0.3);
+$shadow-md-dark: 0 4px 6px rgba(0, 0, 0, 0.3);
+$shadow-lg-dark: 0 10px 15px rgba(0, 0, 0, 0.3);
+
+// CSS variables
+:root {
+  // Light theme (default)
+  --primary: #{$primary-color};
+  --accent: #{$accent-color};
+  --accent-dark: #{$accent-dark-color};
+  --accent-light: #{$accent-light-color};
+  --background: #{$background-color};
+  --text: #{$text-color};
+  --error: #{$error-color};
+  --table-bg: #{$table-bg-color};
+  --white: #{$white-color};
+  --blue-action: #{$blue-action-color};
+  --blue-action-dark: #{$blue-action-dark-color};
+  --label-dark: #{$label-dark-color};
+  --link-hover: #{$link-hover-color};
+  --border-light: #{$border-light-color};
+  --input-bg: #{$input-bg-color};
+  --thead-bg: #{$thead-bg-color};
+  --thead-border: #{$thead-border-color};
+  --bar-label: #{$bar-label-color};
+  --bar-label-shadow: #{$bar-label-shadow-color};
+  --button-disabled: #{$button-disabled-color};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --gradient-primary: #{$gradient-primary};
+  --gradient-secondary: #{$gradient-secondary};
+  
+  &.dark-theme {
+    --primary: #{$primary-dark-color};
+    --accent: #{$accent-dark-mode-color};
+    --accent-dark: #{$accent-dark-dark-color};
+    --background: #{$background-dark-color};
+    --text: #{$text-dark-color};
+    --error: #{$error-dark-color};
+    --table-bg: #{$table-bg-dark-color};
+    --white: #{$white-dark-color};
+    --blue-action: #{$blue-action-dark-mode-color};
+    --label-dark: #{$label-dark-dark-color};
+    --link-hover: #{$link-hover-dark-color};
+    --border-light: #{$border-light-dark-color};
+    --input-bg: #{$input-bg-dark-color};
+    --thead-bg: #{$label-dark-dark-color};
+    --thead-border: #{$label-dark-dark-color};
+    --bar-label: #{$text-dark-color};
+    --bar-label-shadow: rgba(0, 0, 0, 0.5);
+    --button-disabled: #{$button-disabled-dark-color};
+    --shadow-sm: #{$shadow-sm-dark};
+    --shadow-md: #{$shadow-md-dark};
+    --shadow-lg: #{$shadow-lg-dark};
+    --gradient-primary: #{$gradient-primary-dark};
+    --gradient-secondary: #{$gradient-secondary-dark};
+  }
+}
+
+// CSS variables for use in components
+$primary: var(--primary);
+$accent: var(--accent);
+$accent-dark: var(--accent-dark);
+$accent-light: var(--accent-light);
+$background: var(--background);
+$text: var(--text);
+$error: var(--error);
+$table-bg: var(--table-bg);
+$white: var(--white);
+$blue-action: var(--blue-action);
+$blue-action-dark: var(--blue-action-dark);
+$label-dark: var(--label-dark);
+$link-hover: var(--link-hover);
+$border-light: var(--border-light);
+$input-bg: var(--input-bg);
+$thead-bg: var(--thead-bg);
+$thead-border: var(--thead-border);
+$bar-label: var(--bar-label);
+$bar-label-shadow: var(--bar-label-shadow);
+$button-disabled: var(--button-disabled);
+$gradient-primary-var: var(--gradient-primary);
+$gradient-secondary-var: var(--gradient-secondary);
+$bar-label: var(--bar-label);
+$bar-label-shadow: var(--bar-label-shadow);
+$button-disabled: var(--button-disabled);
+$shadow-sm: var(--shadow-sm);
+$shadow-md: var(--shadow-md);
+$shadow-lg: var(--shadow-lg);

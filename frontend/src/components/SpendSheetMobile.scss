@@ -69,9 +69,8 @@
       padding: 0.7rem 0;
       margin-top: 1rem;
       cursor: pointer;
-      transition: background 0.2s;
-      &:hover {
-        background: color.adjust($blue-action, $lightness: -10%);
+      transition: background 0.2s;      &:hover {
+        background: $blue-action-dark;
       }
     }
   }
