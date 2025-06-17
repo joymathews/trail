@@ -36,10 +36,10 @@
       }
     }
     
-    // Dashboard grid layout
+    // Dashboard grid layout - Updated to show 2 charts per row by default
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 550px), 1fr));
+      grid-template-columns: repeat(2, 1fr); // 2 charts per row
       gap: 1.5rem;
       width: 100%;
     }
@@ -86,7 +86,7 @@
             opacity: 0.6;
           }
         }
-        
+          
         .chart-toggle-btn {
           background: $accent;
           color: white;
@@ -114,7 +114,7 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
             transition: transform 0.2s ease;
           }
-          
+            
           // Line chart icon (zigzag line)
           &.chart-line:before {
             border-radius: 0;
@@ -156,7 +156,7 @@
               transform: scale(1.1);
             }
           }
-          
+            
           &:active {
             transform: translateY(0);
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -189,7 +189,7 @@
         overflow-y: hidden;
       }
     }
-    
+      
     // Empty state
     .empty-state {
       display: flex;
@@ -245,7 +245,7 @@
         .loading-spinner {
           width: 40px;
           height: 40px;
-          border: 3px solid rgba(56, 178, 172, 0.3); // Use rgba value instead of SCSS function
+          border: 3px solid rgba($accent, 0.3);
           border-radius: 50%;
           border-top-color: $accent;
           animation: spin 1s ease-in-out infinite;
@@ -264,15 +264,16 @@
     }
   }
   
+  // Medium screens - adjustments to maintain 2 columns
   @media (max-width: 1200px) {
     .charts-content {
       .dashboard-grid {
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
         gap: 1.25rem;
       }
     }
   }
   
+  // Smaller screens - maintain 2 columns but reduce spacing
   @media (max-width: 1024px) {
     .charts-content {
       padding: 1.25rem;
@@ -289,6 +290,7 @@
     }
   }
   
+  // Tablet - single column layout
   @media (max-width: 900px) {
     .charts-content {
       padding: 1rem;
@@ -305,7 +307,7 @@
       }
       
       .dashboard-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; // Single column on smaller screens
       }
       
       .chart-card {
@@ -317,6 +319,7 @@
     }
   }
 
+  // Mobile screens
   @media (max-width: 600px) {
     .charts-content {
       padding: 0.75rem;

@@ -180,8 +180,7 @@ const SpendChartsPage = () => {
               <p>Please select a date range using the date picker above to view your expense analytics.</p>
             </div>
           </div>
-        ) : (
-          <div className="dashboard-grid">
+        ) : (          <div className="dashboard-grid">
             {/* Date Chart */}
             <div className="chart-card">
               <div className="chart-header">
