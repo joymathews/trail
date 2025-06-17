@@ -1,125 +1,80 @@
-// SASS color variables for manipulation
-// These are used when we need color functions like darken, lighten, etc
-$primary-color: #1a202c; // Deeper, more modern dark
-$accent-color: #38b2ac; // More vibrant teal
-$accent-dark-color: #2c9490; // Pre-darkened accent color
-$accent-light-color: #4fd1c5; // Pre-lightened accent color
-$background-color: #f7fafc; // Lighter, cleaner background
-$text-color: #2d3748; // Slightly lighter text for better readability
-$error-color: #f56565; // More vibrant error
-$table-bg-color: #fff;
-$white-color: #fff;
-$blue-action-color: #4299e1; // Updated action button blue
-$blue-action-dark-color: #3182ce; // Pre-darkened blue action
-$label-dark-color: #2d3748; // Updated label text
-$link-hover-color: #3182ce; // Updated link hover
-$border-light-color: #e2e8f0; // Lighter border
-$input-bg-color: #edf2f7; // Lighter input background
-$thead-bg-color: #2d3748; // Lighter table header
-$thead-border-color: #2d3748;
-$bar-label-color: #4a5568; // Lighter label for better readability
-$bar-label-shadow-color: rgba(255, 255, 255, 0.5); // Softer shadow
-$button-disabled-color: #cbd5e0;
+// Modern color palette
+$primary: #1a202c; // Deeper, more modern dark
+$accent: #38b2ac; // More vibrant teal
+$accent-dark: #2c9490; // Pre-darkened accent color for hover states
+$accent-light: #4fd1c5; // Lighter accent color for highlights
+$background: #f7fafc; // Clean background
+$text: #2d3748; // Good readability text
+$error: #f56565; // Error color
+$table-bg: #fff; // Table background
+$white: #fff; // White
+$blue-action: #4299e1; // Action button blue
+$blue-action-dark: #3182ce; // Darker blue for hover states
+$label-dark: #2d3748; // Label text
+$link-hover: #3182ce; // Link hover color
+$border-light: #e2e8f0; // Light border color
+$input-bg: #edf2f7; // Input background color
+$thead-bg: #2d3748; // Table header background
+$thead-border: #2d3748; // Table header border
+$bar-label: #4a5568; // Bar label color for charts
+$bar-label-shadow: rgba(255, 255, 255, 0.5); // Shadow for better readability
+$button-disabled: #cbd5e0; // Disabled button state
 
-// Dark mode palette
-$primary-dark-color: #0d1117; 
-$accent-dark-mode-color: #4fd1c5;
-$accent-dark-dark-color: #38b2ac;
-$background-dark-color: #171923;
-$text-dark-color: #e2e8f0;
-$error-dark-color: #fc8181;
-$table-bg-dark-color: #2d3748;
-$white-dark-color: #2d3748;
-$blue-action-dark-mode-color: #63b3ed;
-$label-dark-dark-color: #cbd5e0;
-$link-hover-dark-color: #4299e1;
-$border-light-dark-color: #4a5568;
-$input-bg-dark-color: #2d3748;
-$button-disabled-dark-color: #718096;
+// Gradients and UI variables
+$gradient-primary: linear-gradient(135deg, $accent 0%, $accent-dark 100%);
+$gradient-secondary: linear-gradient(135deg, $blue-action 0%, $blue-action-dark 100%);
 
-// Adding new modern UI variables
-$gradient-primary: linear-gradient(135deg, $accent-color 0%, $accent-dark-color 100%);
-$gradient-secondary: linear-gradient(135deg, $blue-action-color 0%, $blue-action-dark-color 100%);
+// Shadows
 $shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
 $shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05);
 $box-shadow: $shadow-md;
 $box-shadow-lg: $shadow-lg;
+
+// Layout
 $border-radius: 8px;
-$border-radius-lg: 12px;
+$border-radius-lg: 12px; 
 $border-radius-sm: 4px;
 $card-padding: 1.5rem;
 $input-padding: 0.75rem 1rem;
+
+// Typography and animations
 $transition-base: all 0.2s ease;
 $font-size-base: 1rem;
 $font-size-lg: 1.25rem;
 $font-size-sm: 0.875rem;
 $font-size-xs: 0.75rem;
 
-// Dark theme equivalents
-$gradient-primary-dark: linear-gradient(135deg, $accent-dark-mode-color 0%, $accent-dark-dark-color 100%);
-$gradient-secondary-dark: linear-gradient(135deg, $blue-action-dark-mode-color 0%, $link-hover-dark-color 100%);
-$shadow-sm-dark: 0 1px 3px rgba(0, 0, 0, 0.3);
-$shadow-md-dark: 0 4px 6px rgba(0, 0, 0, 0.3);
-$shadow-lg-dark: 0 10px 15px rgba(0, 0, 0, 0.3);
-
-// CSS variables
+// CSS variables for consistent usage throughout the app
 :root {
-  // Light theme (default)
-  --primary: #{$primary-color};
-  --accent: #{$accent-color};
-  --accent-dark: #{$accent-dark-color};
-  --accent-light: #{$accent-light-color};
-  --background: #{$background-color};
-  --text: #{$text-color};
-  --error: #{$error-color};
-  --table-bg: #{$table-bg-color};
-  --white: #{$white-color};
-  --blue-action: #{$blue-action-color};
-  --blue-action-dark: #{$blue-action-dark-color};
-  --label-dark: #{$label-dark-color};
-  --link-hover: #{$link-hover-color};
-  --border-light: #{$border-light-color};
-  --input-bg: #{$input-bg-color};
-  --thead-bg: #{$thead-bg-color};
-  --thead-border: #{$thead-border-color};
-  --bar-label: #{$bar-label-color};
-  --bar-label-shadow: #{$bar-label-shadow-color};
-  --button-disabled: #{$button-disabled-color};
+  --primary: #{$primary};
+  --accent: #{$accent};
+  --accent-dark: #{$accent-dark};
+  --accent-light: #{$accent-light};
+  --background: #{$background};
+  --text: #{$text};
+  --error: #{$error};
+  --table-bg: #{$table-bg};
+  --white: #{$white};
+  --blue-action: #{$blue-action};
+  --blue-action-dark: #{$blue-action-dark};
+  --label-dark: #{$label-dark};
+  --link-hover: #{$link-hover};
+  --border-light: #{$border-light};
+  --input-bg: #{$input-bg};
+  --thead-bg: #{$thead-bg};
+  --thead-border: #{$thead-border};
+  --bar-label: #{$bar-label};
+  --bar-label-shadow: #{$bar-label-shadow};
+  --button-disabled: #{$button-disabled};
   --shadow-sm: #{$shadow-sm};
   --shadow-md: #{$shadow-md};
   --shadow-lg: #{$shadow-lg};
   --gradient-primary: #{$gradient-primary};
   --gradient-secondary: #{$gradient-secondary};
-  
-  &.dark-theme {
-    --primary: #{$primary-dark-color};
-    --accent: #{$accent-dark-mode-color};
-    --accent-dark: #{$accent-dark-dark-color};
-    --background: #{$background-dark-color};
-    --text: #{$text-dark-color};
-    --error: #{$error-dark-color};
-    --table-bg: #{$table-bg-dark-color};
-    --white: #{$white-dark-color};
-    --blue-action: #{$blue-action-dark-mode-color};
-    --label-dark: #{$label-dark-dark-color};
-    --link-hover: #{$link-hover-dark-color};
-    --border-light: #{$border-light-dark-color};
-    --input-bg: #{$input-bg-dark-color};
-    --thead-bg: #{$label-dark-dark-color};
-    --thead-border: #{$label-dark-dark-color};
-    --bar-label: #{$text-dark-color};
-    --bar-label-shadow: rgba(0, 0, 0, 0.5);
-    --button-disabled: #{$button-disabled-dark-color};
-    --shadow-sm: #{$shadow-sm-dark};
-    --shadow-md: #{$shadow-md-dark};
-    --shadow-lg: #{$shadow-lg-dark};
-    --gradient-primary: #{$gradient-primary-dark};
-    --gradient-secondary: #{$gradient-secondary-dark};
-  }
 }
 
-// CSS variables for use in components
+// Re-define variables with CSS vars for component usage
 $primary: var(--primary);
 $accent: var(--accent);
 $accent-dark: var(--accent-dark);
@@ -136,6 +91,12 @@ $link-hover: var(--link-hover);
 $border-light: var(--border-light);
 $input-bg: var(--input-bg);
 $thead-bg: var(--thead-bg);
+$thead-border: var(--thead-border);
+$bar-label: var(--bar-label);
+$bar-label-shadow: var(--bar-label-shadow);
+$button-disabled: var(--button-disabled);
+$gradient-primary-var: var(--gradient-primary);
+$gradient-secondary-var: var(--gradient-secondary);
 $thead-border: var(--thead-border);
 $bar-label: var(--bar-label);
 $bar-label-shadow: var(--bar-label-shadow);

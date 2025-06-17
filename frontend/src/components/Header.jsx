@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
 import "./Header.scss";
 
 function Header({ onSignOut }) {
@@ -23,7 +22,6 @@ function Header({ onSignOut }) {
         </Link>
       </nav>
       <div className="header-actions">
-        <ThemeToggle />
         <button className="signout-btn" onClick={onSignOut}>
           <span className="btn-text">Sign Out</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
