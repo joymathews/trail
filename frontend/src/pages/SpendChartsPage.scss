@@ -4,7 +4,10 @@
   min-height: 100vh;
   background: $background;
   width: 100%;
-  overflow-x: auto;  // Changed to auto to allow scrolling for large datasets
+  
+  &.dashboard-layout {
+    overflow-x: hidden;  // Main container doesn't scroll horizontally
+  }
   
   .charts-content {
     width: 100%;
@@ -17,61 +20,298 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;  // Reduced margin
+      margin-bottom: 1.5rem;
       
       h2 {
-        font-size: 1.5rem;  // Reduced font size
+        font-size: 1.75rem;
         color: $primary;
         margin: 0;
       }
+      
+      .header-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
     }
     
-    .charts-section {
+    // Dashboard grid layout
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 550px), 1fr));
+      gap: 1.5rem;
       width: 100%;
-      display: block;
+    }
+    
+    // Individual chart card
+    .chart-card {
+      background: $white;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      border: 1px solid transparent;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: $transition-base;
       
-      .chart-1, .expense-sum-line-chart, .expense-sum-bar-chart {
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-        min-height: 300px;  // Reduced min-height
-        height: 50vh;  // Reduced height
-        max-height: 70vh;
-        background: $white;
+      &:hover {
+        box-shadow: $box-shadow-lg;
+        border-color: $accent;
+      }
+      
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        
+        h3 {
+          font-size: 1.1rem;
+          color: $primary;
+          margin: 0;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          
+          &::after {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: $accent;
+            margin-left: 8px;
+            opacity: 0.6;
+          }
+        }
+        
+        .chart-toggle-btn {
+          background: $accent;
+          color: white;
+          border: none;
+          padding: 0.25rem 0.65rem;
+          border-radius: 1rem;
+          cursor: pointer;
+          font-size: 0.8rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          position: relative;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          
+          // Icon style based on chart type
+          &:before {
+            content: "";
+            display: inline-block;
+            width: 0.8rem;
+            height: 0.8rem;
+            background: white;
+            border-radius: 50%;
+            margin-right: 0.4rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+          }
+          
+          // Line chart icon (zigzag line)
+          &.chart-line:before {
+            border-radius: 0;
+            height: 0.75rem;
+            width: 1rem;
+            background: white;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpolyline points='22 12 18 6 14 12 10 6 6 12 2 6'%3E%3C/polyline%3E%3C/svg%3E");
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpolyline points='22 12 18 6 14 12 10 6 6 12 2 6'%3E%3C/polyline%3E%3C/svg%3E");
+            mask-size: contain;
+            -webkit-mask-size: contain;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-position: center;
+          }
+          
+          // Bar chart icon (bars)
+          &.chart-bar:before {
+            border-radius: 0;
+            height: 0.75rem;
+            width: 1rem;
+            background: white;
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Crect x='3' y='10' width='4' height='10'%3E%3C/rect%3E%3Crect x='10' y='6' width='4' height='14'%3E%3C/rect%3E%3Crect x='17' y='14' width='4' height='6'%3E%3C/rect%3E%3C/svg%3E");
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Crect x='3' y='10' width='4' height='10'%3E%3C/rect%3E%3Crect x='10' y='6' width='4' height='14'%3E%3C/rect%3E%3Crect x='17' y='14' width='4' height='6'%3E%3C/rect%3E%3C/svg%3E");
+            mask-size: contain;
+            -webkit-mask-size: contain;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-position: center;
+          }
+          
+          &:hover {
+            background: $accent-dark;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            
+            &:before {
+              transform: scale(1.1);
+            }
+          }
+          
+          &:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          }
+          
+          &.chart-line {
+            background: $accent;
+            
+            &:before {
+              background: white;
+            }
+          }
+          
+          &.chart-bar {
+            background: $primary;
+            
+            &:before {
+              background: white;
+              transform: translateX(0.1rem);
+            }
+          }
+        }
+      }
+      
+      .chart-container {
+        flex: 1;
+        min-height: 250px;
+        height: 300px;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+    }
+    
+    // Empty state
+    .empty-state {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+      
+      .empty-message {
+        padding: 2.5rem;
+        text-align: center;
+        color: $text;
+        background-color: $white;
         border-radius: $border-radius;
         box-shadow: $box-shadow;
-        padding: 1rem 0.5rem;  // Reduced padding
-        margin-bottom: 1.5rem;
-        box-sizing: border-box;
+        border: 1px dashed $accent-light;
+        width: 100%;
+        max-width: 500px;
+        
+        .empty-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+        }
+        
+        h3 {
+          font-size: 1.4rem;
+          margin-bottom: 0.75rem;
+          color: $primary;
+        }
+        
+        p {
+          font-size: 1rem;
+          color: $text;
+          line-height: 1.5;
+          max-width: 350px;
+          margin: 0 auto;
+        }
+      }
+    }
+    
+    // Loading state
+    .loading-state {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+      
+      .loading-indicator {
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        align-items: center;
+        padding: 2rem;
+        
+        .loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid rgba(56, 178, 172, 0.3); // Use rgba value instead of SCSS function
+          border-radius: 50%;
+          border-top-color: $accent;
+          animation: spin 1s ease-in-out infinite;
+          margin-bottom: 1rem;
+        }
+        
+        p {
+          color: $text;
+          font-size: 1rem;
+        }
+      }
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .charts-content {
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
+        gap: 1.25rem;
       }
     }
   }
+  
   @media (max-width: 1024px) {
     .charts-content {
-      padding: 1rem;
+      padding: 1.25rem;
+      
+      .dashboard-grid {
+        gap: 1rem;
+      }
+      
+      .chart-card {
+        .chart-container {
+          height: 280px;
+        }
+      }
     }
   }
   
   @media (max-width: 900px) {
     .charts-content {
-      padding: 0.75rem;
+      padding: 1rem;
       
       .charts-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.75rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
+        
+        h2 {
+          font-size: 1.5rem;
+        }
       }
       
-      .charts-section {
-        .chart-1, .expense-sum-line-chart, .expense-sum-bar-chart {
-          height: 45vh;
-          min-height: 250px;
-          padding: 0.75rem 0.5rem;
-          margin-bottom: 1rem;
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-card {
+        .chart-container {
+          height: 260px;
+          min-height: 200px;
         }
       }
     }
@@ -79,36 +319,39 @@
 
   @media (max-width: 600px) {
     .charts-content {
-      padding: 0.5rem;
+      padding: 0.75rem;
       
       .charts-header {
         h2 {
-          font-size: 1.25rem;
-          margin-bottom: 0.5rem;
+          font-size: 1.35rem;
         }
       }
       
-      .charts-section {
-        .chart-1, .expense-sum-line-chart, .expense-sum-bar-chart {
-          height: 40vh;
-          min-height: 200px;
-          padding: 0.5rem 0.25rem;
-          border-radius: 6px;
-          box-shadow: $shadow-sm;
+      .chart-card {
+        padding: 0.75rem;
+        border-radius: 6px;
+        box-shadow: $shadow-sm;
+        
+        .chart-header {
+          h3 {
+            font-size: 1rem;
+          }
+        }
+        
+        .chart-container {
+          height: 230px;
+          min-height: 180px;
+        }
+        
+        .chart-toggle-btn {
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
         }
       }
-    }
-  }
-  
-  // Handle horizontal scrolling for very large datasets
-  @media (min-width: 601px) {
-    &.has-large-dataset {
-      .charts-section {
-        overflow-x: auto;
-        
-        .chart-1 {
-          min-width: max(100%, 800px);
-        }
+      
+      .empty-state .empty-message {
+        padding: 1.5rem;
+        font-size: 0.95rem;
       }
     }
   }

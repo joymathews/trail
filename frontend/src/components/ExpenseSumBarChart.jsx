@@ -7,8 +7,16 @@ export default function ExpenseSumBarChart({ data = [] }) {
   // Validate and clean data
   const validData = React.useMemo(() => {
     return data.filter(item => {
-      // Check if item exists and has required fields
-      if (!item || (!item.date && !item.key) || item.value === undefined) {
+      // Check if item exists
+      if (!item) {
+        return false;
+      }
+      
+      // Check for either date or key, and value must exist
+      if (
+        (item.date === undefined && item.key === undefined) || 
+        item.value === undefined
+      ) {
         return false;
       }
       
@@ -51,7 +59,8 @@ export default function ExpenseSumBarChart({ data = [] }) {
     <div className="expense-sum-bar-chart">
       <div className="chart-header">
         <h3>Expense Summary</h3>
-      </div>      <ResponsiveContainer width="100%" height="90%" minHeight={250} minWidth={300}>
+      </div>
+      <ResponsiveContainer width="100%" height="90%" minHeight={250} minWidth={300}>
         <BarChart 
           data={validData} 
           margin={{ top: 20, right: 20, left: 10, bottom: 20 }}

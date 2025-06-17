@@ -58,7 +58,15 @@ const ExpenseSumLineChart = ({ data = [], spendField }) => {
   const validData = React.useMemo(() => {
     return data.filter(item => {
       // Check if item exists and has required fields
-      if (!item || (!item.date && !item.key) || item.value === undefined) {
+      if (!item) {
+        return false;
+      }
+      
+      // Check for either date or key, and value must exist
+      if (
+        (item.date === undefined && item.key === undefined) || 
+        item.value === undefined
+      ) {
         return false;
       }
       
@@ -90,7 +98,7 @@ const ExpenseSumLineChart = ({ data = [], spendField }) => {
 
   return (
     <div className="expense-sum-line-chart">
-      <h3>Expense Trends</h3>      <ResponsiveContainer width="100%" height="90%" minHeight={250} minWidth={300}>
+      <ResponsiveContainer width="100%" height="90%" minHeight={250} minWidth={300}>
         <LineChart 
           data={validData} 
           margin={{ top: 20, right: 20, left: 10, bottom: 20 }}
@@ -109,7 +117,8 @@ const ExpenseSumLineChart = ({ data = [], spendField }) => {
             tickFormatter={formatYAxisTick} 
             width={40}
             tick={{ fontSize: 10 }}
-          />          <Tooltip 
+          />
+          <Tooltip 
             labelFormatter={(label) => {
               // Extra safeguard for label formatting
               if (!label) return 'N/A';
