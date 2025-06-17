@@ -1,25 +1,27 @@
+@use "../styles/variables.scss" as *;
+
 .spend-field-select-wrapper {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: $white;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
 
   label {
     margin-right: 0.5rem;
-    font-size: 1rem;
-    color: #333;
+    font-size: $font-size-base;
+    color: $bar-label;
   }
 }
 
 .spend-field-select {
   height: 40px;
   padding: 0 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid $border-light;
   border-radius: 6px;
-  background: #f7f8fa;
-  font-size: 1rem;
+  background: $input-bg;
+  font-size: $font-size-base;
   color: #222;
   box-shadow: none;
   outline: none;

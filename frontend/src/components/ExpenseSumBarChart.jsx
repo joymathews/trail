@@ -1,12 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import './ExpenseSumBarChart.scss';
-
-function formatDayMonth(dateStr) {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
+import { formatDate } from '../utils/date';
 
 export default function ExpenseSumBarChart({ data }) {
   const isDate = data[0]?.date !== undefined;
@@ -17,10 +12,10 @@ export default function ExpenseSumBarChart({ data }) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey={isDate ? 'date' : 'key'}
-            tickFormatter={isDate ? formatDayMonth : undefined}
+            tickFormatter={isDate ? formatDate : undefined}
           />
           <YAxis />
-          <Tooltip labelFormatter={isDate ? formatDayMonth : undefined} />
+          <Tooltip labelFormatter={isDate ? formatDate : undefined} />
           <Bar dataKey="value" fill="#8884d8">
             <LabelList dataKey="value" position="top" className="bar-value-label" />
           </Bar>

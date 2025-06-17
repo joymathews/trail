@@ -1,4 +1,5 @@
 // src/utils/date.js
 export function formatDate(date) {
-  return date.toISOString().slice(0, 10);
+  const d = (date instanceof Date) ? date : new Date(date);
+  return d.toISOString().slice(0, 10);
 }

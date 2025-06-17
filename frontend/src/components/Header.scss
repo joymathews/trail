@@ -1,19 +1,15 @@
 @use "sass:color";
-
-$primary: #2c3e50;
-$accent: #18bc9c;
-$background: #ecf0f1;
-$text: #2c3e50;
+@use "../styles/variables.scss" as *;
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: $primary;
-  color: #fff;
+  color: $white;
   padding: 0.5rem 1.2rem;
   min-height: 48px;
-  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+  box-shadow: $box-shadow;
 
   .header-title {
     font-size: 1.2rem;
@@ -32,7 +28,7 @@ $text: #2c3e50;
     background: none;
     border: 1px solid $accent;
     color: $accent;
-    font-size: 1rem;
+    font-size: $font-size-base;
     cursor: pointer;
     padding: 0.3rem 0.8rem;
     border-radius: 4px;
@@ -40,7 +36,7 @@ $text: #2c3e50;
 
     &:hover {
       background: $accent;
-      color: #fff;
+      color: $white;
     }
   }
 
@@ -50,12 +46,12 @@ $text: #2c3e50;
     margin-left: auto;
 
     a {
-      color:$accent;
+      color: $accent;
       text-decoration: none;
       font-weight: 500;
 
       &:hover {
-        color: #007bff;
+        color: $link-hover;
       }
     }
   }

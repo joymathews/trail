@@ -1,3 +1,5 @@
+@use "../styles/variables.scss" as *;
+
 .spend-charts-page {
   min-height: 100vh;
   background: #f7f8fa;
@@ -38,7 +40,7 @@
         max-height: 75vh;
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        box-shadow: $box-shadow;
         padding: 1.5rem 0;
         margin-bottom: 2rem;
         box-sizing: border-box;

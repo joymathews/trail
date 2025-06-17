@@ -1,7 +1,4 @@
-$primary: #2c3e50;
-$accent: #18bc9c;
-$background: #ecf0f1;
-$text: #2c3e50;
+@use "../styles/variables.scss" as *;
 
 .home-container {
   min-height: calc(100vh - 48px);
@@ -27,7 +24,7 @@ $text: #2c3e50;
   p {
     background: #fff;
     padding: 1rem 1.2rem;
-    border-radius: 8px;
+    border-radius: $border-radius;
     box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
     font-size: 1.1rem;
     color: $text;

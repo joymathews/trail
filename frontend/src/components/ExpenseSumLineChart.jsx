@@ -2,8 +2,9 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import './ExpenseSumLineChart.scss';
 import { SpendFields } from '../utils/fieldEnums';
+import { formatDate } from '../utils/date';
 
-const formatDate = (dateStr) => {
+const formatXAxisDate = (dateStr) => {
   // Format date string for X axis (e.g., 'May 16')
   const date = new Date(dateStr);
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -15,7 +16,7 @@ const ExpenseSumLineChart = ({ data, spendField }) => {
   const isDateField = spendField === SpendFields.DATE;
   const xKey = isDateField ? 'date' : 'key';
   const xFormatter = isDateField
-    ? formatDate
+    ? formatXAxisDate
     : (str) => String(str);
 
   return (

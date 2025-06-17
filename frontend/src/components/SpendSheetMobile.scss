@@ -1,5 +1,8 @@
+@use "sass:color";
+@use "../styles/variables.scss" as *;
+
 .spend-sheet-mobile {
-  background: #fff;
+  background: $white;
   padding: 1.2rem 1rem 2rem 1rem;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
@@ -8,10 +11,10 @@
 
   h3 {
     text-align: center;
-    font-size: 1.3rem;
+    font-size: $font-size-lg;
     font-weight: 600;
     margin-bottom: 1.2rem;
-    color: #2c3e50;
+    color: $primary;
     letter-spacing: 0.5px;
   }
 
@@ -21,14 +24,14 @@
     gap: 1rem;
     background: #fff;
     padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
     width: 100%;
     box-sizing: border-box;
 
     label {
-      font-size: 1rem;
-      color: #34495e;
+      font-size: $font-size-base;
+      color: $label-dark;
       margin-bottom: 0.2rem;
       font-weight: 500;
       display: flex;
@@ -40,45 +43,42 @@
     select {
       width: 100%;
       padding: 0.6rem 0.8rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid $border-light;
       border-radius: 6px;
-      font-size: 1rem;
-      background: #f8fafc;
+      font-size: $font-size-base;
+      background: $input-bg;
       transition: border 0.2s;
       margin-top: 0.1rem;
       box-sizing: border-box;
       padding: 0.5em;
 
       &:focus {
-        border: 1.5px solid #2c7be5;
+        border: 1.5px solid $blue-action;
         outline: none;
-        background: #fff;
+        background: $white;
       }
     }
 
     button[type="submit"] {
-      background: #2c7be5;
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 600;
+      background: $blue-action;
+      color: $white;
       border: none;
-      border-radius: 6px;
+      border-radius: $border-radius;
+      font-weight: bold;
+      font-size: $font-size-base;
       padding: 0.7rem 0;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
       cursor: pointer;
       transition: background 0.2s;
-
-      &:hover,
-      &:focus {
-        background: #1a5bb8;
+      &:hover {
+        background: color.adjust($blue-action, $lightness: -10%);
       }
     }
   }
-
   .error {
-    color: #e74c3c;
-    margin-top: 0.5rem;
+    color: $error;
     text-align: center;
-    font-size: 1rem;
+    margin-top: 0.5rem;
+    font-size: $font-size-sm;
   }
 }

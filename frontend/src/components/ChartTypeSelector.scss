@@ -1,17 +1,19 @@
+@use "../styles/variables.scss" as *;
+
 .chart-type-selector {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: $white;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
   margin-bottom: 1rem;
   margin-top: 0.75rem; // Add spacing above to separate from SpendFieldSelect
 
   label {
     margin-right: 1rem;
-    font-size: 1rem;
-    color: #333;
+    font-size: $font-size-base;
+    color: $bar-label;
     cursor: pointer;
     user-select: none;
     display: flex;
@@ -20,6 +22,6 @@
 
   input[type="radio"] {
     margin-right: 0.4em;
-    accent-color: #007bff;
+    accent-color: $link-hover;
   }
 }
