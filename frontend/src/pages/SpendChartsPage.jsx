@@ -6,10 +6,11 @@ import ExpenseSumBarChart from '../components/charts/ExpenseSumBarChart';
 import ChartCard from '../components/charts/ChartCard';
 import { SpendFields } from '../utils/fieldEnums';
 import { useExpenseChartData } from '../hooks/useExpenseChartData';
+import { getDefaultLast7DaysRange } from '../utils/dateRangeDefaults';
 import './SpendChartsPage.scss';
 
 const SpendChartsPage = () => {
-  const [dateRange, setDateRange] = useState({ start: null, end: null });
+  const [dateRange, setDateRange] = useState(getDefaultLast7DaysRange());
   const [chartTypes, setChartTypes] = useState({
     date: 'LineChart',
     category: 'BarChart',
@@ -45,7 +46,7 @@ const SpendChartsPage = () => {
         <div className="charts-header">
           <h2>Expense Dashboard</h2>
           <div className="header-controls">
-            <DateRangePicker onChange={handleDateRangeChange} />
+            <DateRangePicker value={dateRange} onChange={handleDateRangeChange} />
           </div>
         </div>
         {loading ? (

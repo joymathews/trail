@@ -4,15 +4,12 @@ import SpendInputRow from "./SpendInputRow";
 import { SpendFields } from "../../utils/fieldEnums";
 import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
+import { getDefaultLast7DaysRange } from '../../utils/dateRangeDefaults';
 
 function SpendSheet() {
-  const [startDate, setStartDate] = useState(() => {
-    const today = new Date();
-    const prev7 = new Date();
-    prev7.setDate(today.getDate() - 6);
-    return prev7.toISOString().slice(0, 10);
-  });
-  const [endDate, setEndDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const defaultRange = getDefaultLast7DaysRange();
+  const [startDate, setStartDate] = useState(defaultRange.start);
+  const [endDate, setEndDate] = useState(defaultRange.end);
   const handleDateChange = (start, end) => {
     setStartDate(start);
     setEndDate(end);
