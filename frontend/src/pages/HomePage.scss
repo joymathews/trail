@@ -9,154 +9,16 @@
   align-items: center;
   padding: 2rem 1.5rem;
   gap: 1.5rem;
-
-  .page-header {
-    text-align: center;
-    margin-bottom: 1rem;
-
-    h1 {
-      color: $primary;
-      font-size: 2.2rem;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      position: relative;
-      display: inline-block;
-
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60%;
-        height: 3px;
-        background: $gradient-primary;
-        border-radius: 2px;
-      }
-    }
-
-    .subtitle {
-      color: $label-dark;
-      font-size: $font-size-lg;
-      margin-top: 1rem;
-      font-weight: 400;
-      max-width: 600px;
-    }
-  }
-
-  .content-section {
-    width: 100%;
-    max-width: 1000px;
-    background: $white;
-    padding: 2rem;
-    border-radius: $border-radius-lg;
-    box-shadow: $box-shadow;
-    transition: $transition-base;
-
-    &:hover {
-      box-shadow: $box-shadow-lg;
-      transform: translateY(-2px);
-    }
-  }
-
-  .info-card {
-    background: $white;
-    padding: 1.5rem;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow;
-    font-size: $font-size-base;
-    color: $text;
-    margin: 0;
-    max-width: 700px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    border-left: 4px solid $accent;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: $gradient-primary;
-    }
-
-    p {
-      margin: 0;
-    }
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 1000px;
-    margin-top: 1rem;
-
-    .stat-card {
-      background: $white;
-      border-radius: $border-radius;
-      box-shadow: $box-shadow;
-      padding: 1.2rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-
-      .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: $accent;
-      }
-
-      .stat-label {
-        font-size: $font-size-base;
-        color: $label-dark;
-        margin-top: 0.5rem;
-      }
-    }
-  }
 }
 
 @media (max-width: 768px) {
   .home-container {
     padding: 1.5rem 1rem;
-
-    .page-header {
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .subtitle {
-        font-size: $font-size-base;
-      }
-    }
-
-    .content-section {
-      padding: 1.5rem;
-    }
-
-    .stats-grid {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    }
   }
 }
 
 @media (max-width: 480px) {
   .home-container {
     padding: 1rem 0.75rem;
-
-    .page-header h1 {
-      font-size: 1.5rem;
-    }
-
-    .content-section {
-      padding: 1rem;
-    }
   }
 }
