@@ -36,11 +36,11 @@ function SpendInputField({
           onChange={e => onInputChange(field.key, e.target.value)}
           onFocus={onFocus ? () => onFocus(field.key, field.value) : undefined}
           onBlur={onBlur ? () => onBlur(field.key) : undefined}
-          onKeyDown={e => onKeyDown && onKeyDown(field.key, e)}
+          onKeyDown={e => onKeyDown && onKeyDown(field.key, e, onChange)}
           suggestions={suggestions[field.key]}
           showSuggestions={showSuggestions[field.key]}
           activeSuggestion={activeSuggestion[field.key]}
-          onSuggestionClick={s => onSuggestionClick(field.key, s)}
+          onSuggestionClick={s => onSuggestionClick(field.key, s, onChange)}
           placeholder={field.label}
           autoComplete="off"
           type={field.type}

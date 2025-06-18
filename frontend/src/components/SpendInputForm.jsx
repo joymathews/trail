@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import SpendInputField from "./SpendInputField";
 import { SpendFields } from "../utils/fieldEnums";
-import { fetchSuggestions } from '../utils/api';
+import { getSpendInputFields } from '../utils/spendInputFields';
+import { useAutocomplete } from '../hooks/useAutocomplete';
 
 /**
  * Shared spend input form fields with autocomplete logic.
@@ -16,47 +17,25 @@ function SpendInputForm({
   as = "form",
   error,
 }) {
-  // Autocomplete state
-  const [suggestions, setSuggestions] = useState({
-    [SpendFields.CATEGORY]: [],
-    [SpendFields.DESCRIPTION]: [],
-    [SpendFields.VENDOR]: [],
-    [SpendFields.PAYMENT_MODE]: []
-  });
-  const [showSuggestions, setShowSuggestions] = useState({
-    [SpendFields.CATEGORY]: false,
-    [SpendFields.DESCRIPTION]: false,
-    [SpendFields.VENDOR]: false,
-    [SpendFields.PAYMENT_MODE]: false
-  });
-  const [activeSuggestion, setActiveSuggestion] = useState({
-    [SpendFields.CATEGORY]: -1,
-    [SpendFields.DESCRIPTION]: -1,
-    [SpendFields.VENDOR]: -1,
-    [SpendFields.PAYMENT_MODE]: -1
-  });
-  const inputRefs = {
-    [SpendFields.CATEGORY]: useRef(null),
-    [SpendFields.DESCRIPTION]: useRef(null),
-    [SpendFields.VENDOR]: useRef(null),
-    [SpendFields.PAYMENT_MODE]: useRef(null)
-  };
+  const autoFields = [
+    SpendFields.CATEGORY,
+    SpendFields.DESCRIPTION,
+    SpendFields.VENDOR,
+    SpendFields.PAYMENT_MODE
+  ];
+  const {
+    suggestions,
+    setSuggestions,
+    showSuggestions,
+    setShowSuggestions,
+    activeSuggestion,
+    setActiveSuggestion,
+    inputRefs,
+    fetchFieldSuggestions,
+    handleSuggestionClick,
+    handleKeyDown
+  } = useAutocomplete(autoFields);
 
-  // Fetch suggestions from backend
-  const fetchFieldSuggestions = async (field, value) => {
-    if (!value) {
-      setSuggestions(s => ({ ...s, [field]: [] }));
-      return;
-    }
-    try {
-      const data = await fetchSuggestions(field, value);
-      setSuggestions(s => ({ ...s, [field]: data }));
-    } catch {
-      setSuggestions(s => ({ ...s, [field]: [] }));
-    }
-  };
-
-  // Handle input change with autocomplete
   const handleInputChange = (field, value) => {
     onChange(field, value);
     fetchFieldSuggestions(field, value);
@@ -64,105 +43,9 @@ function SpendInputForm({
     setActiveSuggestion(a => ({ ...a, [field]: -1 }));
   };
 
-  // Helper: get next field key in form order
-  const getNextFieldKey = (currentKey) => {
-    const order = [
-      SpendFields.CATEGORY,
-      SpendFields.DESCRIPTION,
-      SpendFields.AMOUNT_SPENT,
-      SpendFields.VENDOR,
-      SpendFields.PAYMENT_MODE,
-      SpendFields.SPEND_TYPE
-    ];
-    const idx = order.indexOf(currentKey);
-    return idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
-  };
-
-  // Handle suggestion click
-  const handleSuggestionClick = (field, suggestion) => {
-    onChange(field, suggestion);
-    setShowSuggestions(s => ({ ...s, [field]: false }));
-    setSuggestions(s => ({ ...s, [field]: [] }));
-    // Focus next input in form order (for mobile/tab)
-    const nextKey = getNextFieldKey(field);
-    if (nextKey && inputRefs[nextKey] && inputRefs[nextKey].current) {
-      setTimeout(() => inputRefs[nextKey].current.focus(), 0);
-    }
-  };
-
-  // Handle keyboard navigation
-  const handleKeyDown = (field, e) => {
-    const suggs = suggestions[field] || [];
-    if (e.key === "ArrowDown") {
-      setActiveSuggestion(a => ({ ...a, [field]: Math.min(a[field] + 1, suggs.length - 1) }));
-    } else if (e.key === "ArrowUp") {
-      setActiveSuggestion(a => ({ ...a, [field]: Math.max(a[field] - 1, 0) }));
-    } else if (e.key === "Enter" && activeSuggestion[field] >= 0) {
-      handleSuggestionClick(field, suggs[activeSuggestion[field]]);
-    } else if (e.key === "Escape") {
-      setShowSuggestions(s => ({ ...s, [field]: false }));
-    }
-  };
+  const fields = getSpendInputFields(inputRow, onChange);
 
   // Render fields as table row or form
-  const fields = [
-    {
-      key: SpendFields.DATE,
-      label: "Date",
-      type: "date",
-      value: inputRow[SpendFields.DATE],
-      onChange: e => onChange(SpendFields.DATE, e.target.value),
-      required: true
-    },
-    {
-      key: SpendFields.CATEGORY,
-      label: "Category",
-      type: "text",
-      value: inputRow[SpendFields.CATEGORY],
-      autoComplete: true,
-      required: true
-    },
-    {
-      key: SpendFields.DESCRIPTION,
-      label: "Description",
-      type: "text",
-      value: inputRow[SpendFields.DESCRIPTION],
-      autoComplete: true,
-      required: true
-    },
-    {
-      key: SpendFields.AMOUNT_SPENT,
-      label: "Amount",
-      type: "number",
-      value: inputRow[SpendFields.AMOUNT_SPENT],
-      onChange: e => onChange(SpendFields.AMOUNT_SPENT, e.target.value),
-      min: 0,
-      step: 0.01,
-      required: true
-    },
-    {
-      key: SpendFields.VENDOR,
-      label: "Vendor",
-      type: "text",
-      value: inputRow[SpendFields.VENDOR],
-      autoComplete: true
-    },
-    {
-      key: SpendFields.PAYMENT_MODE,
-      label: "Payment Mode",
-      type: "text",
-      value: inputRow[SpendFields.PAYMENT_MODE],
-      autoComplete: true
-    },
-    {
-      key: SpendFields.SPEND_TYPE,
-      label: "Spend Type",
-      type: "select",
-      value: inputRow[SpendFields.SPEND_TYPE],
-      required: true
-    }
-  ];
-
   if (as === "row") {
     return (
       <>
