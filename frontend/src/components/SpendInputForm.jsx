@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import SpendInputField from "./SpendInputField";
 import { SpendFields } from "../utils/fieldEnums";
+import { fetchSuggestions } from '../utils/api';
 
 /**
  * Shared spend input form fields with autocomplete logic.
@@ -42,21 +43,14 @@ function SpendInputForm({
   };
 
   // Fetch suggestions from backend
-  const fetchSuggestions = async (field, value) => {
+  const fetchFieldSuggestions = async (field, value) => {
     if (!value) {
       setSuggestions(s => ({ ...s, [field]: [] }));
       return;
     }
     try {
-      // Use field directly (matches backend route)
-      const url = `${import.meta.env.VITE_API_URL}/autocomplete/${field}?q=${encodeURIComponent(value)}`;
-      const res = await fetch(url);
-      if (res.ok) {
-        const data = await res.json();
-        setSuggestions(s => ({ ...s, [field]: data }));
-      } else {
-        setSuggestions(s => ({ ...s, [field]: [] }));
-      }
+      const data = await fetchSuggestions(field, value);
+      setSuggestions(s => ({ ...s, [field]: data }));
     } catch {
       setSuggestions(s => ({ ...s, [field]: [] }));
     }
@@ -65,7 +59,7 @@ function SpendInputForm({
   // Handle input change with autocomplete
   const handleInputChange = (field, value) => {
     onChange(field, value);
-    fetchSuggestions(field, value);
+    fetchFieldSuggestions(field, value);
     setShowSuggestions(s => ({ ...s, [field]: true }));
     setActiveSuggestion(a => ({ ...a, [field]: -1 }));
   };
@@ -185,7 +179,7 @@ function SpendInputForm({
               onInputChange={handleInputChange}
               onSuggestionClick={handleSuggestionClick}
               onKeyDown={handleKeyDown}
-              onFocus={(key, value) => value && fetchSuggestions(key, value)}
+              onFocus={(key, value) => value && fetchFieldSuggestions(key, value)}
               onBlur={key => setTimeout(() => setShowSuggestions(s => ({ ...s, [key]: false })), 100)}
             />
           </td>
@@ -214,7 +208,7 @@ function SpendInputForm({
           onInputChange={handleInputChange}
           onSuggestionClick={handleSuggestionClick}
           onKeyDown={handleKeyDown}
-          onFocus={(key, value) => value && fetchSuggestions(key, value)}
+          onFocus={(key, value) => value && fetchFieldSuggestions(key, value)}
           onBlur={key => setTimeout(() => setShowSuggestions(s => ({ ...s, [key]: false })), 100)}
         />
       ))}

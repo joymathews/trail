@@ -2,6 +2,7 @@ import { useState } from "react";
 import { formatDate } from "../utils/date";
 import { SpendFields } from "../utils/fieldEnums";
 import { useSpends } from "../hooks/useSpends";
+import { saveSpend } from '../utils/api';
 
 const blankSpend = {
   [SpendFields.DATE]: formatDate(new Date()),
@@ -12,8 +13,6 @@ const blankSpend = {
   [SpendFields.PAYMENT_MODE]: "",
   [SpendFields.SPEND_TYPE]: "",
 };
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export function useSpendInput(startDate, endDate) {
   const [inputRow, setInputRow] = useState({ ...blankSpend });
@@ -43,21 +42,12 @@ export function useSpendInput(startDate, endDate) {
     setSaving(true);
     setError("");
     try {
-      const res = await fetch(`${API_URL}/spends`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(spend),
-      });
-      if (res.ok) {
-        const { spend: newSpend } = await res.json();
+        const { spend: newSpend } = await saveSpend(spend);
         setInputRow({ ...blankSpend });
         setSpends((prev) => [newSpend, ...prev]);
-      } else {
+      } catch {
         setError("Failed to save spend.");
-      }
-    } catch {
-      setError("Server error.");
-    } finally {
+      } finally {
       setSaving(false);
     }
   };
