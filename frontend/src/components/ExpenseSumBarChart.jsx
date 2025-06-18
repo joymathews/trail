@@ -1,59 +1,13 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import './ExpenseSumBarChart.scss';
-import { formatDate } from '../utils/date';
+import { validateChartData, formatYAxisTick, formatXAxisDate } from '../utils/chartUtils';
+import { SpendFields } from '../utils/fieldEnums';
 
-export default function ExpenseSumBarChart({ data = [] }) {
-  // Validate and clean data
-  const validData = React.useMemo(() => {
-    return data.filter(item => {
-      // Check if item exists
-      if (!item) {
-        return false;
-      }
-      
-      // Check for either date or key, and value must exist
-      if (
-        (item.date === undefined && item.key === undefined) || 
-        item.value === undefined
-      ) {
-        return false;
-      }
-      
-      // For date fields, make sure the date is valid
-      if (item.date !== undefined) {
-        const date = new Date(item.date);
-        if (isNaN(date.getTime())) {
-          console.warn('Filtered out item with invalid date:', item);
-          return false;
-        }
-      }
-      
-      // Value should be a valid number
-      if (typeof item.value !== 'number' || isNaN(item.value)) {
-        console.warn('Filtered out item with invalid value:', item);
-        return false;
-      }
-      
-      return true;
-    });
-  }, [data]);
-  
-  const isDate = validData.length > 0 && validData[0]?.date !== undefined;
-  
-  // Determine if we should show labels based on data volume
+export default function ExpenseSumBarChart({ data = [], spendField }) {
+  const validData = React.useMemo(() => validateChartData(data, spendField), [data, spendField]);
+  const isDate = spendField === SpendFields.DATE || (validData.length > 0 && validData[0]?.date !== undefined);
   const showLabels = validData.length <= 15; // Only show value labels for smaller datasets
-  
-  // Format tick values to be more concise
-  const formatYAxisTick = (value) => {
-    if (!value && value !== 0) return '';
-    if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(1)}M`;
-    } else if (value >= 1000) {
-      return `${(value / 1000).toFixed(1)}K`;
-    }
-    return value;
-  };
   
   return (
     <div className="expense-sum-bar-chart">
@@ -70,7 +24,7 @@ export default function ExpenseSumBarChart({ data = [] }) {
           <CartesianGrid strokeDasharray="3 3" vertical={validData.length <= 30} />
           <XAxis
             dataKey={isDate ? 'date' : 'key'}
-            tickFormatter={isDate ? formatDate : undefined}
+            tickFormatter={isDate ? formatXAxisDate : undefined}
             interval={validData.length > 30 ? Math.floor(validData.length / 15) : 0} // Skip ticks for dense datasets
             angle={validData.length > 10 ? -45 : 0} // Angle labels for better readability
             textAnchor={validData.length > 10 ? "end" : "middle"}
@@ -85,7 +39,7 @@ export default function ExpenseSumBarChart({ data = [] }) {
               // Extra safeguard for label formatting
               if (isDate && label) {
                 try {
-                  return formatDate(label);
+                  return formatXAxisDate(label);
                 } catch (e) {
                   return String(label);
                 }
