@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/Header";
-import SpendSheet from "../components/SpendSheet";
+import SpendSheet from "../components/spendSheet/SpendSheet";
 import SpendSheetMobile from "../components/SpendSheetMobile";
 import useIsMobile from "../hooks/useIsMobile";
 import { signOutCurrentUser } from "../utils/auth";

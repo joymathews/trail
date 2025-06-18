@@ -1,6 +1,6 @@
 import React from "react";
 import "./SpendSheetMobile.scss";
-import SpendInputForm from "./SpendInputForm";
+import SpendInputForm from "./spendSheet/SpendInputForm";
 import { useSpendInput } from "../hooks/useSpendInput";
 
 function SpendSheetMobile() {

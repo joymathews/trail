@@ -1,5 +1,5 @@
 @use "sass:color";
-@use "../styles/variables.scss" as *;
+@use "../../styles/variables.scss" as *;
 
 .spend-sheet-container {
   background: $background;

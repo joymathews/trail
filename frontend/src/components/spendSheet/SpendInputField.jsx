@@ -1,6 +1,6 @@
 import React from "react";
-import AutoCompleteInput from "./AutoCompleteInput";
-import { SpendFields } from "../utils/fieldEnums";
+import AutoCompleteInput from "../AutoCompleteInput";
+import { SpendFields } from "../../utils/fieldEnums";
 
 /**
  * Renders a single spend input field (input, select, or autocomplete).

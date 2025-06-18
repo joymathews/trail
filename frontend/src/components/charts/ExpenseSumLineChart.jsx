@@ -1,8 +1,8 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import './ExpenseSumLineChart.scss';
-import { SpendFields } from '../utils/fieldEnums';
-import { validateChartData, formatYAxisTick, formatXAxisDate } from '../utils/chartUtils';
+import { SpendFields } from '../../utils/fieldEnums';
+import { validateChartData, formatYAxisTick, formatXAxisDate } from '../../utils/chartUtils';
 
 const ExpenseSumLineChart = ({ data = [], spendField }) => {
   const validData = React.useMemo(() => validateChartData(data, spendField), [data, spendField]);

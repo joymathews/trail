@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import DateRangePicker from '../components/DateRangePicker';
-import ExpenseSumLineChart from '../components/ExpenseSumLineChart';
-import ExpenseSumBarChart from '../components/ExpenseSumBarChart';
-import ChartCard from '../components/ChartCard';
+import ExpenseSumLineChart from '../components/charts/ExpenseSumLineChart';
+import ExpenseSumBarChart from '../components/charts/ExpenseSumBarChart';
+import ChartCard from '../components/charts/ChartCard';
 import { SpendFields } from '../utils/fieldEnums';
 import { useExpenseChartData } from '../hooks/useExpenseChartData';
 import './SpendChartsPage.scss';

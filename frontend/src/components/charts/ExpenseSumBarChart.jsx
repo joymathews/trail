@@ -1,8 +1,8 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import './ExpenseSumBarChart.scss';
-import { validateChartData, formatYAxisTick, formatXAxisDate } from '../utils/chartUtils';
-import { SpendFields } from '../utils/fieldEnums';
+import { validateChartData, formatYAxisTick, formatXAxisDate } from '../../utils/chartUtils';
+import { SpendFields } from '../../utils/fieldEnums';
 
 export default function ExpenseSumBarChart({ data = [], spendField }) {
   const validData = React.useMemo(() => validateChartData(data, spendField), [data, spendField]);

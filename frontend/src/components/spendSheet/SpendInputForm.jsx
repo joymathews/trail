@@ -1,8 +1,8 @@
 import React from "react";
 import SpendInputField from "./SpendInputField";
-import { SpendFields } from "../utils/fieldEnums";
-import { getSpendInputFields } from '../utils/spendInputFields';
-import { useAutocomplete } from '../hooks/useAutocomplete';
+import { SpendFields } from "../../utils/fieldEnums";
+import { getSpendInputFields } from '../../utils/spendInputFields';
+import { useAutocomplete } from '../../hooks/useAutocomplete';
 
 /**
  * Shared spend input form fields with autocomplete logic.
