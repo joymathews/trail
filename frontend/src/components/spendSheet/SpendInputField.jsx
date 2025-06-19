@@ -53,7 +53,7 @@ function SpendInputField({
         {as === "form" && <label className="input-label">{field.label}</label>}
         <select
           value={field.value}
-          onChange={e => onChange(SpendFields.SPEND_TYPE, e.target.value)}
+          onChange={e => onChange(field.key, e.target.value)}
           required={field.required}
         >
           <option value="">Type</option>
