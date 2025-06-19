@@ -10,3 +10,6 @@ export const SpendFields = Object.freeze({
   AMOUNT_SPENT: "amountSpent",
   SPEND_TYPE: "spendType"
 });
+
+// Removed getNextFieldKey, now in spendInputFields.js
+

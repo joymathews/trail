@@ -1,17 +1,7 @@
 import React, { useState } from "react";
-import {
-  CognitoUserPool,
-  CognitoUser,
-  AuthenticationDetails,
-} from "amazon-cognito-identity-js";
 import { useNavigate } from "react-router-dom";
+import { authenticateUser } from "../utils/auth";
 import "./LoginPage.scss";
-
-const poolData = {
-  UserPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
-  ClientId: import.meta.env.VITE_COGNITO_CLIENT_ID,
-};
-const userPool = new CognitoUserPool(poolData);
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,31 +10,18 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
-    const user = new CognitoUser({
-      Username: username,
-      Pool: userPool,
-    });
-
-    const authDetails = new AuthenticationDetails({
-      Username: username,
-      Password: password,
-    });
-
-    user.authenticateUser(authDetails, {
-      onSuccess: () => {
-          setLoading(false);
-        navigate("/");
-      },
-      onFailure: (err) => {
-        setError(err.message || "Login failed");
-        setLoading(false);
-      },
-    });
+    try {
+      await authenticateUser(username, password);
+      setLoading(false);
+      navigate("/");
+    } catch (err) {
+      setError(err.message || "Login failed");
+      setLoading(false);
+    }
   };
 
   return (

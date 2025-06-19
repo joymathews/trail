@@ -1,0 +1,135 @@
+@use "sass:color";
+@use "../../styles/variables.scss" as *;
+
+.spend-sheet-container {
+  background: $background;
+  color: $text;
+  padding: 1.2rem 0.5rem 2rem 0.5rem;
+  border-radius: $border-radius-lg;
+  margin: 1.2rem 0 0 0;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: $box-shadow;
+  min-height: calc(100vh - 3rem);
+  height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    margin-bottom: 1.2rem;
+    color: $primary;
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .spend-table-wrapper {
+    overflow-y: auto;
+    overflow-x: auto;
+    flex: 1 1 auto;
+    max-height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+  }
+
+  .spend-table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: $table-bg;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius-lg;
+    margin-bottom: 1rem;
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: $thead-bg;
+      color: $white;
+      font-weight: 700;
+      text-align: left;
+      padding: 0.7em 0.7em;
+      border-bottom: 2px solid $thead-border;
+    }
+
+    th, td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid $border-light;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    th {
+      background: $primary;
+      color: $white;
+      font-weight: 600;
+      border-bottom: 2px solid $accent;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td {
+      color: $text;
+      font-size: $font-size-base;
+      background: $table-bg;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 0.3rem 0.5rem;
+      border-radius: $border-radius-sm;
+      border: 1px solid $border-light;
+      background: $background;
+      color: $text;
+      font-size: $font-size-base;
+      transition: border 0.2s;
+      box-sizing: border-box;
+
+      &:focus {
+        border: 1.5px solid $accent;
+      }
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    td.right {
+      text-align: right;
+    }
+  }
+
+  .spend-sheet-error {
+    color: $error;
+    margin: 1em 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .spend-sheet-container {
+    padding: 0.7rem 0.1rem;
+    max-width: 100%;
+    width: 100%;
+  }
+  .spend-table th,
+  .spend-table td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.95rem;
+  }
+  .form-field {
+    flex-direction: column;
+  }
+  .input-label {
+    margin-bottom: 0.5rem;
+  }
+  .table-field {
+    display: block;
+    width: 100%;
+  }
+}

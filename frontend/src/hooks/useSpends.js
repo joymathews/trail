@@ -1,7 +1,7 @@
 // src/hooks/useSpends.js
 import { useState, useEffect } from "react";
 import { SpendFields } from "../utils/fieldEnums";
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchSpends } from '../utils/api';
 
 export function useSpends(startDate, endDate) {
   const [spends, setSpends] = useState([]);
@@ -9,7 +9,7 @@ export function useSpends(startDate, endDate) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function fetchSpends() {
+    async function fetchSpendsData() {
       setLoading(true);
       setError("");
       try {
@@ -18,22 +18,19 @@ export function useSpends(startDate, endDate) {
           setLoading(false);
           return;
         }
-        const url = `${API_URL}/spends?startDate=${startDate}&endDate=${endDate}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch spends");
-        let data = await res.json();
+        const data = await fetchSpends(startDate, endDate);
         // Convert date strings to timestamps once for efficient sorting
         data.forEach(item => {
           item._dateTs = new Date(item[SpendFields.DATE]).getTime();
         });
-        data = data.sort((a, b) => b._dateTs - a._dateTs);
-        setSpends(data);
+        const sorted = data.sort((a, b) => b._dateTs - a._dateTs);
+        setSpends(sorted);
       } catch (err) {
         setError(err.message || "Error loading spends");
       }
       setLoading(false);
     }
-    fetchSpends();
+    fetchSpendsData();
   }, [startDate, endDate]);
 
   return { spends, setSpends, loading, error };

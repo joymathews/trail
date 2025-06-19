@@ -11,6 +11,7 @@ function validateDateRange(req, res, next) {
 function validateField(req, res, next) {
   const { field } = req.query;
   const allowedFields = [
+    SpendFields.DATE,
     SpendFields.CATEGORY,
     SpendFields.VENDOR,
     SpendFields.PAYMENT_MODE,

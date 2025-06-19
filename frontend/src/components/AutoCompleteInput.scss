@@ -1,13 +1,17 @@
+@use "../styles/variables.scss" as *;
+
+// Only keep styles for classes used in AutoCompleteInput.jsx
 .autocomplete-wrapper {
   position: relative;
 }
+
 .autocomplete-suggestions {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: #fff;
-  border: 1px solid #ccc;
+  background: $white;
+  border: 1px solid $border-light;
   z-index: 10;
   max-height: 150px;
   overflow-y: auto;
@@ -15,11 +19,13 @@
   margin: 0;
   padding: 0;
 }
+
 .autocomplete-suggestions li {
   padding: 0.5em 1em;
   cursor: pointer;
 }
+
 .autocomplete-suggestions li.active,
 .autocomplete-suggestions li:hover {
-  background: #f0f0f0;
+  background: $input-bg;
 }

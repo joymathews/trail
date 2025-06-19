@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./DateRangePicker.scss";
 
-function DateRangePicker({ onChange }) {
-  const [dates, setDates] = useState({ startDate: null, endDate: null });
+function DateRangePicker({ value, onChange }) {
+  const [dates, setDates] = useState({ startDate: value?.start || null, endDate: value?.end || null });
 
   useEffect(() => {
     if (dates.startDate && dates.endDate) {
       onChange(dates.startDate, dates.endDate);
     }
-  }, [dates.startDate, dates.endDate, onChange]);
+  }, [dates.startDate, dates.endDate]);
+
+  useEffect(() => {
+    setDates({ startDate: value?.start || null, endDate: value?.end || null });
+  }, [value?.start, value?.end]);
 
   const handleStartDateChange = (e) => {
     setDates((prev) => ({ ...prev, startDate: e.target.value }));
@@ -28,7 +32,7 @@ function DateRangePicker({ onChange }) {
           onChange={handleStartDateChange}
         />
       </label>
-      <span style={{ margin: "0 0.5rem" }}>to</span>
+      <span className="date-range-separator">to</span>
       <label>
         End Date:
         <input
