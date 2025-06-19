@@ -14,6 +14,15 @@ Parameters:
     NoEcho: true
     MinLength: 8
     Description: Master password for the database
+  CognitoUserPoolArn:
+    Type: String
+    Description: ARN of the existing Cognito User Pool
+  CognitoUserPoolId:
+    Type: String
+    Description: ID of the existing Cognito User Pool
+  CognitoUserPoolClientId:
+    Type: String
+    Description: Client ID of the existing Cognito User Pool Client
 
 Resources:
   TrailVPC:
@@ -86,11 +95,30 @@ Resources:
       DBInstanceClass: db.serverless
       Engine: aurora-postgresql
 
+  TrailCognitoAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref TrailHttpApi
+      AuthorizerType: JWT
+      IdentitySource:
+        - "$request.header.Authorization"
+      Name: CognitoAuthorizer
+      JwtConfiguration:
+        Audience:
+          - !Ref CognitoUserPoolClientId
+        Issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPoolId}"
+
   TrailHttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
       StageName: prod
       Name: TrailBackendApi
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !Ref CognitoUserPoolArn
+            IdentitySource: "$request.header.Authorization"
+        DefaultAuthorizer: CognitoAuthorizer
 
   TrailBackendLambda:
     Type: AWS::Serverless::Function

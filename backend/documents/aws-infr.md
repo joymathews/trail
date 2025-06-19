@@ -34,6 +34,15 @@ This document explains each section of the `template.yaml` file, what AWS resour
   - *Check in Console*: Lambda > Functions > Name: `TrailBackendLambda`.
   - *Integration*: Connected to the HTTP API for all routes (`/{proxy+}`), and runs inside the VPC for DB access.
 
+### Cognito Authentication
+- **TrailCognitoUserPool**: Creates a Cognito User Pool for user authentication (sign-up/sign-in, JWT token issuance).
+  - *Check in Console*: Cognito > User Pools > Name: `TrailUserPool`.
+- **TrailCognitoUserPoolClient**: App client for the User Pool, used by your frontend to authenticate and obtain tokens.
+  - *Check in Console*: Cognito > User Pools > TrailUserPool > App clients > Name: `TrailUserPoolClient`.
+- **TrailCognitoAuthorizer**: Configures the HTTP API to use Cognito JWT tokens for authentication.
+  - *Check in Console*: API Gateway > HTTP APIs > TrailBackendApi > Authorization > Authorizers > CognitoAuthorizer.
+- **TrailHttpApi**: Now has Cognito as the default authorizer for all routes. Only requests with a valid Cognito JWT token will reach your Lambda/backend.
+
 ## 3. Environment Variables
 - Lambda receives DB connection info and other config as environment variables, matching your backend's `config.js` usage.
 
@@ -77,36 +86,48 @@ flowchart TD
         Lambda -- "TCP 5432" --> Aurora
     end
     API["fa:fa-cloud HTTP API Gateway"]
+    Cognito["fa:fa-user AWS Cognito User Pool"]
+    User["fa:fa-user App/User"]
+    User -- "Sign in / Get JWT" --> Cognito
+    User -- "HTTPS + JWT" --> API
+    API -- "JWT Auth (CognitoAuthorizer)" --> Cognito
     API -- "HTTPS Invoke" --> Lambda
 ```
 
-- The API Gateway receives HTTP(S) requests and triggers the Lambda.
+- Users authenticate with Cognito and receive a JWT token.
+- All API requests must include the JWT in the `Authorization` header.
+- API Gateway validates the JWT with Cognito before invoking Lambda.
 - Lambda runs your Express app, connects to Aurora over the private VPC network.
 
 ---
 
-## How to Check Resources in AWS Console
-1. **VPC/Subnets/Security Groups**: VPC Dashboard > Your VPCs/Subnets/Security Groups
-2. **Aurora Cluster**: RDS Dashboard > Databases
-3. **Lambda Function**: Lambda Dashboard > Functions
-4. **API Gateway**: API Gateway Dashboard > HTTP APIs
-5. **Outputs**: After deployment, use the AWS SAM CLI output or CloudFormation > Stacks > [Your Stack] > Outputs
+## How to Check Resources in AWS Console (Updated)
+1. **Cognito User Pool & Client**: Cognito > User Pools > TrailUserPool
+2. **API Gateway Authorizer**: API Gateway > HTTP APIs > TrailBackendApi > Authorization
+3. **VPC/Subnets/Security Groups**: VPC Dashboard > Your VPCs/Subnets/Security Groups
+4. **Aurora Cluster**: RDS Dashboard > Databases
+5. **Lambda Function**: Lambda Dashboard > Functions
+6. **API Gateway**: API Gateway Dashboard > HTTP APIs
+7. **Outputs**: After deployment, use the AWS SAM CLI output or CloudFormation > Stacks > [Your Stack] > Outputs
 
 ---
 
-## Summary Table
-| Resource                | AWS Console Location                | Purpose                                 |
-|-------------------------|-------------------------------------|-----------------------------------------|
-| TrailVPC                | VPC > Your VPCs                     | Network isolation                       |
-| TrailSubnet1/2          | VPC > Subnets                       | High availability for DB/Lambda         |
-| TrailDBSubnetGroup      | RDS > Subnet groups                 | Aurora subnet group                     |
-| TrailSecurityGroup      | EC2 > Security Groups               | Aurora access control                   |
-| LambdaSecurityGroup     | EC2 > Security Groups               | Lambda access control                   |
-| TrailAuroraCluster      | RDS > Databases                     | PostgreSQL database                     |
-| TrailAuroraInstance     | RDS > Databases > Instances         | DB compute resource                     |
-| TrailHttpApi            | API Gateway > HTTP APIs             | Public API endpoint                     |
-| TrailBackendLambda      | Lambda > Functions                  | Express backend                         |
+## Updated Summary Table
+| Resource                      | AWS Console Location                | Purpose                                 |
+|-------------------------------|-------------------------------------|-----------------------------------------|
+| TrailCognitoUserPool          | Cognito > User Pools                | User authentication (JWT)               |
+| TrailCognitoUserPoolClient    | Cognito > User Pools > App clients  | App client for authentication           |
+| TrailCognitoAuthorizer        | API Gateway > HTTP APIs > Authorizers| JWT validation for API                  |
+| TrailHttpApi                  | API Gateway > HTTP APIs             | Public API endpoint (Cognito protected) |
+| TrailVPC                      | VPC > Your VPCs                     | Network isolation                       |
+| TrailSubnet1/2                | VPC > Subnets                       | High availability for DB/Lambda         |
+| TrailDBSubnetGroup            | RDS > Subnet groups                 | Aurora subnet group                     |
+| TrailSecurityGroup            | EC2 > Security Groups               | Aurora access control                   |
+| LambdaSecurityGroup           | EC2 > Security Groups               | Lambda access control                   |
+| TrailAuroraCluster            | RDS > Databases                     | PostgreSQL database                     |
+| TrailAuroraInstance           | RDS > Databases > Instances         | DB compute resource                     |
+| TrailBackendLambda            | Lambda > Functions                  | Express backend                         |
 
 ---
 
-*This document was generated to help you understand and verify your AWS infrastructure as defined in `template.yaml`.*
+*This document was updated to reflect Cognito authentication at the API Gateway level as defined in `template.yaml`.*
