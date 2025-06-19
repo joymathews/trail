@@ -6,6 +6,7 @@ This document explains each section of the `template.yaml` file, what AWS resour
 
 ## 1. Parameters
 - **DBName, DBUsername, DBPassword**: These are input parameters for the Aurora PostgreSQL database. You provide these values during deployment.
+- **CognitoUserPoolArn, CognitoUserPoolId, CognitoUserPoolClientId**: Parameters for using an existing Cognito User Pool for authentication.
 
 ## 2. Resources
 
@@ -34,14 +35,13 @@ This document explains each section of the `template.yaml` file, what AWS resour
   - *Check in Console*: Lambda > Functions > Name: `TrailBackendLambda`.
   - *Integration*: Connected to the HTTP API for all routes (`/{proxy+}`), and runs inside the VPC for DB access.
 
-### Cognito Authentication
-- **TrailCognitoUserPool**: Creates a Cognito User Pool for user authentication (sign-up/sign-in, JWT token issuance).
-  - *Check in Console*: Cognito > User Pools > Name: `TrailUserPool`.
-- **TrailCognitoUserPoolClient**: App client for the User Pool, used by your frontend to authenticate and obtain tokens.
-  - *Check in Console*: Cognito > User Pools > TrailUserPool > App clients > Name: `TrailUserPoolClient`.
-- **TrailCognitoAuthorizer**: Configures the HTTP API to use Cognito JWT tokens for authentication.
+### Cognito Authentication Layer (Reusing Existing User Pool)
+- **CognitoUserPoolArn (Parameter):** ARN of your existing Cognito User Pool, provided at deployment time (e.g., from GitHub Actions).
+- **CognitoUserPoolId (Parameter):** ID of your existing Cognito User Pool.
+- **CognitoUserPoolClientId (Parameter):** Client ID of your existing Cognito User Pool Client.
+- **TrailCognitoAuthorizer:** Configures the HTTP API to use your existing Cognito User Pool for JWT authentication.
   - *Check in Console*: API Gateway > HTTP APIs > TrailBackendApi > Authorization > Authorizers > CognitoAuthorizer.
-- **TrailHttpApi**: Now has Cognito as the default authorizer for all routes. Only requests with a valid Cognito JWT token will reach your Lambda/backend.
+- **TrailHttpApi:** Now has Cognito as the default authorizer for all routes. Only requests with a valid Cognito JWT token (from your existing pool) will reach your Lambda/backend.
 
 ## 3. Environment Variables
 - Lambda receives DB connection info and other config as environment variables, matching your backend's `config.js` usage.
@@ -86,7 +86,7 @@ flowchart TD
         Lambda -- "TCP 5432" --> Aurora
     end
     API["fa:fa-cloud HTTP API Gateway"]
-    Cognito["fa:fa-user AWS Cognito User Pool"]
+    Cognito["fa:fa-user Existing AWS Cognito User Pool"]
     User["fa:fa-user App/User"]
     User -- "Sign in / Get JWT" --> Cognito
     User -- "HTTPS + JWT" --> API
@@ -94,7 +94,7 @@ flowchart TD
     API -- "HTTPS Invoke" --> Lambda
 ```
 
-- Users authenticate with Cognito and receive a JWT token.
+- Users authenticate with your existing Cognito User Pool and receive a JWT token.
 - All API requests must include the JWT in the `Authorization` header.
 - API Gateway validates the JWT with Cognito before invoking Lambda.
 - Lambda runs your Express app, connects to Aurora over the private VPC network.
@@ -102,7 +102,7 @@ flowchart TD
 ---
 
 ## How to Check Resources in AWS Console (Updated)
-1. **Cognito User Pool & Client**: Cognito > User Pools > TrailUserPool
+1. **Cognito User Pool & Client**: Cognito > User Pools > [Your Existing Pool]
 2. **API Gateway Authorizer**: API Gateway > HTTP APIs > TrailBackendApi > Authorization
 3. **VPC/Subnets/Security Groups**: VPC Dashboard > Your VPCs/Subnets/Security Groups
 4. **Aurora Cluster**: RDS Dashboard > Databases
@@ -115,8 +115,8 @@ flowchart TD
 ## Updated Summary Table
 | Resource                      | AWS Console Location                | Purpose                                 |
 |-------------------------------|-------------------------------------|-----------------------------------------|
-| TrailCognitoUserPool          | Cognito > User Pools                | User authentication (JWT)               |
-| TrailCognitoUserPoolClient    | Cognito > User Pools > App clients  | App client for authentication           |
+| CognitoUserPoolArn (param)    | Cognito > User Pools                | User authentication (JWT, existing pool) |
+| CognitoUserPoolClientId (param)| Cognito > User Pools > App clients  | App client for authentication           |
 | TrailCognitoAuthorizer        | API Gateway > HTTP APIs > Authorizers| JWT validation for API                  |
 | TrailHttpApi                  | API Gateway > HTTP APIs             | Public API endpoint (Cognito protected) |
 | TrailVPC                      | VPC > Your VPCs                     | Network isolation                       |
@@ -130,4 +130,4 @@ flowchart TD
 
 ---
 
-*This document was updated to reflect Cognito authentication at the API Gateway level as defined in `template.yaml`.*
+*This document was updated to reflect the use of an existing Cognito User Pool for authentication as defined in the latest `template.yaml`.*
