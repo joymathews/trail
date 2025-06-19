@@ -5,77 +5,38 @@ This document explains each section of the `template.yaml` file, what AWS resour
 ---
 
 ## 1. Parameters
-- **DBName, DBUsername, DBPassword**: These are input parameters for the Aurora PostgreSQL database. You provide these values during deployment.
-- **CognitoUserPoolArn, CognitoUserPoolId, CognitoUserPoolClientId**: Parameters for using an existing Cognito User Pool for authentication.
+- **DBName, DBUsername, DBPassword**: Input parameters for the Aurora PostgreSQL database.
+- **CognitoUserPoolArn, CognitoUserPoolId, CognitoUserPoolClientId**: Parameters for your existing Cognito User Pool and Client.
+- **CorsAllowedOrigin**: Parameter for the allowed CORS origin.
 
 ## 2. Resources
 
 ### VPC and Networking
 - **TrailVPC**: Creates a Virtual Private Cloud (VPC) for isolating resources.
-  - *Check in Console*: VPC Dashboard > Your VPCs > Look for `10.0.0.0/16` CIDR.
 - **TrailSubnet1 & TrailSubnet2**: Two subnets in different Availability Zones for high availability.
-  - *Check in Console*: VPC Dashboard > Subnets > Look for `10.0.1.0/24` and `10.0.2.0/24`.
 - **TrailDBSubnetGroup**: Groups the above subnets for RDS/Aurora usage.
-  - *Check in Console*: RDS Dashboard > Subnet groups > `trail-db-subnet-group`.
 - **TrailSecurityGroup**: Security group for Aurora, allows inbound PostgreSQL (5432) from Lambda.
-  - *Check in Console*: EC2 Dashboard > Security Groups > Description matches.
 - **LambdaSecurityGroup**: Security group for Lambda, allows outbound to Aurora.
-  - *Check in Console*: EC2 Dashboard > Security Groups > Description matches.
 
 ### Database
 - **TrailAuroraCluster**: Aurora PostgreSQL Serverless v2 cluster.
-  - *Check in Console*: RDS Dashboard > Databases > Engine: Aurora PostgreSQL, Mode: Serverless v2.
 - **TrailAuroraInstance**: Instance for the Aurora cluster.
-  - *Check in Console*: RDS Dashboard > Databases > Instances tab.
 
 ### API and Lambda
-- **TrailHttpApi**: HTTP API Gateway for exposing your backend as a REST endpoint.
-  - *Check in Console*: API Gateway > HTTP APIs > Name: `TrailBackendApi`.
-- **TrailBackendLambda**: Lambda function running your Express backend (from `backend/lambda.js`).
-  - *Check in Console*: Lambda > Functions > Name: `TrailBackendLambda`.
-  - *Integration*: Connected to the HTTP API for all routes (`/{proxy+}`), and runs inside the VPC for DB access.
-
-### Cognito Authentication Layer (Reusing Existing User Pool)
-- **CognitoUserPoolArn (Parameter):** ARN of your existing Cognito User Pool, provided at deployment time (e.g., from GitHub Actions).
-- **CognitoUserPoolId (Parameter):** ID of your existing Cognito User Pool.
-- **CognitoUserPoolClientId (Parameter):** Client ID of your existing Cognito User Pool Client.
-- **TrailCognitoAuthorizer:** Configures the HTTP API to use your existing Cognito User Pool for JWT authentication.
-  - *Check in Console*: API Gateway > HTTP APIs > TrailBackendApi > Authorization > Authorizers > CognitoAuthorizer.
-- **TrailHttpApi:** Now has Cognito as the default authorizer for all routes. Only requests with a valid Cognito JWT token (from your existing pool) will reach your Lambda/backend.
-
-## 3. Environment Variables
-- Lambda receives DB connection info and other config as environment variables, matching your backend's `config.js` usage.
-
-## 4. IAM Permissions
-
-- **Lambda IAM Role**:  
-  The Lambda function is automatically assigned an IAM role with the following permissions:
-  - `AWSLambdaVPCAccessExecutionRole`: Allows Lambda to manage network interfaces in your VPC so it can connect to resources like Aurora.
-  - `rds-db:connect`: Allows Lambda to connect to the RDS/Aurora database (required for IAM authentication if enabled).
-  - (Optional) `secretsmanager:GetSecretValue`: If you use AWS Secrets Manager for DB credentials, this permission is needed.
-
-  *Check in Console*:  
-  - Go to IAM > Roles > Find the role associated with your Lambda function (usually named after the function).  
-  - Review the attached policies and permissions.
-
-## 5. Networking: Are Lambda and Aurora in the Same Network?
-
-**Yes.**  
-Both the Lambda function and the Aurora cluster are deployed inside the same VPC and share the same subnets and security groups. This ensures:
-- **Private, secure communication** between Lambda and Aurora (no public internet exposure).
-- **Security groups** control which resources can talk to each other (Lambda can reach Aurora on port 5432).
+- **TrailCognitoAuthorizer**: Configures the HTTP API to use your existing Cognito User Pool for JWT authentication.
+- **TrailHttpApi**: HTTP API Gateway for exposing your backend as a REST endpoint, protected by Cognito and CORS.
+- **TrailBackendLambda**: Lambda function running your Express backend (from `backend/lambda.js`), integrated with the HTTP API and VPC.
 
 ---
 
-## 6. Outputs
-- **AuroraClusterEndpoint**: The hostname for connecting to the DB.
-- **AuroraClusterPort**: The port (5432).
-- **LambdaFunctionName**: The deployed Lambda's name.
-- **HttpApiUrl**: The public URL for your API.
+## Cognito Authentication Layer (Reusing Existing User Pool)
+- Uses your existing Cognito User Pool and Client for authentication.
+- All API requests must include a valid JWT token from this pool.
+- API Gateway validates the JWT before invoking Lambda.
 
 ---
 
-## How the Network Looks
+## Network & Auth Flow Diagram
 
 ```mermaid
 %%{init: { 'theme': 'default', 'themeVariables': { 'fontFamily': 'Arial' } }}%%
@@ -94,21 +55,53 @@ flowchart TD
     API -- "HTTPS Invoke" --> Lambda
 ```
 
-- Users authenticate with your existing Cognito User Pool and receive a JWT token.
-- All API requests must include the JWT in the `Authorization` header.
-- API Gateway validates the JWT with Cognito before invoking Lambda.
-- Lambda runs your Express app, connects to Aurora over the private VPC network.
-
 ---
 
-## How to Check Resources in AWS Console (Updated)
-1. **Cognito User Pool & Client**: Cognito > User Pools > [Your Existing Pool]
-2. **API Gateway Authorizer**: API Gateway > HTTP APIs > TrailBackendApi > Authorization
-3. **VPC/Subnets/Security Groups**: VPC Dashboard > Your VPCs/Subnets/Security Groups
-4. **Aurora Cluster**: RDS Dashboard > Databases
-5. **Lambda Function**: Lambda Dashboard > Functions
-6. **API Gateway**: API Gateway Dashboard > HTTP APIs
-7. **Outputs**: After deployment, use the AWS SAM CLI output or CloudFormation > Stacks > [Your Stack] > Outputs
+## How to Validate Everything in the AWS Console
+
+After deploying your SAM template, you can verify each resource in the AWS Console as follows:
+
+### 1. **VPC, Subnets, and Security Groups**
+- Go to **VPC Dashboard**
+  - **Your VPCs**: Confirm a VPC with CIDR `10.0.0.0/16` exists.
+  - **Subnets**: Look for subnets with CIDRs `10.0.1.0/24` and `10.0.2.0/24`.
+  - **Security Groups**: Find `TrailSecurityGroup` (for Aurora) and `LambdaSecurityGroup` (for Lambda). Check inbound/outbound rules.
+
+### 2. **Aurora PostgreSQL Cluster**
+- Go to **RDS Dashboard > Databases**
+  - Confirm a cluster named `trail` (or your DBName parameter) with engine `aurora-postgresql` and mode `serverless`.
+  - Click the cluster to see endpoints, status, and subnet group.
+
+### 3. **Lambda Function**
+- Go to **Lambda Dashboard > Functions**
+  - Find `TrailBackendLambda`.
+  - Check the configuration: VPC settings, environment variables, and permissions.
+  - Test the function (optionally) with a test event.
+
+### 4. **API Gateway (HTTP API)**
+- Go to **API Gateway > HTTP APIs**
+  - Find `TrailBackendApi`.
+  - Check the **Routes** tab for `/{proxy+}`.
+  - Under **Authorization**, confirm the Cognito authorizer is attached.
+  - Under **CORS**, confirm your allowed origin is set.
+  - Copy the **Invoke URL** (matches the `HttpApiUrl` output).
+
+### 5. **Cognito User Pool (Existing)**
+- Go to **Cognito > User Pools**
+  - Find your existing user pool (ID matches the parameter you provided).
+  - Under **App clients**, confirm the client ID matches your parameter.
+  - Under **App integration > Domain name**, confirm the pool is configured for authentication.
+
+### 6. **Test the API**
+- Use a tool like **Postman** or **curl**:
+  1. Authenticate with Cognito to get a JWT token (sign in as a user).
+  2. Make a request to your API endpoint (`HttpApiUrl`) with the `Authorization: Bearer <JWT>` header.
+  3. You should get a valid response from your backend if everything is set up correctly.
+  4. Try calling the API without a token or with an invalid token to confirm it is blocked.
+
+### 7. **Outputs**
+- Go to **CloudFormation > Stacks > [Your Stack] > Outputs**
+  - Find the values for `AuroraClusterEndpoint`, `AuroraClusterPort`, `LambdaFunctionName`, and `HttpApiUrl`.
 
 ---
 
@@ -130,4 +123,4 @@ flowchart TD
 
 ---
 
-*This document was updated to reflect the use of an existing Cognito User Pool for authentication as defined in the latest `template.yaml`.*
+*This document was updated to remove duplicate validation instructions and keep them only in the dedicated section, as per your request.*
