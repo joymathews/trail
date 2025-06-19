@@ -5,14 +5,17 @@ import { SpendFields } from "../../utils/fieldEnums";
 import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
 import { getDefaultLast7DaysRange } from '../../utils/dateRangeDefaults';
+import { getDateRangeFromStorage, saveDateRangeToStorage } from '../../utils/dateRangeStorage';
 
 function SpendSheet() {
-  const defaultRange = getDefaultLast7DaysRange();
+  const storedRange = getDateRangeFromStorage();
+  const defaultRange = storedRange || getDefaultLast7DaysRange();
   const [startDate, setStartDate] = useState(defaultRange.start);
   const [endDate, setEndDate] = useState(defaultRange.end);
   const handleDateChange = (start, end) => {
     setStartDate(start);
     setEndDate(end);
+    saveDateRangeToStorage({ start, end });
   };
   const {
     inputRow,

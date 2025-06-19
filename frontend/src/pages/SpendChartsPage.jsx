@@ -7,10 +7,12 @@ import ChartCard from '../components/charts/ChartCard';
 import { SpendFields } from '../utils/fieldEnums';
 import { useExpenseChartData } from '../hooks/useExpenseChartData';
 import { getDefaultLast7DaysRange } from '../utils/dateRangeDefaults';
+import { getDateRangeFromStorage, saveDateRangeToStorage } from '../utils/dateRangeStorage';
 import './SpendChartsPage.scss';
 
 const SpendChartsPage = () => {
-  const [dateRange, setDateRange] = useState(getDefaultLast7DaysRange());
+  const storedRange = getDateRangeFromStorage();
+  const [dateRange, setDateRange] = useState(storedRange || getDefaultLast7DaysRange());
   const [chartTypes, setChartTypes] = useState({
     date: 'LineChart',
     category: 'BarChart',
@@ -29,6 +31,7 @@ const SpendChartsPage = () => {
 
   const handleDateRangeChange = (startDate, endDate) => {
     setDateRange({ start: startDate, end: endDate });
+    saveDateRangeToStorage({ start: startDate, end: endDate });
   };
 
   const isLargeDataset = {
