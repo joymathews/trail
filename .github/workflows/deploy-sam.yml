@@ -63,6 +63,7 @@ jobs:
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
             --region "${{ env.TRAIL_AWS_REGION }}" \
+            --resolve-s3 \
             --parameter-overrides \
               DBName="${{ env.TRAIL_AWS_AURORA_PG_DB_NAME }}" \
               DBUsername="${{ env.TRAIL_AWS_AURORA_PG_DB_USER }}" \
