@@ -82,7 +82,6 @@ Resources:
     Type: AWS::RDS::DBCluster
     Properties:
       Engine: aurora-postgresql
-      EngineMode: serverless
       EngineVersion: '15.3'
       DatabaseName: !Ref DBName
       MasterUsername: !Ref DBUsername
