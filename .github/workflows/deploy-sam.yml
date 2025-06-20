@@ -54,18 +54,18 @@ jobs:
           sam build --template-file backend/template.yaml
 
       - name: Deploy SAM application
-        run: >
+        run: |
           sam deploy \
             --template-file backend/template.yaml \
-            --stack-name ${{ env.TRAIL_AWS_SAM_STACK_NAME }} \
+            --stack-name "${{ env.TRAIL_AWS_SAM_STACK_NAME }}" \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
-            --region ${{ env.TRAIL_AWS_REGION }} \
+            --region "${{ env.TRAIL_AWS_REGION }}" \
             --parameter-overrides \
-              DBName=${{ env.TRAIL_AWS_AURORA_PG_DB_NAME }} \
-              DBUsername=${{ env.TRAIL_AWS_AURORA_PG_DB_USER }} \
-              DBPassword=${{ env.TRAIL_AWS_AURORA_PG_DB_PASS }} \
-              CognitoUserPoolArn=${{ env.TRAIL_AWS_COG_POOL_ARN }} \
-              CognitoUserPoolId=${{ env.TRAIL_AWS_COG_POOL_ID }} \
-              CognitoUserPoolClientId=${{ env.TRAIL_AWS_COG_POOL_CLIENT }} \
-              CorsAllowedOrigin=${{ env.TRAIL_CORS_ORIGIN }}
+              DBName="${{ env.TRAIL_AWS_AURORA_PG_DB_NAME }}" \
+              DBUsername="${{ env.TRAIL_AWS_AURORA_PG_DB_USER }}" \
+              DBPassword="${{ env.TRAIL_AWS_AURORA_PG_DB_PASS }}" \
+              CognitoUserPoolArn="${{ env.TRAIL_AWS_COG_POOL_ARN }}" \
+              CognitoUserPoolId="${{ env.TRAIL_AWS_COG_POOL_ID }}" \
+              CognitoUserPoolClientId="${{ env.TRAIL_AWS_COG_POOL_CLIENT }}" \
+              CorsAllowedOrigin="${{ env.TRAIL_CORS_ORIGIN }}"
