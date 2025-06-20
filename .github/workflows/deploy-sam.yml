@@ -51,12 +51,14 @@ jobs:
 
       - name: Build SAM application
         run: |
-          sam build --template-file backend/template.yaml
+          cd backend
+          sam build --template-file template.yaml
 
       - name: Deploy SAM application
         run: |
+          cd backend
           sam deploy \
-            --template-file backend/template.yaml \
+            --template-file template.yaml \
             --stack-name "${{ env.TRAIL_AWS_SAM_STACK_NAME }}" \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
