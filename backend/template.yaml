@@ -5,10 +5,10 @@ Description: Trail backend - Lambda (Express) + Aurora PostgreSQL Serverless v2
 Parameters:
   DBName:
     Type: String
-    Default: trail
+    MinLength: 1
   DBUsername:
     Type: String
-    Default: postgres
+    MinLength: 1
   DBPassword:
     Type: String
     NoEcho: true
@@ -16,17 +16,20 @@ Parameters:
     Description: Master password for the database
   CognitoUserPoolArn:
     Type: String
+    MinLength: 1
     Description: ARN of the existing Cognito User Pool
   CognitoUserPoolId:
     Type: String
+    MinLength: 1
     Description: ID of the existing Cognito User Pool
   CognitoUserPoolClientId:
     Type: String
+    MinLength: 1
     Description: Client ID of the existing Cognito User Pool Client
   CorsAllowedOrigin:
     Type: String
+    MinLength: 1
     Description: Allowed origin for CORS
-    Default: "http://localhost:3000"
 
 Resources:
   TrailVPC:
