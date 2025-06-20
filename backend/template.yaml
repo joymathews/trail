@@ -137,7 +137,6 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: !Ref CognitoUserPoolArn
-            IdentitySource: "$request.header.Authorization"
         DefaultAuthorizer: CognitoAuthorizer
 
   TrailBackendLambda:
