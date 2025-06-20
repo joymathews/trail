@@ -1,7 +1,6 @@
 module.exports = {
   REGION: process.env.TRAIL_AWS_REGION || 'us-east-1',
   TABLE_NAME: process.env.TRAIL_EXPENSES_TABLE || 'Expenses',
-  DYNAMODB_ENDPOINT: process.env.TRAIL_DYNAMODB_ENDPOINT, // Optional: for local development
   IS_LOCAL: process.env.TRAIL_IS_LOCAL === 'true', // Read as boolean
   CORS_ORIGIN: process.env.TRAIL_CORS_ORIGIN || 'http://localhost:3000',
   DB_HOST: process.env.TRAIL_AWS_AURORA_PG_DB_HOST,
