@@ -102,19 +102,6 @@ Resources:
       DBInstanceClass: db.serverless
       Engine: aurora-postgresql
 
-  TrailCognitoAuthorizer:
-    Type: AWS::ApiGatewayV2::Authorizer
-    Properties:
-      ApiId: !Ref TrailHttpApi
-      AuthorizerType: JWT
-      IdentitySource:
-        - "$request.header.Authorization"
-      Name: CognitoAuthorizer
-      JwtConfiguration:
-        Audience:
-          - !Ref CognitoUserPoolClientId
-        Issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPoolId}"
-
   TrailHttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
@@ -136,7 +123,10 @@ Resources:
       Auth:
         Authorizers:
           CognitoAuthorizer:
-            UserPoolArn: !Ref CognitoUserPoolArn
+            JwtConfiguration:
+              Audience:
+                - !Ref CognitoUserPoolClientId
+              Issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPoolId}"
         DefaultAuthorizer: CognitoAuthorizer
 
   TrailBackendLambda:
