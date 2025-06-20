@@ -97,6 +97,7 @@ Resources:
 
   TrailAuroraInstance:
     Type: AWS::RDS::DBInstance
+    DependsOn: TrailAuroraCluster
     Properties:
       DBClusterIdentifier: !Ref TrailAuroraCluster
       DBInstanceClass: db.serverless
@@ -123,6 +124,7 @@ Resources:
       Auth:
         Authorizers:
           CognitoAuthorizer:
+            IdentitySource: "$request.header.Authorization"
             JwtConfiguration:
               Audience:
                 - !Ref CognitoUserPoolClientId
@@ -143,8 +145,8 @@ Resources:
           - !Ref TrailSubnet2
       Environment:
         Variables:
-          TRAIL_AWS_AURORA_PG_DB_HOST: !GetAtt TrailAuroraCluster.Endpoint.Address
-          TRAIL_AWS_AURORA_PG_DB_PORT: !GetAtt TrailAuroraCluster.Endpoint.Port
+          TRAIL_AWS_AURORA_PG_DB_HOST: !Ref TrailAuroraCluster
+          TRAIL_AWS_AURORA_PG_DB_PORT: 5432
           TRAIL_AWS_AURORA_PG_DB_NAME: !Ref DBName
           TRAIL_AWS_AURORA_PG_DB_USER: !Ref DBUsername
           TRAIL_AWS_AURORA_PG_DB_PASS: !Ref DBPassword
@@ -170,10 +172,10 @@ Resources:
 Outputs:
   AuroraClusterEndpoint:
     Description: Writer endpoint for Aurora PostgreSQL
-    Value: !GetAtt TrailAuroraCluster.Endpoint.Address
+    Value: !Ref TrailAuroraCluster
   AuroraClusterPort:
     Description: Port for Aurora PostgreSQL
-    Value: !GetAtt TrailAuroraCluster.Endpoint.Port
+    Value: 5432
   LambdaFunctionName:
     Description: Lambda function name
     Value: !Ref TrailBackendLambda
