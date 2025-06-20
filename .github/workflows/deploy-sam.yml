@@ -1,0 +1,43 @@
+name: Deploy SAM Application
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install AWS SAM CLI
+        run: |
+          pip install aws-sam-cli
+
+      - name: Build SAM application
+        run: |
+          sam build --template-file backend/template.yaml
+
+      - name: Deploy SAM application
+        run: |
+          sam deploy \
+            --template-file backend/template.yaml \
+            --stack-name ${{ vars.SAM_STACK_NAME }} \
+            --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
+            --no-confirm-changeset \
+            --region ${{ secrets.AWS_REGION }} \
+            --parameter-overrides \
+              DBName=${{ secrets.DB_NAME }} \
+              DBUsername=${{ secrets.DB_USERNAME }} \
+              DBPassword=${{ secrets.DB_PASSWORD }} \
+              CognitoUserPoolArn=${{ secrets.COGNITO_USER_POOL_ARN }} \
+              CognitoUserPoolId=${{ secrets.COGNITO_USER_POOL_ID }} \
+              CognitoUserPoolClientId=${{ secrets.COGNITO_USER_POOL_CLIENT_ID }} \
+              CorsAllowedOrigin=${{ secrets.CORS_ALLOWED_ORIGIN }}
