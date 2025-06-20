@@ -54,7 +54,7 @@ jobs:
           sam build --template-file backend/template.yaml
 
       - name: Deploy SAM application
-        run: |
+        run: >
           sam deploy \
             --template-file backend/template.yaml \
             --stack-name ${{ env.TRAIL_AWS_SAM_STACK_NAME }} \
