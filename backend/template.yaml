@@ -1,0 +1,193 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Trail backend - Lambda (Express) + Aurora PostgreSQL Serverless v2
+
+Parameters:
+  DBName:
+    Type: String
+    MinLength: 1
+  DBUsername:
+    Type: String
+    MinLength: 1
+  DBPassword:
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    Description: Master password for the database
+  CognitoUserPoolArn:
+    Type: String
+    MinLength: 1
+    Description: ARN of the existing Cognito User Pool
+  CognitoUserPoolId:
+    Type: String
+    MinLength: 1
+    Description: ID of the existing Cognito User Pool
+  CognitoUserPoolClientId:
+    Type: String
+    MinLength: 1
+    Description: Client ID of the existing Cognito User Pool Client
+  CorsAllowedOrigin:
+    Type: String
+    MinLength: 1
+    Description: Allowed origin for CORS
+
+Resources:
+  TrailVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+
+  TrailSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TrailVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+
+  TrailSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TrailVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [1, !GetAZs '']
+
+  TrailDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for Aurora
+      SubnetIds:
+        - !Ref TrailSubnet1
+        - !Ref TrailSubnet2
+
+  TrailSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to Aurora PostgreSQL
+      VpcId: !Ref TrailVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref LambdaSecurityGroup
+
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Lambda access to Aurora
+      VpcId: !Ref TrailVPC
+
+  TrailAuroraCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: aurora-postgresql
+      EngineMode: serverless
+      EngineVersion: '15.3'
+      DatabaseName: !Ref DBName
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DBSubnetGroupName: !Ref TrailDBSubnetGroup
+      VpcSecurityGroupIds:
+        - !Ref TrailSecurityGroup
+      StorageEncrypted: true
+      ServerlessV2ScalingConfiguration:
+        MinCapacity: 0.5
+        MaxCapacity: 2
+
+  TrailAuroraInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBClusterIdentifier: !Ref TrailAuroraCluster
+      DBInstanceClass: db.serverless
+      Engine: aurora-postgresql
+
+  TrailCognitoAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref TrailHttpApi
+      AuthorizerType: JWT
+      IdentitySource:
+        - "$request.header.Authorization"
+      Name: CognitoAuthorizer
+      JwtConfiguration:
+        Audience:
+          - !Ref CognitoUserPoolClientId
+        Issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPoolId}"
+
+  TrailHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      Name: TrailBackendApi
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref CorsAllowedOrigin
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - Authorization
+          - Content-Type
+        MaxAge: 600
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !Ref CognitoUserPoolArn
+            IdentitySource: "$request.header.Authorization"
+        DefaultAuthorizer: CognitoAuthorizer
+
+  TrailBackendLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: lambda.handler
+      Runtime: nodejs18.x
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref TrailSubnet1
+          - !Ref TrailSubnet2
+      Environment:
+        Variables:
+          TRAIL_AWS_AURORA_PG_DB_HOST: !GetAtt TrailAuroraCluster.Endpoint.Address
+          TRAIL_AWS_AURORA_PG_DB_PORT: !GetAtt TrailAuroraCluster.Endpoint.Port
+          TRAIL_AWS_AURORA_PG_DB_NAME: !Ref DBName
+          TRAIL_AWS_AURORA_PG_DB_USER: !Ref DBUsername
+          TRAIL_AWS_AURORA_PG_DB_PASS: !Ref DBPassword
+          TRAIL_AWS_REGION: !Ref AWS::Region
+          TRAIL_CORS_ORIGIN: !Ref CorsAllowedOrigin
+          TRAIL_IS_LOCAL: "false"
+      Policies:
+        - AWSLambdaVPCAccessExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - rds-db:connect
+              Resource: "*"
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TrailHttpApi
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  AuroraClusterEndpoint:
+    Description: Writer endpoint for Aurora PostgreSQL
+    Value: !GetAtt TrailAuroraCluster.Endpoint.Address
+  AuroraClusterPort:
+    Description: Port for Aurora PostgreSQL
+    Value: !GetAtt TrailAuroraCluster.Endpoint.Port
+  LambdaFunctionName:
+    Description: Lambda function name
+    Value: !Ref TrailBackendLambda
+  HttpApiUrl:
+    Description: HTTP API endpoint URL
+    Value: !Sub 'https://${TrailHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
