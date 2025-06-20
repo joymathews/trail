@@ -7,15 +7,40 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    env:
+      CI_AWS_OIDC_ROLE_ARN: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+      CI_AWS_REGION: ${{ secrets.AWS_REGION }}
+      CI_SAM_STACK_NAME: ${{ vars.SAM_STACK_NAME }}
+      CI_DB_NAME: ${{ secrets.DB_NAME }}
+      CI_DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      CI_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      CI_COGNITO_USER_POOL_ARN: ${{ secrets.COGNITO_USER_POOL_ARN }}
+      CI_COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
+      CI_COGNITO_USER_POOL_CLIENT_ID: ${{ secrets.COGNITO_USER_POOL_CLIENT_ID }}
+      CI_CORS_ALLOWED_ORIGIN: ${{ secrets.CORS_ALLOWED_ORIGIN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Validate required secrets and variables
+        run: |
+          missing=0
+          for var in CI_AWS_OIDC_ROLE_ARN CI_AWS_REGION CI_SAM_STACK_NAME CI_DB_NAME CI_DB_USERNAME CI_DB_PASSWORD CI_COGNITO_USER_POOL_ARN CI_COGNITO_USER_POOL_ID CI_COGNITO_USER_POOL_CLIENT_ID CI_CORS_ALLOWED_ORIGIN; do
+            if [ -z "${!var}" ] || [ "${!var}" = "None" ]; then
+              echo "::error::Environment variable $var is not set or is 'None'"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            exit 1
+          fi
+        shell: bash
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ env.CI_AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.CI_AWS_REGION }}
 
       - name: Install AWS SAM CLI
         run: |
@@ -29,15 +54,15 @@ jobs:
         run: |
           sam deploy \
             --template-file backend/template.yaml \
-            --stack-name ${{ vars.SAM_STACK_NAME }} \
+            --stack-name ${{ env.CI_SAM_STACK_NAME }} \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
-            --region ${{ secrets.AWS_REGION }} \
+            --region ${{ env.CI_AWS_REGION }} \
             --parameter-overrides \
-              DBName=${{ secrets.DB_NAME }} \
-              DBUsername=${{ secrets.DB_USERNAME }} \
-              DBPassword=${{ secrets.DB_PASSWORD }} \
-              CognitoUserPoolArn=${{ secrets.COGNITO_USER_POOL_ARN }} \
-              CognitoUserPoolId=${{ secrets.COGNITO_USER_POOL_ID }} \
-              CognitoUserPoolClientId=${{ secrets.COGNITO_USER_POOL_CLIENT_ID }} \
-              CorsAllowedOrigin=${{ secrets.CORS_ALLOWED_ORIGIN }}
+              DBName=${{ env.CI_DB_NAME }} \
+              DBUsername=${{ env.CI_DB_USERNAME }} \
+              DBPassword=${{ env.CI_DB_PASSWORD }} \
+              CognitoUserPoolArn=${{ env.CI_COGNITO_USER_POOL_ARN }} \
+              CognitoUserPoolId=${{ env.CI_COGNITO_USER_POOL_ID }} \
+              CognitoUserPoolClientId=${{ env.CI_COGNITO_USER_POOL_CLIENT_ID }} \
+              CorsAllowedOrigin=${{ env.CI_CORS_ALLOWED_ORIGIN }}
