@@ -151,14 +151,14 @@ Resources:
           - !Ref TrailSubnet2
       Environment:
         Variables:
-          DB_HOST: !GetAtt TrailAuroraCluster.Endpoint.Address
-          DB_PORT: !GetAtt TrailAuroraCluster.Endpoint.Port
-          DB_NAME: !Ref DBName
-          DB_USER: !Ref DBUsername
-          DB_PASS: !Ref DBPassword
-          REGION: !Ref AWS::Region
-          CORS_ORIGIN: !Ref CorsAllowedOrigin
-          IS_LOCAL: "false"
+          TRAIL_AWS_AURORA_PG_DB_HOST: !GetAtt TrailAuroraCluster.Endpoint.Address
+          TRAIL_AWS_AURORA_PG_DB_PORT: !GetAtt TrailAuroraCluster.Endpoint.Port
+          TRAIL_AWS_AURORA_PG_DB_NAME: !Ref DBName
+          TRAIL_AWS_AURORA_PG_DB_USER: !Ref DBUsername
+          TRAIL_AWS_AURORA_PG_DB_PASS: !Ref DBPassword
+          TRAIL_AWS_REGION: !Ref AWS::Region
+          TRAIL_CORS_ORIGIN: !Ref CorsAllowedOrigin
+          TRAIL_IS_LOCAL: "false"
       Policies:
         - AWSLambdaVPCAccessExecutionRole
         - Version: '2012-10-17'
