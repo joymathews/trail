@@ -95,6 +95,13 @@ jobs:
           echo "\nListing backend/lambda/node_modules directory:"
           ls -al lambda/node_modules || echo "lambda/node_modules not found"
       
+      - name: Debug List .aws-sam/build/TrailBackendLambda directory after build
+        run: |
+          cd backend/.aws-sam/build/TrailBackendLambda
+          ls -al
+          echo "\nListing node_modules directory:"
+          ls -al node_modules || echo "node_modules not found"
+      
       - name: Deploy SAM application
         run: |
           cd backend
