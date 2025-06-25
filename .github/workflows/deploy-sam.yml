@@ -6,6 +6,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     environment: production
     env:
       TRAIL_AWS_OIDC_ROLE: ${{ secrets.TRAIL_AWS_OIDC_ROLE }}
@@ -43,22 +46,23 @@ jobs:
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
-
       - name: Build SAM application
         run: |
-          sam build --template-file backend/template.yaml
-
+          cd backend
+          sam build --template-file template.yaml
       - name: Deploy SAM application
         run: |
+          cd backend
           sam deploy \
-            --template-file backend/template.yaml \
-            --stack-name ${{ env.TRAIL_AWS_SAM_STACK_NAME }} \
+            --template-file template.yaml \
+            --stack-name "${{ env.TRAIL_AWS_SAM_STACK_NAME }}" \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
-            --region ${{ env.TRAIL_AWS_REGION }} \
+            --region "${{ env.TRAIL_AWS_REGION }}" \
+            --resolve-s3 \
             --parameter-overrides \
-              TableName=${{ env.TRAIL_DYNAMODB_TABLE_NAME }} \
-              CognitoUserPoolArn=${{ env.TRAIL_AWS_COG_POOL_ARN }} \
-              CognitoUserPoolId=${{ env.TRAIL_AWS_COG_POOL_ID }} \
-              CognitoUserPoolClientId=${{ env.TRAIL_AWS_COG_POOL_CLIENT }} \
-              CorsAllowedOrigin=${{ env.TRAIL_CORS_ORIGIN }}
+              TableName="${{ env.TRAIL_DYNAMODB_TABLE_NAME }}" \
+              CognitoUserPoolArn="${{ env.TRAIL_AWS_COG_POOL_ARN }}" \
+              CognitoUserPoolId="${{ env.TRAIL_AWS_COG_POOL_ID }}" \
+              CognitoUserPoolClientId="${{ env.TRAIL_AWS_COG_POOL_CLIENT }}" \
+              CorsAllowedOrigin="${{ env.TRAIL_CORS_ORIGIN }}"
