@@ -63,7 +63,7 @@ jobs:
       #     cd backend/lambda
       #     npm install
 
-      - name: Debug: List lambda directory before build
+      - name: Debug List lambda directory before build
         run: |
           cd backend/lambda
           ls -al
@@ -73,7 +73,7 @@ jobs:
           cd backend
           sam build --clean --template-file template.yaml
 
-      - name: Debug: List lambda directory after build
+      - name: Debug List lambda directory after build
         run: |
           cd backend/lambda
           ls -al
