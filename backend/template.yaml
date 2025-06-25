@@ -76,7 +76,7 @@ Resources:
       Timeout: 30
       Environment:
         Variables:
-          TRAIL_DYNAMODB_TABLE: !Ref TrailDynamoDBTable
+          TRAIL_AWS_DYNAMO_DB_SPENDS_TABLE_NAME: !Ref TrailDynamoDBTable
           TRAIL_AWS_REGION: !Ref AWS::Region
           TRAIL_CORS_ORIGIN: !Ref CorsAllowedOrigin
           TRAIL_IS_LOCAL: "false"
