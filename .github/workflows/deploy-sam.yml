@@ -44,6 +44,11 @@ jobs:
           role-to-assume: ${{ env.TRAIL_AWS_OIDC_ROLE }}
           aws-region: ${{ env.TRAIL_AWS_REGION }}
 
+      - name: Set up Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
