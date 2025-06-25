@@ -62,12 +62,6 @@ Resources:
       LogGroupName: !Sub "/aws/http-api/${TrailHttpApi}"
       RetentionInDays: 30
 
-  TrailHttpApiLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/http-api/${TrailHttpApi}"
-      RetentionInDays: 14
-
   TrailBackendLambda:
     Type: AWS::Serverless::Function
     Properties:
