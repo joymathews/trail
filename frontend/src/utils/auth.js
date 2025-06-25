@@ -15,6 +15,7 @@ export function getCurrentUser() {
 export function signOutCurrentUser() {
   const user = getCurrentUser();
   if (user) user.signOut();
+  localStorage.removeItem('jwt'); // Remove JWT from localStorage
 }
 
 export function isAuthenticated() {
