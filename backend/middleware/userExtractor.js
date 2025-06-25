@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const { IS_LOCAL } = require('../config');
 
 function userExtractor(req, res, next) {
-  if (IS_LOCAL === 'true') {
-    // Local: decode JWT from Authorization header (no signature verification for dev)
+  if (IS_LOCAL) {
     const authHeader = req.headers.authorization || req.headers.Authorization;
+    // Local: decode JWT from Authorization header (no signature verification for dev)
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
       try {
