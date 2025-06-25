@@ -4,6 +4,7 @@ const spendsRouter = require('./routes/spends');
 const expenseRouter = require('./routes/expense');
 const savingRouter = require('./routes/saving');
 const autoComplete = require('./routes/autocomplete');
+const healthCheck = require('./routes/health');
 const { CORS_ORIGIN } = require('./config');
 
 function createApp() {
@@ -24,6 +25,7 @@ function createApp() {
   app.use('/expense', expenseRouter);
   app.use('/saving', savingRouter);
   app.use('/autocomplete', autoComplete);
+  app.use('/health',healthCheck);
 
   return app;
 }
