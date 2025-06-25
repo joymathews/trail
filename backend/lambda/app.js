@@ -18,8 +18,6 @@ function createApp() {
     credentials: true
   }));
 
-  // Explicitly handle OPTIONS for all routes
-  app.options('*', cors());
 
   app.use('/spends', spendsRouter);
   app.use('/expense', expenseRouter);

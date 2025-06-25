@@ -15,7 +15,6 @@
     "@aws-sdk/lib-dynamodb": "^3.828.0",
     "@aws-sdk/rds-signer": "^3.828.0",
     "@vendia/serverless-express": "^4.12.6",
-    "backend": "file:..",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
