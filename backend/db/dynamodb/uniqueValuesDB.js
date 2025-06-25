@@ -26,7 +26,7 @@ async function addDistinctValue(userId, type, value) {
   return item;
 }
 
-// Add unique values for category, vendor, paymentMode, description, spendType
+// Add unique values for category, vendor, paymentMode, description
 async function addAllDistinctValues(userId, values) {
   const results = [];
   if (values[SpendFields.CATEGORY]) {

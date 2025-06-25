@@ -51,7 +51,10 @@ export function renewTokenIfNeeded() {
   return new Promise((resolve, reject) => {
     if (!user) return resolve(false);
     user.getSession((err, session) => {
-      if (err || !session) return reject(err);
+      if (err || !session) {
+        // Provide a clear error message if session is missing
+        return reject(new Error("Failed to get session for token renewal."));
+      }
       if (!session.isValid()) {
         user.refreshSession(session.getRefreshToken(), (refreshErr, newSession) => {
           if (refreshErr) return reject(refreshErr);
