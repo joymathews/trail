@@ -106,7 +106,7 @@ jobs:
         run: |
           cd backend
           sam deploy \
-            --template-file template.yaml \
+            --template-file .aws-sam/build/template.yaml \
             --stack-name "${{ env.TRAIL_AWS_SAM_STACK_NAME }}" \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
