@@ -53,20 +53,30 @@ jobs:
         run: |
           pip install aws-sam-cli
           
-      - name: Clean old node_modules and lock file in lambda
+      # - name: Clean old node_modules and lock file in lambda
+      #   run: |
+      #     cd backend/lambda
+      #     rm -rf node_modules package-lock.json
+
+      # - name: Install Node.js dependencies in lambda
+      #   run: |
+      #     cd backend/lambda
+      #     npm install
+
+      - name: Debug: List lambda directory before build
         run: |
           cd backend/lambda
-          rm -rf node_modules package-lock.json
+          ls -al
 
-      - name: Install Node.js dependencies in lambda
-        run: |
-          cd backend/lambda
-          npm install
-
-      - name: Build SAM application
+      - name: Build SAM application (clean)
         run: |
           cd backend
-          sam build --template-file template.yaml
+          sam build --clean --template-file template.yaml
+
+      - name: Debug: List lambda directory after build
+        run: |
+          cd backend/lambda
+          ls -al
       
       - name: Debug List backend directory contents after build
         run: |
