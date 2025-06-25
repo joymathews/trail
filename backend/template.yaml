@@ -1,19 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Trail backend - Lambda (Express) + Aurora PostgreSQL Serverless v2
+Description: Trail backend - Lambda (Express) + DynamoDB
 
 Parameters:
-  DBName:
+  TableName:
     Type: String
     MinLength: 1
-  DBUsername:
-    Type: String
-    MinLength: 1
-  DBPassword:
-    Type: String
-    NoEcho: true
-    MinLength: 8
-    Description: Master password for the database
+    Description: Name of the DynamoDB table
   CognitoUserPoolArn:
     Type: String
     MinLength: 1
@@ -32,76 +25,6 @@ Parameters:
     Description: Allowed origin for CORS
 
 Resources:
-  TrailVPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-
-  TrailSubnet1:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref TrailVPC
-      CidrBlock: 10.0.1.0/24
-      AvailabilityZone: !Select [0, !GetAZs '']
-
-  TrailSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref TrailVPC
-      CidrBlock: 10.0.2.0/24
-      AvailabilityZone: !Select [1, !GetAZs '']
-
-  TrailDBSubnetGroup:
-    Type: AWS::RDS::DBSubnetGroup
-    Properties:
-      DBSubnetGroupDescription: Subnet group for Aurora
-      SubnetIds:
-        - !Ref TrailSubnet1
-        - !Ref TrailSubnet2
-
-  TrailSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable access to Aurora PostgreSQL
-      VpcId: !Ref TrailVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 5432
-          ToPort: 5432
-          SourceSecurityGroupId: !Ref LambdaSecurityGroup
-
-  LambdaSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Lambda access to Aurora
-      VpcId: !Ref TrailVPC
-
-  TrailAuroraCluster:
-    Type: AWS::RDS::DBCluster
-    Properties:
-      Engine: aurora-postgresql
-      EngineVersion: '15.3'
-      DatabaseName: !Ref DBName
-      MasterUsername: !Ref DBUsername
-      MasterUserPassword: !Ref DBPassword
-      DBSubnetGroupName: !Ref TrailDBSubnetGroup
-      VpcSecurityGroupIds:
-        - !Ref TrailSecurityGroup
-      StorageEncrypted: true
-      ServerlessV2ScalingConfiguration:
-        MinCapacity: 0.5
-        MaxCapacity: 2
-
-  TrailAuroraInstance:
-    Type: AWS::RDS::DBInstance
-    DependsOn: TrailAuroraCluster
-    Properties:
-      DBClusterIdentifier: !Ref TrailAuroraCluster
-      DBInstanceClass: db.serverless
-      Engine: aurora-postgresql
-
   TrailHttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
@@ -135,31 +58,22 @@ Resources:
     Properties:
       CodeUri: ./
       Handler: lambda.handler
-      Runtime: nodejs18.x
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref LambdaSecurityGroup
-        SubnetIds:
-          - !Ref TrailSubnet1
-          - !Ref TrailSubnet2
+      Runtime: nodejs22.x
+      Timeout: 30
       Environment:
         Variables:
-          TRAIL_AWS_AURORA_PG_DB_HOST: !Ref TrailAuroraCluster
-          TRAIL_AWS_AURORA_PG_DB_PORT: 5432
-          TRAIL_AWS_AURORA_PG_DB_NAME: !Ref DBName
-          TRAIL_AWS_AURORA_PG_DB_USER: !Ref DBUsername
-          TRAIL_AWS_AURORA_PG_DB_PASS: !Ref DBPassword
+          TRAIL_DYNAMODB_TABLE: !Ref TrailDynamoDBTable
           TRAIL_AWS_REGION: !Ref AWS::Region
           TRAIL_CORS_ORIGIN: !Ref CorsAllowedOrigin
           TRAIL_IS_LOCAL: "false"
       Policies:
-        - AWSLambdaVPCAccessExecutionRole
+        - AWSLambdaBasicExecutionRole
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Action:
-                - rds-db:connect
-              Resource: "*"
+                - dynamodb:*
+              Resource: !GetAtt TrailDynamoDBTable.Arn
       Events:
         ApiEvent:
           Type: HttpApi
@@ -167,14 +81,35 @@ Resources:
             ApiId: !Ref TrailHttpApi
             Path: /{proxy+}
             Method: ANY
+        HealthEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TrailHttpApi
+            Path: /health
+            Method: GET
+          Auth:
+            Authorizer: NONE
+
+  TrailDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      AttributeDefinitions:
+        - AttributeName: UserId
+          AttributeType: S
+        - AttributeName: SortKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        - AttributeName: SortKey
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
 
 Outputs:
-  AuroraClusterEndpoint:
-    Description: Writer endpoint for Aurora PostgreSQL
-    Value: !Ref TrailAuroraCluster
-  AuroraClusterPort:
-    Description: Port for Aurora PostgreSQL
-    Value: 5432
+  DynamoDBTableName:
+    Description: DynamoDB Table Name
+    Value: !Ref TrailDynamoDBTable
   LambdaFunctionName:
     Description: Lambda function name
     Value: !Ref TrailBackendLambda
