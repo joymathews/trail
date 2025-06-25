@@ -1,10 +1,11 @@
 const { createDynamoDBClient } = require('./dynamodbFactory');
+const { ListTablesCommand } = require('@aws-sdk/client-dynamodb');
 
 async function dynamoHealthCheck() {
   try {
     const client = createDynamoDBClient();
-    // Simple call to list tables as a health check
-    await client.listTables({});
+    // Use the command pattern for AWS SDK v3
+    await client.send(new ListTablesCommand({}));
     return true;
   } catch (err) {
     return false;
