@@ -52,6 +52,21 @@ Resources:
                 - !Ref CognitoUserPoolClientId
               Issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPoolId}"
         DefaultAuthorizer: CognitoAuthorizer
+      AccessLogSettings:
+        DestinationArn: !GetAtt TrailApiAccessLogGroup.Arn
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","routeKey":"$context.routeKey","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength","user":"$context.authorizer.claims.sub"}'
+
+  TrailApiAccessLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/http-api/${TrailHttpApi}"
+      RetentionInDays: 30
+
+  TrailHttpApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/http-api/${TrailHttpApi}"
+      RetentionInDays: 14
 
   TrailBackendLambda:
     Type: AWS::Serverless::Function
