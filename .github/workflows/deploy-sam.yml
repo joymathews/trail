@@ -51,6 +51,13 @@ jobs:
         run: |
           cd backend
           sam build --template-file template.yaml
+      - name: Debug: List backend directory contents after build
+        run: |
+          cd backend
+          echo "Listing backend directory:"
+          ls -al
+          echo "\nListing backend/node_modules directory:"
+          ls -al node_modules || echo "node_modules not found"
       - name: Deploy SAM application
         run: |
           cd backend
