@@ -75,12 +75,6 @@ Resources:
                 - dynamodb:*
               Resource: !GetAtt TrailDynamoDBTable.Arn
       Events:
-        ApiEvent:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref TrailHttpApi
-            Path: /{proxy+}
-            Method: ANY
         HealthEvent:
           Type: HttpApi
           Properties:
@@ -89,6 +83,12 @@ Resources:
             Method: GET
           Auth:
             Authorizer: NONE
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref TrailHttpApi
+            Path: /{proxy+}
+            Method: ANY
 
   TrailDynamoDBTable:
     Type: AWS::DynamoDB::Table
