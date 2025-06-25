@@ -7,15 +7,14 @@ async function ensureTableExists() {
   const params = {
     TableName: TABLE_NAME,
     AttributeDefinitions: [
-      { AttributeName: 'id', AttributeType: 'S' },
+      { AttributeName: 'UserId', AttributeType: 'S' },
+      { AttributeName: 'SortKey', AttributeType: 'S' },
     ],
     KeySchema: [
-      { AttributeName: 'id', KeyType: 'HASH' },
+      { AttributeName: 'UserId', KeyType: 'HASH' },
+      { AttributeName: 'SortKey', KeyType: 'RANGE' },
     ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 1,
-      WriteCapacityUnits: 1,
-    },
+    BillingMode: 'PAY_PER_REQUEST', // On-demand mode
   };
 
   try {

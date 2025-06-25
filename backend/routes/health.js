@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { pgHealthCheck } = require('../db/postgreSQL/postgreSQLInterface');
+const { dynamoHealthCheck } = require('../db/dynamodb/dynamoHealthCheck');
 
 // Health check endpoint
 router.get('/', async (req, res) => {
-  const dbOk = await pgHealthCheck();
+  const dbOk = await dynamoHealthCheck();
   if (dbOk) {
     res.status(200).json({ status: 'ok', db: 'connected' });
   } else {

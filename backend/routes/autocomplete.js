@@ -1,27 +1,32 @@
-// Autocomplete route for Category, Vendor, PaymentMode, Description
+// Autocomplete route for Category, Vendor, PaymentMode
 const express = require('express');
-const router = express.Router();
 const db = require('../db/dbInterface');
 const { SpendFields } = require('../utils/fieldEnums');
+const userExtractor = require('../middleware/userExtractor');
 
-// GET /autocomplete/:field?q=searchText
+const router = express.Router();
+
+router.use(userExtractor);
+
+// GET /autocomplete/:field
 router.get('/:field', async (req, res) => {
   const { field } = req.params;
-  const { q } = req.query;
+  const userId = req.user.id;
+  const search = req.query.q || "";
   try {
     let results;
     switch (field) {
       case SpendFields.CATEGORY:
-        results = await db.getCategorySuggestions(q);
+        results = await db.getDistinctValues(userId, SpendFields.CATEGORY, search);
         break;
       case SpendFields.VENDOR:
-        results = await db.getVendorSuggestions(q);
+        results = await db.getDistinctValues(userId, SpendFields.VENDOR, search);
         break;
       case SpendFields.PAYMENT_MODE:
-        results = await db.getPaymentModeSuggestions(q);
+        results = await db.getDistinctValues(userId, SpendFields.PAYMENT_MODE, search);
         break;
       case SpendFields.DESCRIPTION:
-        results = await db.getDescriptionSuggestions(q);
+        results = await db.getDistinctValues(userId, SpendFields.DESCRIPTION, search);
         break;
       default:
         return res.status(400).json({ error: 'Invalid autocomplete field' });
