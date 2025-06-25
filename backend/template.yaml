@@ -70,7 +70,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Ref LambdaFunctionName
-      CodeUri: ./
+      CodeUri: ./lambda
       Handler: lambda.handler
       Runtime: nodejs22.x
       Timeout: 30
