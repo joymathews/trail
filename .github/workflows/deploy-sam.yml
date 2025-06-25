@@ -68,10 +68,15 @@ jobs:
           cd backend/lambda
           ls -al
 
-      - name: Build SAM application (clean)
+      - name: Clean previous SAM build artifacts
         run: |
           cd backend
-          sam build --clean --template-file template.yaml
+          rm -rf .aws-sam
+
+      - name: Build SAM application
+        run: |
+          cd backend
+          sam build --template-file template.yaml
 
       - name: Debug List lambda directory after build
         run: |
