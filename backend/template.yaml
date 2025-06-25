@@ -95,16 +95,16 @@ Resources:
             ApiId: !Ref TrailHttpApi
             Path: /health
             Method: GET
-          Auth:
-            Authorizer: NONE
+            Auth:
+              Authorizer: NONE
         OptionsEvent:
           Type: HttpApi
           Properties:
             ApiId: !Ref TrailHttpApi
             Path: /{proxy+}
             Method: OPTIONS
-          Auth:
-            Authorizer: NONE
+            Auth:
+              Authorizer: NONE
         ApiEvent:
           Type: HttpApi
           Properties:

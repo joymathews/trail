@@ -48,6 +48,11 @@ jobs:
         run: |
           pip install aws-sam-cli
           
+      - name: Clean old node_modules and lock file in lambda
+        run: |
+          cd backend/lambda
+          rm -rf node_modules package-lock.json
+
       - name: Install Node.js dependencies in lambda
         run: |
           cd backend/lambda

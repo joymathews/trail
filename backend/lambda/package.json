@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "engines": {
+    "node": ">=22.0.0 <23.0.0"
+  },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.828.0",
     "@aws-sdk/credential-providers": "^3.828.0",
