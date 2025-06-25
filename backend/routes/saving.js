@@ -6,14 +6,18 @@ const {
 } = require('../db/dbInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterSaving } = require('../services/filterService');
+const userExtractor = require('../middleware/userExtractor');
 
 const router = express.Router();
+
+router.use(userExtractor);
 
 // GET /saving - Get all savings for a date range
 router.get('/', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const spends = await getSpendsByDateRange(startDate, endDate);
+    const userId = req.user.id;
+    const spends = await getSpendsByDateRange(userId, startDate, endDate);
     // Filter only savings using filterService
     const savings = spends.filter(filterSaving);
     res.json(savings);
@@ -26,8 +30,9 @@ router.get('/', validateDateRange, async (req, res) => {
 router.get('/sum', validateDateRange, validateField, async (req, res) => {
   try {
     const { startDate, endDate, field } = req.query;
+    const userId = req.user.id;
     // Only include spends where SpendType is 'saving'
-    const sum = await sumByFieldForSavings({ startDate, endDate, field });
+    const sum = await sumByFieldForSavings({ userId, startDate, endDate, field });
     res.json(sum);
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate sum.', details: err.message });
@@ -38,7 +43,8 @@ router.get('/sum', validateDateRange, validateField, async (req, res) => {
 router.get('/total', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const total = await totalSpendsForSavings({ startDate, endDate });
+    const userId = req.user.id;
+    const total = await totalSpendsForSavings({ userId, startDate, endDate });
     res.json({ total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate total sum.', details: err.message });

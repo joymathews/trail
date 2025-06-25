@@ -13,8 +13,8 @@ function sumByFieldWithFilter(spends, field, filterFn) {
   return sumByField;
 }
 
-async function sumByFieldForExpenseTypes({ startDate, endDate, field }) {
-  const spends = await getSpendsByDateRange(startDate, endDate);
+async function sumByFieldForExpenseTypes({ userId, startDate, endDate, field }) {
+  const spends = await getSpendsByDateRange(userId, startDate, endDate);
   return sumByFieldWithFilter(
     spends,
     field,
@@ -22,8 +22,8 @@ async function sumByFieldForExpenseTypes({ startDate, endDate, field }) {
   );
 }
 
-async function sumByFieldForSavings({ startDate, endDate, field }) {
-  const spends = await getSpendsByDateRange(startDate, endDate);
+async function sumByFieldForSavings({ userId, startDate, endDate, field }) {
+  const spends = await getSpendsByDateRange(userId, startDate, endDate);
   return sumByFieldWithFilter(
     spends,
     field,
@@ -37,26 +37,26 @@ function totalSpendsWithFilter(spends, filterFn) {
     .reduce((sum, s) => sum + Number(s[SpendFields.AMOUNT_SPENT]), 0);
 }
 
-async function totalSpendsForExpenseTypes({ startDate, endDate }) {
-  const spends = await getSpendsByDateRange(startDate, endDate);
+async function totalSpendsForExpenseTypes({ userId, startDate, endDate }) {
+  const spends = await getSpendsByDateRange(userId, startDate, endDate);
   return totalSpendsWithFilter(
     spends,
     filterExpenseType
   );
 }
 
-async function totalSpendsForSavings({ startDate, endDate }) {
-  const spends = await getSpendsByDateRange(startDate, endDate);
+async function totalSpendsForSavings({ userId, startDate, endDate }) {
+  const spends = await getSpendsByDateRange(userId, startDate, endDate);
   return totalSpendsWithFilter(
     spends,
     filterSaving
   );
 }
 
-async function forecastDynamicExpense({ startDate, endDate }) {
+async function forecastDynamicExpense({ userId, startDate, endDate }) {
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
   const actualEnd = today < endDate ? today : endDate;
-  const spends = await getSpendsByDateRange(startDate, actualEnd);
+  const spends = await getSpendsByDateRange(userId, startDate, actualEnd);
   // Only include spends where SpendType is 'dynamic'
   const dynamicSpends = spends.filter(filterDynamic);
   const totalSpent = dynamicSpends.reduce((sum, s) => sum + Number(s[SpendFields.AMOUNT_SPENT]), 0);

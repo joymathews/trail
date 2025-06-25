@@ -15,6 +15,7 @@ export function getCurrentUser() {
 export function signOutCurrentUser() {
   const user = getCurrentUser();
   if (user) user.signOut();
+  localStorage.removeItem('jwt'); // Remove JWT from localStorage
 }
 
 export function isAuthenticated() {
@@ -33,8 +34,38 @@ export function authenticateUser(username, password) {
   const authDetails = new AuthenticationDetails({ Username: username, Password: password });
   return new Promise((resolve, reject) => {
     user.authenticateUser(authDetails, {
-      onSuccess: (result) => resolve(result),
+      onSuccess: (result) => {
+        // Store JWT in localStorage
+        const idToken = result.getIdToken().getJwtToken();
+        localStorage.setItem('jwt', idToken);
+        resolve(result);
+      },
       onFailure: (err) => reject(err),
+    });
+  });
+}
+
+// Token renewal logic
+export function renewTokenIfNeeded() {
+  const user = getCurrentUser();
+  return new Promise((resolve, reject) => {
+    if (!user) return resolve(false);
+    user.getSession((err, session) => {
+      if (err || !session) {
+        // Provide a clear error message if session is missing
+        return reject(new Error("Failed to get session for token renewal."));
+      }
+      if (!session.isValid()) {
+        user.refreshSession(session.getRefreshToken(), (refreshErr, newSession) => {
+          if (refreshErr) return reject(refreshErr);
+          const idToken = newSession.getIdToken().getJwtToken();
+          localStorage.setItem('jwt', idToken);
+          resolve(true);
+        });
+      } else {
+        // Token is still valid
+        resolve(false);
+      }
     });
   });
 }

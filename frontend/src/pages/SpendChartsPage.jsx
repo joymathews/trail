@@ -10,7 +10,7 @@ import { getDefaultLast7DaysRange } from '../utils/dateRangeDefaults';
 import { getDateRangeFromStorage, saveDateRangeToStorage } from '../utils/dateRangeStorage';
 import './SpendChartsPage.scss';
 
-const SpendChartsPage = () => {
+const SpendChartsPage = ({ onSignOut }) => {
   const storedRange = getDateRangeFromStorage();
   const [dateRange, setDateRange] = useState(storedRange || getDefaultLast7DaysRange());
   const [chartTypes, setChartTypes] = useState({
@@ -44,7 +44,7 @@ const SpendChartsPage = () => {
 
   return (
     <div className="spend-charts-page dashboard-layout">
-      <Header />
+      <Header onSignOut={onSignOut} />
       <div className="charts-content">
         <div className="charts-header">
           <h2>Expense Dashboard</h2>
