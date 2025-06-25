@@ -19,6 +19,7 @@ jobs:
       TRAIL_AWS_COG_POOL_CLIENT: ${{ secrets.TRAIL_AWS_COG_POOL_CLIENT }}
       TRAIL_CORS_ORIGIN: ${{ vars.TRAIL_CORS_ORIGIN }}
       TRAIL_AWS_SAM_STACK_NAME: ${{ vars.TRAIL_AWS_SAM_STACK_NAME }}
+      TRAIL_LAMBDA_FUNCTION_NAME: ${{ vars.TRAIL_LAMBDA_FUNCTION_NAME }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,7 +27,7 @@ jobs:
       - name: Validate required secrets and variables
         run: |
           missing=0
-          for var in TRAIL_AWS_OIDC_ROLE TRAIL_AWS_REGION TRAIL_DYNAMODB_TABLE_NAME TRAIL_AWS_COG_POOL_ARN TRAIL_AWS_COG_POOL_ID TRAIL_AWS_COG_POOL_CLIENT TRAIL_CORS_ORIGIN TRAIL_AWS_SAM_STACK_NAME; do
+          for var in TRAIL_AWS_OIDC_ROLE TRAIL_AWS_REGION TRAIL_DYNAMODB_TABLE_NAME TRAIL_AWS_COG_POOL_ARN TRAIL_AWS_COG_POOL_ID TRAIL_AWS_COG_POOL_CLIENT TRAIL_CORS_ORIGIN TRAIL_AWS_SAM_STACK_NAME TRAIL_LAMBDA_FUNCTION_NAME; do
             if [ -z "${!var}" ] || [ "${!var}" = "None" ]; then
               echo "::error::Environment variable $var is not set or is 'None'"
               missing=1
@@ -65,4 +66,5 @@ jobs:
               CognitoUserPoolArn="${{ env.TRAIL_AWS_COG_POOL_ARN }}" \
               CognitoUserPoolId="${{ env.TRAIL_AWS_COG_POOL_ID }}" \
               CognitoUserPoolClientId="${{ env.TRAIL_AWS_COG_POOL_CLIENT }}" \
-              CorsAllowedOrigin="${{ env.TRAIL_CORS_ORIGIN }}"
+              CorsAllowedOrigin="${{ env.TRAIL_CORS_ORIGIN }}" \
+              LambdaFunctionName="${{ env.TRAIL_LAMBDA_FUNCTION_NAME }}"
