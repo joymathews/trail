@@ -47,6 +47,12 @@ jobs:
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
+          
+      - name: Install Node.js dependencies in lambda
+        run: |
+          cd backend/lambda
+          npm install
+
       - name: Build SAM application
         run: |
           cd backend
