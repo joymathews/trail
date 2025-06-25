@@ -59,6 +59,10 @@ jobs:
           ls -al
           echo "\nListing backend/node_modules directory:"
           ls -al node_modules || echo "node_modules not found"
+          echo "\nListing backend/lambda directory:"
+          ls -al lambda || echo "lambda directory not found"
+          echo "\nListing backend/lambda/node_modules directory:"
+          ls -al lambda/node_modules || echo "lambda/node_modules not found"
       
       - name: Deploy SAM application
         run: |
