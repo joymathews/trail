@@ -7,10 +7,18 @@ const autoComplete = require('./routes/autocomplete');
 const { CORS_ORIGIN } = require('./config');
 
 function createApp() {
-  const app = express(); // <-- FIXED
+  const app = express();
 
   app.use(express.json());
-  app.use(cors({ origin: CORS_ORIGIN }));
+  app.use(cors({
+    origin: CORS_ORIGIN,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Authorization', 'Content-Type'],
+    credentials: true
+  }));
+
+  // Explicitly handle OPTIONS for all routes
+  app.options('*', cors());
 
   app.use('/spends', spendsRouter);
   app.use('/expense', expenseRouter);
