@@ -47,15 +47,22 @@ jobs:
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
+
+      - name: Clean previous SAM build artifacts
+        run: |
+          cd backend
+          rm -rf .aws-sam
+
       - name: Build SAM application
         run: |
           cd backend
           sam build --template-file template.yaml
+
       - name: Deploy SAM application
         run: |
           cd backend
           sam deploy \
-            --template-file template.yaml \
+            --template-file .aws-sam/build/template.yaml \
             --stack-name "${{ env.TRAIL_AWS_SAM_STACK_NAME }}" \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --no-confirm-changeset \
