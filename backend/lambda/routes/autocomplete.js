@@ -2,11 +2,10 @@
 const express = require('express');
 const db = require('../db/dbInterface');
 const { SpendFields } = require('../utils/fieldEnums');
-const userExtractor = require('../middleware/userExtractor');
+
 
 const router = express.Router();
 
-router.use(userExtractor);
 
 // GET /autocomplete/:field
 router.get('/:field', async (req, res) => {

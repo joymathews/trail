@@ -7,12 +7,11 @@ const {
 } = require('../db/dbInterface');
 const { validateSpendFields, validateDateRange } = require('../middleware/validation');
 const { SpendFields } = require('../utils/fieldEnums');
-const userExtractor = require('../middleware/userExtractor');
+
 
 const router = express.Router();
 
-// Apply userExtractor middleware to all routes in this router
-router.use(userExtractor);
+
 
 // POST /spends - Store a spend (expense or saving)
 router.post('/', validateSpendFields, async (req, res) => {
