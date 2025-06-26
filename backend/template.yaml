@@ -32,7 +32,6 @@ Resources:
   TrailHttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
-      StageName: prod
       Name: TrailBackendApi
       CorsConfiguration:
         AllowOrigins:
