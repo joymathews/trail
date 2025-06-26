@@ -44,29 +44,9 @@ jobs:
           role-to-assume: ${{ env.TRAIL_AWS_OIDC_ROLE }}
           aws-region: ${{ env.TRAIL_AWS_REGION }}
 
-      - name: Set up Node.js 22.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
       - name: Install AWS SAM CLI
         run: |
           pip install aws-sam-cli
-          
-      # - name: Clean old node_modules and lock file in lambda
-      #   run: |
-      #     cd backend/lambda
-      #     rm -rf node_modules package-lock.json
-
-      # - name: Install Node.js dependencies in lambda
-      #   run: |
-      #     cd backend/lambda
-      #     npm install
-
-      - name: Debug List lambda directory before build
-        run: |
-          cd backend/lambda
-          ls -al
 
       - name: Clean previous SAM build artifacts
         run: |
@@ -78,30 +58,6 @@ jobs:
           cd backend
           sam build --template-file template.yaml
 
-      - name: Debug List lambda directory after build
-        run: |
-          cd backend/lambda
-          ls -al
-      
-      - name: Debug List backend directory contents after build
-        run: |
-          cd backend
-          echo "Listing backend directory:"
-          ls -al
-          echo "\nListing backend/node_modules directory:"
-          ls -al node_modules || echo "node_modules not found"
-          echo "\nListing backend/lambda directory:"
-          ls -al lambda || echo "lambda directory not found"
-          echo "\nListing backend/lambda/node_modules directory:"
-          ls -al lambda/node_modules || echo "lambda/node_modules not found"
-      
-      - name: Debug List .aws-sam/build/TrailBackendLambda directory after build
-        run: |
-          cd backend/.aws-sam/build/TrailBackendLambda
-          ls -al
-          echo "\nListing node_modules directory:"
-          ls -al node_modules || echo "node_modules not found"
-      
       - name: Deploy SAM application
         run: |
           cd backend
