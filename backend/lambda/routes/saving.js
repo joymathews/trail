@@ -6,11 +6,11 @@ const {
 } = require('../db/dbInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterSaving } = require('../services/filterService');
-const userExtractor = require('../middleware/userExtractor');
+
 
 const router = express.Router();
 
-router.use(userExtractor);
+
 
 // GET /saving - Get all savings for a date range
 router.get('/', validateDateRange, async (req, res) => {

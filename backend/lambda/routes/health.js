@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { dynamoHealthCheck } = require('../db/dynamodb/dynamoHealthCheck');
+const { dynamoHealthCheck } = require('../db/dbInterface');
 
 // Health check endpoint
 router.get('/', async (req, res) => {

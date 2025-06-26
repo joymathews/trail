@@ -6,11 +6,10 @@ const { sumByFieldForExpenseTypes,
 } = require('../db/dbInterface');
 const { validateDateRange, validateField } = require('../middleware/validation');
 const { filterExpenseType } = require('../services/filterService');
-const userExtractor = require('../middleware/userExtractor');
+
 
 const router = express.Router();
 
-router.use(userExtractor);
 
 // GET /expense - Get all expenses (fixed and dynamic) for a date range
 router.get('/', validateDateRange, async (req, res) => {
