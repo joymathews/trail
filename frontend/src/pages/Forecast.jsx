@@ -6,7 +6,7 @@ import { getDefaultLast7DaysRange } from "../utils/dateRangeDefaults";
 import { getDateRangeFromStorage, saveDateRangeToStorage } from "../utils/dateRangeStorage";
 import "./Forecast.scss";
 
-function Forecast({ onSignOut }) {
+function ExpenseForecast({ onSignOut }) {
   // Forecast calculation summary:
   // The forecast is based on your dynamic expenses between the selected dates. It calculates your average daily spend so far and projects the total for the whole range. Only expenses marked as "dynamic" are included.
   // The summary shows your projected total, actual spent so far, daily average, and the date range.
@@ -42,7 +42,7 @@ function Forecast({ onSignOut }) {
       <div className="forecast-container">
         <div className="forecast-title">Expense Forecast</div>
         <div className="forecast-summary-explanation">
-          The forecast is based on your dynamic expenses between the selected dates. It calculates your average daily spend so far and projects the total for the whole range. Only expenses marked as "dynamic" are included. The summary shows your projected total, actual spent so far, daily average, and the date range.
+          The Expense Forecast is based on your dynamic expenses between the selected dates. It calculates your average daily spend so far and projects the total for the whole range. Only expenses marked as "dynamic" are included. The summary shows your projected total, actual spent so far, daily average, and the date range.
         </div>
         <DateRangePicker
           value={dateRange}
@@ -55,7 +55,7 @@ function Forecast({ onSignOut }) {
             {forecast && Object.keys(forecast).length > 0 ? (
               <>
                 <div className="forecast-item">
-                  <span>Total Forecast:</span>
+                  <span>Total Expense Forecast:</span>
                   <span>{formatINR(forecast.forecast)}</span>
                 </div>
                 <div className="forecast-item">
@@ -93,4 +93,4 @@ function Forecast({ onSignOut }) {
   );
 }
 
-export default Forecast;
+export default ExpenseForecast;

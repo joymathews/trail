@@ -21,10 +21,10 @@ function Header({ onSignOut }) {
           Spend Charts
         </Link>
         <Link 
-          to="/forecast" 
-          className={location.pathname === "/forecast" ? "active" : ""}
+          to="/expense-forecast" 
+          className={location.pathname === "/expense-forecast" ? "active" : ""}
         >
-          Forecast
+          Expense Forecast
         </Link>
       </nav>
       <div className="header-actions">
