@@ -3,7 +3,8 @@ const {
   totalSpendsForExpenseTypes,
   forecastDynamicExpense,
   sumByFieldForSavings,
-  totalSpendsForSavings
+  totalSpendsForSavings,
+  predictSavingForDateRange
 } = require('./dynamodb/calculationService');
 const { saveSpend, getSpendById, getSpendsByDateRange } = require('./dynamodb/spendDb');
 const { addAllDistinctValues, getDistinctValues } = require('./dynamodb/uniqueValuesDB');
@@ -17,6 +18,7 @@ module.exports = {
   totalSpendsForExpenseTypes,
   totalSpendsForSavings,
   forecastDynamicExpense,
+  predictSavingForDateRange,
   addAllDistinctValues,
   getDistinctValues,
   dynamoHealthCheck
