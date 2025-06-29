@@ -75,6 +75,7 @@ async function forecastDynamicExpense({ userId, startDate, endDate }) {
       (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1
     )
   );
+  const remainingDays = Math.max(0, totalDays - daysSoFar);
   return {
     forecast: dailyAverage * totalDays,
     startDate,
@@ -83,6 +84,7 @@ async function forecastDynamicExpense({ userId, startDate, endDate }) {
     daysSoFar,
     totalDays,
     totalSpent,
+    remainingDays,
   };
 }
 

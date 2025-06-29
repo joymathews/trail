@@ -55,7 +55,7 @@ router.get('/forecast', validateDateRange, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     const userId = req.user.id;
-    const forecast = await forecastDynamicExpense({ userId, startDate, endDate, onlyExpenses: true });
+    const forecast = await forecastDynamicExpense({ userId, startDate, endDate });
     res.json(forecast);
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate forecast.', details: err.message });
