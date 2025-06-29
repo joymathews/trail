@@ -53,7 +53,7 @@ function SavingForecast({ onSignOut }) {
           value={dateRange}
           onChange={handleDateRangeChange}
         />
-        <div className="forecast-item" style={{ marginTop: 16 }}>
+        <div className="forecast-item forecast-item-income">
           <span>Monthly Income:</span>
           <input
             type="text"
@@ -66,7 +66,7 @@ function SavingForecast({ onSignOut }) {
               setMonthlyIncome(val === '' ? 0 : Number(val));
             }}
             placeholder="Enter monthly income"
-            style={{ width: 180, padding: 4, marginRight: 8 }}
+            className="monthly-income-input"
           />
         </div>
         {loading ? (
