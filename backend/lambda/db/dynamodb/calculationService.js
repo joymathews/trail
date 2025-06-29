@@ -106,7 +106,7 @@ async function forecastDynamicExpense({ userId, startDate, endDate }) {
  * @param {string} params.endDate
  * @param {number} params.monthlyIncome
  */
-async function predictSavingForDateRange({ userId, startDate, endDate, monthlyIncome }) {
+async function forecastSaving({ userId, startDate, endDate, monthlyIncome }) {
   // Get all spends in the range
   const spends = await getSpendsByDateRange(userId, startDate, endDate);
   // Total fixed expenses
@@ -137,5 +137,5 @@ module.exports = {
     totalSpendsForExpenseTypes,
     totalSpendsForSavings,
     forecastDynamicExpense,
-    predictSavingForDateRange
+    forecastSaving
 };
