@@ -26,6 +26,12 @@ function Header({ onSignOut }) {
         >
           Expense Forecast
         </Link>
+        <Link 
+          to="/saving-forecast" 
+          className={location.pathname === "/saving-forecast" ? "active" : ""}
+        >
+          Saving Forecast
+        </Link>
       </nav>
       <div className="header-actions">
         <button className="signout-btn" onClick={onSignOut}>

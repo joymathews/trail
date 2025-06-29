@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import SpendChartsPage from "./pages/SpendChartsPage";
 import ExpenseForecast from "./pages/ExpenseForecast";
+import SavingForecast from "./pages/SavingForecast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 
@@ -37,6 +38,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ExpenseForecast onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saving-forecast"
+        element={
+          <ProtectedRoute>
+            <SavingForecast onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />

@@ -84,3 +84,16 @@ export async function fetchExpenseForecast(startDate, endDate) {
     return [];
   }
 }
+
+// Fetch saving forecast data for a date range and monthly income
+export async function fetchSavingForecast(startDate, endDate, monthlyIncome) {
+  if (!startDate || !endDate || typeof monthlyIncome !== 'number' || isNaN(monthlyIncome)) return [];
+  const params = new URLSearchParams({ startDate, endDate, monthlyIncome: monthlyIncome.toString() });
+  try {
+    const res = await apiFetch(`${API_URL}/saving/forecast?${params}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
