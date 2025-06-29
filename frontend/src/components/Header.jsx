@@ -20,6 +20,12 @@ function Header({ onSignOut }) {
         >
           Spend Charts
         </Link>
+        <Link 
+          to="/forecast" 
+          className={location.pathname === "/forecast" ? "active" : ""}
+        >
+          Forecast
+        </Link>
       </nav>
       <div className="header-actions">
         <button className="signout-btn" onClick={onSignOut}>

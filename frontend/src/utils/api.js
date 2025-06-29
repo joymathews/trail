@@ -71,3 +71,16 @@ export async function fetchSuggestions(field, value) {
   if (!res.ok) return [];
   return res.json();
 }
+
+// Fetch forecast data for a date range
+export async function fetchExpenseForecast(startDate, endDate) {
+  if (!startDate || !endDate) return [];
+  const params = new URLSearchParams({ startDate, endDate });
+  try {
+    const res = await apiFetch(`${API_URL}/expense/forecast?${params}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}

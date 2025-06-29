@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import SpendChartsPage from "./pages/SpendChartsPage";
+import Forecast from "./pages/Forecast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 
@@ -28,6 +29,14 @@ function App() {
         element={
           <ProtectedRoute>
             <SpendChartsPage onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/forecast"
+        element={
+          <ProtectedRoute>
+            <Forecast onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />
