@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import SpendChartsPage from "./pages/SpendChartsPage";
-import ExpenseForecast from "./pages/Forecast";
+import ExpenseForecast from "./pages/ExpenseForecast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 
