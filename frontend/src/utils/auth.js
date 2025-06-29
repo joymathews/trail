@@ -63,7 +63,11 @@ export function renewTokenIfNeeded() {
           resolve(true);
         });
       } else {
-        // Token is still valid
+        // Token is still valid, always update localStorage with the latest token
+        const idToken = session.getIdToken().getJwtToken();
+        if (localStorage.getItem('jwt') !== idToken) {
+          localStorage.setItem('jwt', idToken);
+        }
         resolve(false);
       }
     });
