@@ -16,7 +16,7 @@ export default function Dashboard({
 }) {
   const [dateRange, setDateRange] = usePersistentDateRange();
   const [chartTypes, setChartTypes] = React.useState({
-    date: 'LineChart',
+    date: 'BarChart',
     category: 'BarChart',
     vendor: 'BarChart',
     paymentMode: 'BarChart',
