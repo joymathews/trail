@@ -15,10 +15,10 @@ function Header({ onSignOut }) {
           Home
         </Link>
         <Link 
-          to="/charts" 
-          className={location.pathname === "/charts" ? "active" : ""}
+          to="/expense-dashboard" 
+          className={location.pathname === "/expense-dashboard" ? "active" : ""}
         >
-          Spend Charts
+          Expense Dashboard
         </Link>
         <Link 
           to="/expense-forecast" 

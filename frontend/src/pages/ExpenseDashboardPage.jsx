@@ -8,9 +8,9 @@ import { SpendFields } from '../utils/fieldEnums';
 import { useExpenseChartData } from '../hooks/useExpenseChartData';
 import { getDefaultLast7DaysRange } from '../utils/dateRangeDefaults';
 import { getDateRangeFromStorage, saveDateRangeToStorage } from '../utils/dateRangeStorage';
-import './SpendChartsPage.scss';
+import './ExpenseDashboardPage.scss';
 
-const SpendChartsPage = ({ onSignOut }) => {
+const ExpenseDashboardPage = ({ onSignOut }) => {
   const storedRange = getDateRangeFromStorage();
   const [dateRange, setDateRange] = useState(storedRange || getDefaultLast7DaysRange());
   const [chartTypes, setChartTypes] = useState({
@@ -126,4 +126,4 @@ const SpendChartsPage = ({ onSignOut }) => {
   );
 };
 
-export default SpendChartsPage;
+export default ExpenseDashboardPage;

@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-import SpendChartsPage from "./pages/SpendChartsPage";
+import ExpenseDashboardPage from "./pages/ExpenseDashboardPage";
 import ExpenseForecast from "./pages/ExpenseForecast";
 import SavingForecast from "./pages/SavingForecast";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -26,10 +26,10 @@ function App() {
         }
       />
       <Route
-        path="/charts"
+        path="/expense-dashboard"
         element={
           <ProtectedRoute>
-            <SpendChartsPage onSignOut={handleSignOut} />
+            <ExpenseDashboardPage onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />
