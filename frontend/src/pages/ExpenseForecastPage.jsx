@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import DateRangePicker from "../components/DateRangePicker";
 import { fetchExpenseForecast } from "../utils/api";
 import usePersistentDateRange from "../hooks/usePersistentDateRange";
+import ForecastPageLayout from "../components/ForecastPageLayout";
+import ForecastList from "../components/ForecastList";
+import ForecastLoader from "../components/ForecastLoader";
+import { formatINR } from "../utils/format";
+import DateRangePicker from "../components/DateRangePicker";
 import "./ExpenseForecastPage.scss";
 
 function ExpenseForecast({ onSignOut }) {
@@ -25,65 +28,33 @@ function ExpenseForecast({ onSignOut }) {
 
   const handleDateRangeChange = setDateRange;
 
-  function formatINR(value) {
-    if (typeof value !== 'number') return value;
-    return value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
-  }
-
   return (
-    <div>
-      <Header onSignOut={onSignOut} />
-      <div className="forecast-container">
-        <div className="forecast-title">Expense Forecast</div>
-        <div className="forecast-summary-explanation">
-          The Expense Forecast is based on your dynamic expenses between the selected dates. It calculates your average daily spend so far and projects the total for the whole range. Only expenses marked as "dynamic" are included. The summary shows your projected total, actual spent so far, daily average, and the date range.
-        </div>
-        <DateRangePicker
-          value={dateRange}
-          onChange={handleDateRangeChange}
+    <ForecastPageLayout
+      onSignOut={onSignOut}
+      title="Expense Forecast"
+      explanation={
+        "The Expense Forecast is based on your dynamic expenses between the selected dates. It calculates your average daily spend so far and projects the total for the whole range. Only expenses marked as 'dynamic' are included. The summary shows your projected total, actual spent so far, daily average, and the date range."
+      }
+    >
+      <DateRangePicker value={dateRange} onChange={handleDateRangeChange} />
+      <ForecastLoader
+        loading={loading}
+        hasData={forecast && Object.keys(forecast).length > 0}
+        emptyText="No forecast data available."
+      >
+        <ForecastList
+          items={forecast && Object.keys(forecast).length > 0 ? [
+            { label: "Total Expense Forecast:", value: formatINR(forecast.forecast) },
+            { label: "Total Spent:", value: formatINR(forecast.totalSpent) },
+            { label: "Daily Average:", value: formatINR(forecast.dailyAverage) },
+            { label: "Days So Far:", value: forecast.daysSoFar },
+            { label: "Total Days:", value: forecast.totalDays },
+            { label: "Remaining Days:", value: forecast.remainingDays },
+            { label: "Date Range:", value: `${forecast.startDate} to ${forecast.endDate}` },
+          ] : []}
         />
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="forecast-list">
-            {forecast && Object.keys(forecast).length > 0 ? (
-              <>
-                <div className="forecast-item">
-                  <span>Total Expense Forecast:</span>
-                  <span>{formatINR(forecast.forecast)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Total Spent:</span>
-                  <span>{formatINR(forecast.totalSpent)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Daily Average:</span>
-                  <span>{formatINR(forecast.dailyAverage)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Days So Far:</span>
-                  <span>{forecast.daysSoFar}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Total Days:</span>
-                  <span>{forecast.totalDays}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Remaining Days:</span>
-                  <span>{forecast.remainingDays}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Date Range:</span>
-                  <span>{forecast.startDate} to {forecast.endDate}</span>
-                </div>
-              </>
-            ) : (
-              <div>No forecast data available.</div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+      </ForecastLoader>
+    </ForecastPageLayout>
   );
 }
 

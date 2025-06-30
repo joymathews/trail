@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import DateRangePicker from "../components/DateRangePicker";
 import { fetchSavingForecast } from "../utils/api";
 import usePersistentDateRange from "../hooks/usePersistentDateRange";
+import ForecastPageLayout from "../components/ForecastPageLayout";
+import ForecastList from "../components/ForecastList";
+import ForecastLoader from "../components/ForecastLoader";
+import { formatINR } from "../utils/format";
+import DateRangePicker from "../components/DateRangePicker";
 import "./SavingForecastPage.scss";
 
 function SavingForecast({ onSignOut }) {
@@ -30,77 +33,48 @@ function SavingForecast({ onSignOut }) {
 
   const handleDateRangeChange = setDateRange;
 
-  function formatINR(value) {
-    if (typeof value !== 'number') return value;
-    return value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
-  }
-
   return (
-    <div>
-      <Header onSignOut={onSignOut} />
-      <div className="forecast-container">
-        <div className="forecast-title">Saving Forecast</div>
-        <div className="forecast-summary-explanation">
-          The Saving Forecast is based on your monthly income, fixed expenses, forecasted dynamic spends, and total savings made between the selected dates. It uses the formula: <b>predictedSaving = monthlyIncome - (totalFixedExpenses + forecastedDynamicSpends + totalSavingsMade)</b>. This predicts your remaining unallocated balance after all expenses and savings for the selected period.
-        </div>
-        <DateRangePicker
-          value={dateRange}
-          onChange={handleDateRangeChange}
+    <ForecastPageLayout
+      onSignOut={onSignOut}
+      title="Saving Forecast"
+      explanation={
+        "The Saving Forecast is based on your monthly income, fixed expenses, forecasted dynamic spends, and total savings made between the selected dates. It uses the formula: " +
+        "predictedSaving = monthlyIncome - (totalFixedExpenses + forecastedDynamicSpends + totalSavingsMade). This predicts your remaining unallocated balance after all expenses and savings for the selected period."
+      }
+    >
+      <DateRangePicker value={dateRange} onChange={handleDateRangeChange} />
+      <div className="forecast-item forecast-item-income">
+        <span>Monthly Income:</span>
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={monthlyIncome === 0 ? '' : monthlyIncome}
+          onChange={e => {
+            const val = e.target.value.replace(/[^0-9]/g, '');
+            setMonthlyIncome(val === '' ? 0 : Number(val));
+          }}
+          placeholder="Enter monthly income"
+          className="monthly-income-input"
         />
-        <div className="forecast-item forecast-item-income">
-          <span>Monthly Income:</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={monthlyIncome === 0 ? '' : monthlyIncome}
-            onChange={e => {
-              // Remove non-digit characters
-              const val = e.target.value.replace(/[^0-9]/g, '');
-              setMonthlyIncome(val === '' ? 0 : Number(val));
-            }}
-            placeholder="Enter monthly income"
-            className="monthly-income-input"
-          />
-        </div>
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="forecast-list">
-            {forecast && Object.keys(forecast).length > 0 ? (
-              <>
-                <div className="forecast-item">
-                  <span>Monthly Income (used):</span>
-                  <span>{formatINR(forecast.monthlyIncome ?? monthlyIncome)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Total Fixed Expenses:</span>
-                  <span>{formatINR(forecast.totalFixedExpenses)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Forecasted Dynamic Spends:</span>
-                  <span>{formatINR(forecast.forecastedDynamicSpends)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Total Savings Made:</span>
-                  <span>{formatINR(forecast.totalSavingsMade)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Predicted Saving:</span>
-                  <span>{formatINR(forecast.predictedSaving)}</span>
-                </div>
-                <div className="forecast-item">
-                  <span>Date Range:</span>
-                  <span>{forecast.startDate} to {forecast.endDate}</span>
-                </div>
-              </>
-            ) : (
-              <div>No saving forecast data available.</div>
-            )}
-          </div>
-        )}
       </div>
-    </div>
+      <ForecastLoader
+        loading={loading}
+        hasData={forecast && Object.keys(forecast).length > 0}
+        emptyText="No saving forecast data available."
+      >
+        <ForecastList
+          items={forecast && Object.keys(forecast).length > 0 ? [
+            { label: "Monthly Income (used):", value: formatINR(forecast.monthlyIncome ?? monthlyIncome) },
+            { label: "Total Fixed Expenses:", value: formatINR(forecast.totalFixedExpenses) },
+            { label: "Forecasted Dynamic Spends:", value: formatINR(forecast.forecastedDynamicSpends) },
+            { label: "Total Savings Made:", value: formatINR(forecast.totalSavingsMade) },
+            { label: "Predicted Saving:", value: formatINR(forecast.predictedSaving) },
+            { label: "Date Range:", value: `${forecast.startDate} to ${forecast.endDate}` },
+          ] : []}
+        />
+      </ForecastLoader>
+    </ForecastPageLayout>
   );
 }
 
