@@ -1,8 +1,10 @@
 import React from 'react';
+
 import Header from '../components/Header';
 import DateRangePicker from '../components/DateRangePicker';
 import ChartCard from '../components/charts/ChartCard';
 import usePersistentDateRange from '../hooks/usePersistentDateRange';
+import './Dashboard.scss';
 
 export default function Dashboard({
   onSignOut,
