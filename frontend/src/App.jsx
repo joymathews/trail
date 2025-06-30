@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import ExpenseDashboardPage from "./pages/ExpenseDashboardPage";
 import ExpenseForecast from "./pages/ExpenseForecastPage";
 import SavingForecast from "./pages/SavingForecastPage";
+import SavingDashboardPage from "./pages/SavingDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 
@@ -30,6 +31,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ExpenseDashboardPage onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saving-dashboard"
+        element={
+          <ProtectedRoute>
+            <SavingDashboardPage onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />

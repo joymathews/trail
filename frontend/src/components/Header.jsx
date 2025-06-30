@@ -21,6 +21,12 @@ function Header({ onSignOut }) {
           Expense Dashboard
         </Link>
         <Link 
+          to="/saving-dashboard" 
+          className={location.pathname === "/saving-dashboard" ? "active" : ""}
+        >
+          Saving Dashboard
+        </Link>
+        <Link 
           to="/expense-forecast" 
           className={location.pathname === "/expense-forecast" ? "active" : ""}
         >

@@ -85,6 +85,8 @@ export async function fetchExpenseForecast(startDate, endDate) {
   }
 }
 
+
+
 // Fetch saving forecast data for a date range and monthly income
 export async function fetchSavingForecast(startDate, endDate, monthlyIncome) {
   if (!startDate || !endDate || typeof monthlyIncome !== 'number' || isNaN(monthlyIncome)) return [];
@@ -93,6 +95,27 @@ export async function fetchSavingForecast(startDate, endDate, monthlyIncome) {
     const res = await apiFetch(`${API_URL}/saving/forecast?${params}`);
     if (!res.ok) return [];
     return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+// Fetch saving sum data for a date range
+export async function fetchSavingSum(startDate, endDate, field) {
+  if (!startDate || !endDate || !field) return [];
+  const params = new URLSearchParams({ startDate, endDate, field });
+  try {
+    const res = await apiFetch(`${API_URL}/saving/sum?${params}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!data || typeof data !== 'object') return [];
+    return Object.entries(data)
+      .map(([key, value]) => {
+        const numValue = parseFloat(value);
+        if (isNaN(numValue)) return null;
+        return { key, value: numValue };
+      })
+      .filter(item => item !== null);
   } catch {
     return [];
   }
