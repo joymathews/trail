@@ -13,7 +13,7 @@ async function addExpensesFromCSV() {
   const spends = getSpends();
   for (const expense of spends) {
     try {
-      headers = {};
+      let headers = {};
       if(ADD_TOKEN)
       {
         headers = TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {};
