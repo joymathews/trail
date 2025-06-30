@@ -3,8 +3,8 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ExpenseDashboardPage from "./pages/ExpenseDashboardPage";
-import ExpenseForecast from "./pages/ExpenseForecast";
-import SavingForecast from "./pages/SavingForecast";
+import ExpenseForecast from "./pages/ExpenseForecastPage";
+import SavingForecast from "./pages/SavingForecastPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 

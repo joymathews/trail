@@ -4,7 +4,7 @@ import DateRangePicker from "../components/DateRangePicker";
 import { fetchExpenseForecast } from "../utils/api";
 import { getDefaultLast7DaysRange } from "../utils/dateRangeDefaults";
 import { getDateRangeFromStorage, saveDateRangeToStorage } from "../utils/dateRangeStorage";
-import "./ExpenseForecast.scss";
+import "./ExpenseForecastPage.scss";
 
 function ExpenseForecast({ onSignOut }) {
   // Forecast calculation summary:

@@ -4,7 +4,7 @@ import DateRangePicker from "../components/DateRangePicker";
 import { fetchSavingForecast } from "../utils/api";
 import { getDefaultLast7DaysRange } from "../utils/dateRangeDefaults";
 import { getDateRangeFromStorage, saveDateRangeToStorage } from "../utils/dateRangeStorage";
-import "./SavingForecast.scss";
+import "./SavingForecastPage.scss";
 
 function SavingForecast({ onSignOut }) {
   // Saving forecast calculation summary:
