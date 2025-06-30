@@ -1,0 +1,41 @@
+@use "../styles/variables.scss" as *;
+
+.forecast-container {
+  flex: 1;
+  background: $background;
+  color: $text;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .forecast-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .forecast-container {
+    padding: 1rem 0.75rem;
+  }
+}
+
+.forecast-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: $primary;
+}
+
+.forecast-summary-explanation {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import "./ForecastList.scss";
 
 /**
  * Renders a list of forecast items.

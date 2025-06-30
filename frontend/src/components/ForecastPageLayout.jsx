@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./Header";
+import "./ForecastPageLayout.scss";
 
 /**
  * Layout for forecast pages: header, container, title, explanation, and children.

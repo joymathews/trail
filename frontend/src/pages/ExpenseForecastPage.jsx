@@ -6,7 +6,6 @@ import ForecastList from "../components/ForecastList";
 import ForecastLoader from "../components/ForecastLoader";
 import { formatINR } from "../utils/format";
 import DateRangePicker from "../components/DateRangePicker";
-import "./ExpenseForecastPage.scss";
 
 function ExpenseForecast({ onSignOut }) {
   // Forecast calculation summary:
