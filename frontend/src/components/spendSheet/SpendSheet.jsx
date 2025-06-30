@@ -4,19 +4,11 @@ import SpendInputRow from "./SpendInputRow";
 import { SpendFields } from "../../utils/fieldEnums";
 import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
-import { getDefaultLast7DaysRange } from '../../utils/dateRangeDefaults';
-import { getDateRangeFromStorage, saveDateRangeToStorage } from '../../utils/dateRangeStorage';
+import usePersistentDateRange from '../../hooks/usePersistentDateRange';
 
 function SpendSheet() {
-  const storedRange = getDateRangeFromStorage();
-  const defaultRange = storedRange || getDefaultLast7DaysRange();
-  const [startDate, setStartDate] = useState(defaultRange.start);
-  const [endDate, setEndDate] = useState(defaultRange.end);
-  const handleDateChange = (start, end) => {
-    setStartDate(start);
-    setEndDate(end);
-    saveDateRangeToStorage({ start, end });
-  };
+  const [dateRange, setDateRange] = usePersistentDateRange();
+  const handleDateChange = setDateRange;
   const {
     inputRow,
     handleInputRowChange,
@@ -26,12 +18,12 @@ function SpendSheet() {
     spends,
     loading,
     fetchError,
-  } = useSpendInput(startDate, endDate);
+  } = useSpendInput(dateRange.start, dateRange.end);
 
   return (
     <div className="spend-sheet-container wide">
       <DateRangePicker
-        value={{ start: startDate, end: endDate }}
+        value={dateRange}
         onChange={handleDateChange}
       />
       <h3>Spends Sheet</h3>
@@ -60,7 +52,7 @@ function SpendSheet() {
             {spends.length === 0 && !loading && (
               <tr>
                 <td colSpan={8} className="center">
-                  {startDate && endDate
+                  {dateRange.start && dateRange.end
                     ? "No spends found."
                     : "Please select a start and end date."}
                 </td>

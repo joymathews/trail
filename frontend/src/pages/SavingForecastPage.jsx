@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import DateRangePicker from "../components/DateRangePicker";
 import { fetchSavingForecast } from "../utils/api";
-import { getDefaultLast7DaysRange } from "../utils/dateRangeDefaults";
-import { getDateRangeFromStorage, saveDateRangeToStorage } from "../utils/dateRangeStorage";
+import usePersistentDateRange from "../hooks/usePersistentDateRange";
 import "./SavingForecastPage.scss";
 
 function SavingForecast({ onSignOut }) {
@@ -12,9 +11,7 @@ function SavingForecast({ onSignOut }) {
   // It uses the formula: predictedSaving = monthlyIncome - (totalFixedExpenses + forecastedDynamicSpends + totalSavingsMade)
   // This predicts your remaining unallocated balance after all expenses and savings for the selected period.
 
-  const storedRange = getDateRangeFromStorage();
-  const defaultRange = storedRange || getDefaultLast7DaysRange();
-  const [dateRange, setDateRange] = useState(defaultRange);
+  const [dateRange, setDateRange] = usePersistentDateRange();
   const [forecast, setForecast] = useState({});
   const [loading, setLoading] = useState(false);
   // Default monthly income set to 279000 (in INR)
@@ -31,10 +28,7 @@ function SavingForecast({ onSignOut }) {
     }
   }, [dateRange.start, dateRange.end, monthlyIncome]);
 
-  const handleDateRangeChange = (start, end) => {
-    setDateRange({ start, end });
-    saveDateRangeToStorage({ start, end });
-  };
+  const handleDateRangeChange = setDateRange;
 
   function formatINR(value) {
     if (typeof value !== 'number') return value;

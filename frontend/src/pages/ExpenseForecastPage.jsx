@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import DateRangePicker from "../components/DateRangePicker";
 import { fetchExpenseForecast } from "../utils/api";
-import { getDefaultLast7DaysRange } from "../utils/dateRangeDefaults";
-import { getDateRangeFromStorage, saveDateRangeToStorage } from "../utils/dateRangeStorage";
+import usePersistentDateRange from "../hooks/usePersistentDateRange";
 import "./ExpenseForecastPage.scss";
 
 function ExpenseForecast({ onSignOut }) {
@@ -11,9 +10,7 @@ function ExpenseForecast({ onSignOut }) {
   // The forecast is based on your dynamic expenses between the selected dates. It calculates your average daily spend so far and projects the total for the whole range. Only expenses marked as "dynamic" are included.
   // The summary shows your projected total, actual spent so far, daily average, and the date range.
 
-  const storedRange = getDateRangeFromStorage();
-  const defaultRange = storedRange || getDefaultLast7DaysRange();
-  const [dateRange, setDateRange] = useState(defaultRange);
+  const [dateRange, setDateRange] = usePersistentDateRange();
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -26,10 +23,7 @@ function ExpenseForecast({ onSignOut }) {
     }
   }, [dateRange.start, dateRange.end]);
 
-  const handleDateRangeChange = (start, end) => {
-    setDateRange({ start, end });
-    saveDateRangeToStorage({ start, end });
-  };
+  const handleDateRangeChange = setDateRange;
 
   function formatINR(value) {
     if (typeof value !== 'number') return value;

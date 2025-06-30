@@ -6,13 +6,11 @@ import ExpenseSumBarChart from '../components/charts/ExpenseSumBarChart';
 import ChartCard from '../components/charts/ChartCard';
 import { SpendFields } from '../utils/fieldEnums';
 import { useExpenseChartData } from '../hooks/useExpenseChartData';
-import { getDefaultLast7DaysRange } from '../utils/dateRangeDefaults';
-import { getDateRangeFromStorage, saveDateRangeToStorage } from '../utils/dateRangeStorage';
+import usePersistentDateRange from '../hooks/usePersistentDateRange';
 import './ExpenseDashboardPage.scss';
 
 const ExpenseDashboardPage = ({ onSignOut }) => {
-  const storedRange = getDateRangeFromStorage();
-  const [dateRange, setDateRange] = useState(storedRange || getDefaultLast7DaysRange());
+  const [dateRange, setDateRange] = usePersistentDateRange();
   const [chartTypes, setChartTypes] = useState({
     date: 'LineChart',
     category: 'BarChart',
@@ -29,10 +27,7 @@ const ExpenseDashboardPage = ({ onSignOut }) => {
     }));
   };
 
-  const handleDateRangeChange = (startDate, endDate) => {
-    setDateRange({ start: startDate, end: endDate });
-    saveDateRangeToStorage({ start: startDate, end: endDate });
-  };
+  const handleDateRangeChange = setDateRange;
 
   const isLargeDataset = {
     date: chartData.date.length > 40,
