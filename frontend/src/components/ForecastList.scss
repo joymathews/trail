@@ -1,8 +1,11 @@
 
+
+@use "../styles/variables.scss" as *;
+
 .forecast-list {
   width: 100%;
   max-width: 600px;
-  background: #fff;
+  background: $table-bg;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   padding: 1.5rem;
@@ -17,7 +20,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid $border-light;
   font-size: 1.1rem;
 }
 
