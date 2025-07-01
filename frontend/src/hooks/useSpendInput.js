@@ -2,7 +2,7 @@ import { useState } from "react";
 import { formatDate } from "../utils/date";
 import { SpendFields } from "../utils/fieldEnums";
 import { useSpends } from "../hooks/useSpends";
-import { saveSpend, deleteSpend } from '../utils/api';
+import { saveSpend, deleteSpend, editSpend } from '../utils/api';
 
 const blankSpend = {
   [SpendFields.DATE]: formatDate(new Date()),
@@ -52,6 +52,16 @@ export function useSpendInput(startDate, endDate) {
     }
   };
 
+  const handleEditSpend = async (id, date, updates) => {
+    try {
+      await editSpend(id, date, updates);
+      setSpends((prev) => prev.map((s) =>
+        s.id === id ? { ...s, ...updates } : s
+      ));
+    } catch {
+      setError('Failed to edit spend.');
+    }
+  };
   const handleDeleteSpend = async (id, date) => {
     if (!window.confirm('Are you sure you want to delete this spend?')) return;
     try {
@@ -73,5 +83,6 @@ export function useSpendInput(startDate, endDate) {
     loading,
     fetchError,
     handleDeleteSpend,
+    handleEditSpend,
   };
 }

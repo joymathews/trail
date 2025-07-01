@@ -131,3 +131,14 @@ export async function deleteSpend(id, date) {
   if (!res.ok) throw new Error('Failed to delete spend');
   return res.json();
 }
+
+export async function editSpend(id, date, updates) {
+  if (!id || !date || !updates || typeof updates !== 'object') throw new Error('id, date, and updates are required');
+  const res = await apiFetch(`${API_URL}/spends/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ date, updates }),
+  });
+  if (!res.ok) throw new Error('Failed to edit spend');
+  return res.json();
+}
