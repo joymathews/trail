@@ -28,7 +28,15 @@ export default function SpendEditableRow({
   onDelete
 }) {
   return (
-    <tr>
+    <tr
+      onKeyDown={isEditing ? (e => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          if (onCancel) onCancel();
+        }
+      }) : undefined}
+      tabIndex={isEditing ? 0 : undefined}
+    >
       {spendFieldConfig.map(field => (
         <td
           key={field.key}
