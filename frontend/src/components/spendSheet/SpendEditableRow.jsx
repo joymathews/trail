@@ -1,7 +1,7 @@
 import React from "react";
 import SpendInputField from "./SpendInputField";
 import { spendFieldConfig } from "./spendFieldConfig";
-import useRowEditKeyEvents from "./useRowEditKeyEvents";
+import useRowEditKeyEvents from "../../hooks/useRowEditKeyEvents";
 
 /**
  * Props:
