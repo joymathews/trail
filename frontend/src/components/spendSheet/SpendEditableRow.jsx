@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import SpendInputField from "./SpendInputField";
 import { spendFieldConfig } from "./spendFieldConfig";
+import useRowEditKeyEvents from "./useRowEditKeyEvents";
 
 /**
  * Props:
@@ -27,19 +28,9 @@ export default function SpendEditableRow({
   saving,
   onDelete
 }) {
+  const rowKeyEvents = useRowEditKeyEvents({ isEditing, onCancel, onSave });
   return (
-    <tr
-      onKeyDown={isEditing ? (e => {
-        if (e.key === 'Escape') {
-          e.stopPropagation();
-          if (onCancel) onCancel();
-        } else if (e.key === 'Enter') {
-          e.stopPropagation();
-          if (onSave) onSave();
-        }
-      }) : undefined}
-      tabIndex={isEditing ? 0 : undefined}
-    >
+    <tr {...rowKeyEvents}>
       {spendFieldConfig.map(field => (
         <td
           key={field.key}
