@@ -16,7 +16,6 @@ function SpendSheet() {
     handleInputRowChange,
     handleSaveInputRow,
     saving,
-    error,
     spends,
     loading,
     fetchError,
