@@ -18,23 +18,17 @@ function generateSortKey({ date, type, idOrValue }) {
   return `#${type}#${idOrValue}`;
 }
 
+const { v4: uuidv4 } = require('uuid');
 /**
- * Generates a unique spend ID.
- * Format: 'YYYY-MM-DD-<CleanDescription>-<random>'
+ * Generates a unique spend ID using a UUID (v4).
  *
  * Example:
- * generateSpendId('2025-06-13', 'Uber Ride')
- * // Output: '2025-06-13-UberRide-abc123xy' (random suffix will vary)
+ * generateSpendId() // Output: 'a1b2c3d4-e5f6-7a8b-9c0d-ef1234567890'
  *
- * @param {string} date - The date in 'YYYY-MM-DD' format
- * @param {string} description - The spend description
  * @returns {string} The generated unique spend ID
  */
-function generateSpendId(date, description) {
-  if (!date || !description) throw new Error('date and description are required for spend ID');
-  const cleanDesc = description.replace(/[^a-zA-Z0-9]/g, '');
-  const randomSuffix = Math.random().toString(36).substring(2, 10);
-  return `${date}-${cleanDesc}-${randomSuffix}`;
+function generateSpendId() {
+  return uuidv4();
 }
 
 /**

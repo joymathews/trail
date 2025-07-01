@@ -44,7 +44,7 @@ async function deleteSpend(userId, id, date) {
 }
 // Save a spend item as per new table design
 async function saveSpend({ userId, date, description, amountSpent, category, vendor, paymentMode, spendType }) {
-  const id = generateSpendId(date, description);
+  const id = generateSpendId();
   const sortKey = generateSortKey({ date, type: 'spend', idOrValue: id });
   const spend = {
     UserId: userId,
