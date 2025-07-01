@@ -1,6 +1,7 @@
 import { SpendFields } from "../../utils/fieldEnums";
 
 export const spendFieldConfig = [
+  { key: SpendFields.DATE, label: "Date", type: "date" },
   { key: SpendFields.CATEGORY, label: "Category", type: "text", autoComplete: true },
   { key: SpendFields.DESCRIPTION, label: "Description", type: "text", autoComplete: true },
   { key: SpendFields.AMOUNT_SPENT, label: "Amount", type: "number" },
