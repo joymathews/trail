@@ -53,10 +53,22 @@ export function useSpendInput(startDate, endDate) {
   };
 
   const handleEditSpend = async (id, date, updates) => {
+    // Only allow specific fields to be updated
+    const allowed = [
+      SpendFields.CATEGORY,
+      SpendFields.DESCRIPTION,
+      SpendFields.AMOUNT_SPENT,
+      SpendFields.VENDOR,
+      SpendFields.PAYMENT_MODE,
+      SpendFields.SPEND_TYPE
+    ];
+    const filteredUpdates = Object.fromEntries(
+      Object.entries(updates).filter(([key]) => allowed.includes(key))
+    );
     try {
-      await editSpend(id, date, updates);
+      await editSpend(id, date, filteredUpdates);
       setSpends((prev) => prev.map((s) =>
-        s.id === id ? { ...s, ...updates } : s
+        s.id === id ? { ...s, ...filteredUpdates } : s
       ));
     } catch {
       setError('Failed to edit spend.');
