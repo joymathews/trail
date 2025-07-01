@@ -18,6 +18,7 @@ function SpendSheet() {
     spends,
     loading,
     fetchError,
+    handleDeleteSpend,
   } = useSpendInput(dateRange.start, dateRange.end);
 
   return (
@@ -67,7 +68,15 @@ function SpendSheet() {
                 <td>{spend[SpendFields.VENDOR]}</td>
                 <td>{spend[SpendFields.PAYMENT_MODE]}</td>
                 <td>{spend[SpendFields.SPEND_TYPE]}</td>
-                <td></td>
+                <td>
+                  <button
+                    className="delete-btn"
+                    title="Delete spend"
+                    onClick={() => handleDeleteSpend(spend.id, spend[SpendFields.DATE])}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

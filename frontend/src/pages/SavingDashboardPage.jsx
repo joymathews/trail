@@ -3,7 +3,7 @@ import ExpenseSumLineChart from '../components/charts/ExpenseSumLineChart';
 import ExpenseSumBarChart from '../components/charts/ExpenseSumBarChart';
 import { useSavingChartData } from '../hooks/useSavingChartData';
 import Dashboard from '../components/Dashboard';
-import './SavingDashboardPage.scss';
+
 
 const chartLabels = {
   date: 'Savings by Date',

@@ -120,3 +120,14 @@ export async function fetchSavingSum(startDate, endDate, field) {
     return [];
   }
 }
+
+export async function deleteSpend(id, date) {
+  if (!id || !date) throw new Error('id and date are required');
+  const res = await apiFetch(`${API_URL}/spends/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ date }),
+  });
+  if (!res.ok) throw new Error('Failed to delete spend');
+  return res.json();
+}
