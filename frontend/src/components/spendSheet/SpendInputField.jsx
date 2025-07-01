@@ -13,10 +13,10 @@ import { SpendFields } from "../../utils/fieldEnums";
 function SpendInputField({
   field,
   as = "form",
-  inputRefs = {},
-  suggestions = {},
-  showSuggestions = {},
-  activeSuggestion = {},
+  inputRef,
+  suggestions = [],
+  showSuggestions = false,
+  activeSuggestion = -1,
   onChange,
   onInputChange,
   onSuggestionClick,
@@ -32,15 +32,15 @@ function SpendInputField({
           id={`spend-${field.key.toLowerCase()}`}
           label={as === "row" ? field.label : undefined}
           value={field.value}
-          inputRef={inputRefs[field.key]}
-          onChange={e => onInputChange(field.key, e.target.value)}
+          inputRef={inputRef}
+          onChange={e => onInputChange ? onInputChange(field.key, e.target.value) : onChange ? onChange(field.key, e.target.value) : undefined}
           onFocus={onFocus ? () => onFocus(field.key, field.value) : undefined}
           onBlur={onBlur ? () => onBlur(field.key) : undefined}
-          onKeyDown={e => onKeyDown && onKeyDown(field.key, e, onChange)}
-          suggestions={suggestions[field.key]}
-          showSuggestions={showSuggestions[field.key]}
-          activeSuggestion={activeSuggestion[field.key]}
-          onSuggestionClick={s => onSuggestionClick(field.key, s, onChange)}
+          onKeyDown={e => onKeyDown ? onKeyDown(field.key, e, onChange) : undefined}
+          suggestions={suggestions}
+          showSuggestions={showSuggestions}
+          activeSuggestion={typeof activeSuggestion === 'number' ? activeSuggestion : -1}
+          onSuggestionClick={s => onSuggestionClick ? onSuggestionClick(field.key, s, onChange) : onChange ? onChange(field.key, s) : undefined}
           placeholder={field.label}
           autoComplete="off"
           type={field.type}
@@ -70,7 +70,7 @@ function SpendInputField({
         <input
           type={field.type}
           value={field.value}
-          onChange={field.onChange}
+          onChange={field.onChange ? field.onChange : (onChange ? e => onChange(field.key, e.target.value) : undefined)}
           min={field.min}
           step={field.step}
           required={field.required}

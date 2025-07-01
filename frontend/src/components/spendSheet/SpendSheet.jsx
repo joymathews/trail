@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import DateRangePicker from "../DateRangePicker";
-import SpendInputRow from "./SpendInputRow";
+import SpendEditableRow from "./SpendEditableRow";
 import { SpendFields } from "../../utils/fieldEnums";
+import { spendFieldConfig } from "./spendFieldConfig";
+import { useAutocomplete } from "../../hooks/useAutocomplete";
+// import SpendInputField from "./SpendInputField";
 import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
 import usePersistentDateRange from '../../hooks/usePersistentDateRange';
@@ -21,9 +24,33 @@ function SpendSheet() {
     handleEditSpend,
   } = useSpendInput(dateRange.start, dateRange.end);
 
-  // State for editing
+  // State for editing (row id and field for inline edit)
   const [editing, setEditing] = useState({ id: null, field: null });
-  const [editValue, setEditValue] = useState("");
+  const [editRow, setEditRow] = useState({});
+
+  // Use the API-based autocomplete for all fields that need it
+  const autoCompleteFields = spendFieldConfig.filter(f => f.autoComplete).map(f => f.key);
+  // Separate autocomplete for add row and edit row (only one edit row at a time)
+  const addRowAutocomplete = useAutocomplete(autoCompleteFields);
+  const editRowAutocomplete = useAutocomplete(autoCompleteFields);
+
+  // For add row, fetch suggestions on input change
+  const handleAddRowInputChange = (key, value) => {
+    handleInputRowChange(key, value);
+    if (autoCompleteFields.includes(key)) {
+      addRowAutocomplete.fetchFieldSuggestions(key, value);
+      addRowAutocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
+    }
+  };
+
+  // For edit row, fetch suggestions on input change
+  const handleEditRowInputChange = (key, value) => {
+    setEditRow(r => ({ ...r, [key]: value }));
+    if (autoCompleteFields.includes(key)) {
+      editRowAutocomplete.fetchFieldSuggestions(key, value);
+      editRowAutocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
+    }
+  };
 
   return (
     <div className="spend-sheet-container wide">
@@ -37,227 +64,64 @@ function SpendSheet() {
           <thead>
             <tr>
               <th>Date</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th>Amount</th>
-              <th>Vendor</th>
-              <th>Payment Mode</th>
-              <th>Spend Type</th>
+              {spendFieldConfig.map(field => (
+                <th key={field.key}>{field.label}</th>
+              ))}
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <SpendInputRow
-              inputRow={inputRow}
-              onChange={handleInputRowChange}
+            {/* Add row (uses SpendEditableRow in 'add' mode) */}
+            <SpendEditableRow
+              rowData={inputRow}
+              isEditing={false}
+              editingField={null}
+              onFieldChange={handleAddRowInputChange}
               onSave={handleSaveInputRow}
+              isNew={true}
               saving={saving}
+              autocomplete={addRowAutocomplete}
             />
             {/* Existing spends */}
             {spends.length === 0 && !loading && (
               <tr>
-                <td colSpan={8} className="center">
+                <td colSpan={spendFieldConfig.length + 2} className="center">
                   {dateRange.start && dateRange.end
                     ? "No spends found."
                     : "Please select a start and end date."}
                 </td>
               </tr>
             )}
-            {spends.map((spend, idx) => (
-              <tr key={spend.id || idx}>
-                <td>{spend[SpendFields.DATE]}</td>
-                {/* CATEGORY */}
-                <td
-                  onDoubleClick={() => {
-                    setEditing({ id: spend.id, field: SpendFields.CATEGORY });
-                    setEditValue(spend[SpendFields.CATEGORY] || "");
+            {spends.map((spend, idx) => {
+              const isEditingRow = editing.id === spend.id;
+              const rowData = isEditingRow ? { ...spend, ...editRow } : spend;
+              return (
+                <SpendEditableRow
+                  key={spend.id || idx}
+                  rowData={rowData}
+                  isEditing={isEditingRow}
+                  editingField={isEditingRow ? editing.field : null}
+                  onFieldEdit={fieldKey => {
+                    setEditing({ id: spend.id, field: fieldKey });
+                    setEditRow(spend);
                   }}
-                >
-                  {editing.id === spend.id && editing.field === SpendFields.CATEGORY ? (
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onBlur={() => setEditing({ id: null, field: null })}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleEditSpend(spend.id, spend[SpendFields.DATE], { [SpendFields.CATEGORY]: editValue });
-                          setEditing({ id: null, field: null });
-                        } else if (e.key === 'Escape') {
-                          setEditing({ id: null, field: null });
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    spend[SpendFields.CATEGORY]
-                  )}
-                </td>
-                {/* DESCRIPTION */}
-                <td
-                  onDoubleClick={() => {
-                    setEditing({ id: spend.id, field: SpendFields.DESCRIPTION });
-                    setEditValue(spend[SpendFields.DESCRIPTION] || "");
+                  onFieldChange={isEditingRow ? handleEditRowInputChange : undefined}
+                  onSave={() => {
+                    handleEditSpend(spend.id, spend[SpendFields.DATE], editRow);
+                    setEditing({ id: null, field: null });
+                    setEditRow({});
                   }}
-                >
-                  {editing.id === spend.id && editing.field === SpendFields.DESCRIPTION ? (
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onBlur={() => setEditing({ id: null, field: null })}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleEditSpend(spend.id, spend[SpendFields.DATE], { [SpendFields.DESCRIPTION]: editValue });
-                          setEditing({ id: null, field: null });
-                        } else if (e.key === 'Escape') {
-                          setEditing({ id: null, field: null });
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    spend[SpendFields.DESCRIPTION]
-                  )}
-                </td>
-                {/* AMOUNT */}
-                <td
-                  className="right"
-                  onDoubleClick={() => {
-                    setEditing({ id: spend.id, field: SpendFields.AMOUNT_SPENT });
-                    setEditValue(spend[SpendFields.AMOUNT_SPENT] || "");
+                  onCancel={() => {
+                    setEditing({ id: null, field: null });
+                    setEditRow({});
                   }}
-                >
-                  {editing.id === spend.id && editing.field === SpendFields.AMOUNT_SPENT ? (
-                    <input
-                      type="number"
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onBlur={() => setEditing({ id: null, field: null })}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleEditSpend(spend.id, spend[SpendFields.DATE], { [SpendFields.AMOUNT_SPENT]: editValue });
-                          setEditing({ id: null, field: null });
-                        } else if (e.key === 'Escape') {
-                          setEditing({ id: null, field: null });
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    spend[SpendFields.AMOUNT_SPENT]
-                  )}
-                </td>
-                {/* VENDOR */}
-                <td
-                  onDoubleClick={() => {
-                    setEditing({ id: spend.id, field: SpendFields.VENDOR });
-                    setEditValue(spend[SpendFields.VENDOR] || "");
-                  }}
-                >
-                  {editing.id === spend.id && editing.field === SpendFields.VENDOR ? (
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onBlur={() => setEditing({ id: null, field: null })}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleEditSpend(spend.id, spend[SpendFields.DATE], { [SpendFields.VENDOR]: editValue });
-                          setEditing({ id: null, field: null });
-                        } else if (e.key === 'Escape') {
-                          setEditing({ id: null, field: null });
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    spend[SpendFields.VENDOR]
-                  )}
-                </td>
-                {/* PAYMENT MODE */}
-                <td
-                  onDoubleClick={() => {
-                    setEditing({ id: spend.id, field: SpendFields.PAYMENT_MODE });
-                    setEditValue(spend[SpendFields.PAYMENT_MODE] || "");
-                  }}
-                >
-                  {editing.id === spend.id && editing.field === SpendFields.PAYMENT_MODE ? (
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onBlur={() => setEditing({ id: null, field: null })}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleEditSpend(spend.id, spend[SpendFields.DATE], { [SpendFields.PAYMENT_MODE]: editValue });
-                          setEditing({ id: null, field: null });
-                        } else if (e.key === 'Escape') {
-                          setEditing({ id: null, field: null });
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    spend[SpendFields.PAYMENT_MODE]
-                  )}
-                </td>
-                {/* SPEND TYPE */}
-                <td
-                  onDoubleClick={() => {
-                    setEditing({ id: spend.id, field: SpendFields.SPEND_TYPE });
-                    setEditValue(spend[SpendFields.SPEND_TYPE] || "");
-                  }}
-                >
-                  {editing.id === spend.id && editing.field === SpendFields.SPEND_TYPE ? (
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onBlur={() => setEditing({ id: null, field: null })}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleEditSpend(spend.id, spend[SpendFields.DATE], { [SpendFields.SPEND_TYPE]: editValue });
-                          setEditing({ id: null, field: null });
-                        } else if (e.key === 'Escape') {
-                          setEditing({ id: null, field: null });
-                        }
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    spend[SpendFields.SPEND_TYPE]
-                  )}
-                </td>
-                <td>
-                  {editing.id === spend.id ? (
-                    <button
-                      className="save-btn"
-                      title="Save"
-                      onClick={() => {
-                        if (editing.field && editValue !== undefined) {
-                          handleEditSpend(
-                            spend.id,
-                            spend[SpendFields.DATE],
-                            { [editing.field]: editValue }
-                          );
-                        }
-                        setEditing({ id: null, field: null });
-                      }}
-                    >
-                      Save
-                    </button>
-                  ) : null}
-                  <button
-                    className="delete-btn"
-                    title="Delete spend"
-                    onClick={() => handleDeleteSpend(spend.id, spend[SpendFields.DATE])}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  saving={saving}
+                  isNew={false}
+                  onDelete={() => handleDeleteSpend(spend.id, spend[SpendFields.DATE])}
+                  autocomplete={isEditingRow ? editRowAutocomplete : undefined}
+                />
+              );
+            })}
           </tbody>
         </table>
       </div>
