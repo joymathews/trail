@@ -5,7 +5,7 @@ const {
   getSpendsByDateRange,
   forecastSaving
 } = require('../db/dbInterface');
-const { validateDateRange, validateField } = require('../middleware/validation');
+const { validateDateRange, validateSumFieldQuery } = require('../middleware/validation');
 const { filterSaving } = require('../services/filterService');
 
 
@@ -28,7 +28,7 @@ router.get('/', validateDateRange, async (req, res) => {
 });
 
 // GET /saving/sum - Sum by a given field for a date range (savings only)
-router.get('/sum', validateDateRange, validateField, async (req, res) => {
+router.get('/sum', validateDateRange, validateSumFieldQuery, async (req, res) => {
   try {
     const { startDate, endDate, field } = req.query;
     const userId = req.user.id;
