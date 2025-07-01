@@ -33,6 +33,9 @@ export default function SpendEditableRow({
         if (e.key === 'Escape') {
           e.stopPropagation();
           if (onCancel) onCancel();
+        } else if (e.key === 'Enter') {
+          e.stopPropagation();
+          if (onSave) onSave();
         }
       }) : undefined}
       tabIndex={isEditing ? 0 : undefined}
