@@ -4,7 +4,6 @@ import SpendEditableRow from "./SpendEditableRow";
 import { SpendFields } from "../../utils/fieldEnums";
 import { spendFieldConfig } from "./spendFieldConfig";
 import { useAutocomplete } from "../../hooks/useAutocomplete";
-// import SpendInputField from "./SpendInputField";
 import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
 import usePersistentDateRange from '../../hooks/usePersistentDateRange';
