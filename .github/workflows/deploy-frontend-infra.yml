@@ -1,0 +1,43 @@
+name: Deploy Frontend Infra
+
+on:
+  push:
+    paths:
+      - 'infra/frontend/**'
+      - '.github/workflows/deploy-frontend-infra.yml'
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.3.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_bucket_name: ${{ secrets.FRONTEND_BUCKET_NAME }}
+          TF_VAR_domain_name: ${{ secrets.FRONTEND_DOMAIN_NAME }}
+          TF_VAR_hosted_zone_id: ${{ secrets.FRONTEND_HOSTED_ZONE_ID }}
