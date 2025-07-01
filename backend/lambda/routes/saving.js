@@ -2,9 +2,10 @@ const express = require('express');
 const {
   sumByFieldForSavings,
   totalSpendsForSavings,
-  getSpendsByDateRange
+  getSpendsByDateRange,
+  forecastSaving
 } = require('../db/dbInterface');
-const { validateDateRange, validateField } = require('../middleware/validation');
+const { validateDateRange, validateSumFieldQuery } = require('../middleware/validation');
 const { filterSaving } = require('../services/filterService');
 
 
@@ -27,7 +28,7 @@ router.get('/', validateDateRange, async (req, res) => {
 });
 
 // GET /saving/sum - Sum by a given field for a date range (savings only)
-router.get('/sum', validateDateRange, validateField, async (req, res) => {
+router.get('/sum', validateDateRange, validateSumFieldQuery, async (req, res) => {
   try {
     const { startDate, endDate, field } = req.query;
     const userId = req.user.id;
@@ -48,6 +49,25 @@ router.get('/total', validateDateRange, async (req, res) => {
     res.json({ total });
   } catch (err) {
     res.status(500).json({ error: 'Failed to calculate total sum.', details: err.message });
+  }
+});
+/**
+ * GET /saving/forecast - Forecast savings for a date range given monthly income
+ * Expects: startDate, endDate, monthlyIncome as query parameters
+ * Returns: { monthlyIncome, totalFixedExpenses, forecastedDynamicSpends, totalSavingsMade, predictedSaving, startDate, endDate }
+ */
+router.get('/forecast', validateDateRange, async (req, res) => {
+  try {
+    const { startDate, endDate, monthlyIncome } = req.query;
+    const userId = req.user.id;
+    const income = Number(monthlyIncome);
+    if (isNaN(income) || income < 0) {
+      return res.status(400).json({ error: 'monthlyIncome must be a positive number.' });
+    }
+    const result = await forecastSaving({ userId, startDate, endDate, monthlyIncome: income });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to forecast savings.', details: err.message });
   }
 });
 

@@ -2,7 +2,10 @@ import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-import SpendChartsPage from "./pages/SpendChartsPage";
+import ExpenseDashboardPage from "./pages/ExpenseDashboardPage";
+import ExpenseForecast from "./pages/ExpenseForecastPage";
+import SavingForecast from "./pages/SavingForecastPage";
+import SavingDashboardPage from "./pages/SavingDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 
@@ -24,10 +27,34 @@ function App() {
         }
       />
       <Route
-        path="/charts"
+        path="/expense-dashboard"
         element={
           <ProtectedRoute>
-            <SpendChartsPage onSignOut={handleSignOut} />
+            <ExpenseDashboardPage onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saving-dashboard"
+        element={
+          <ProtectedRoute>
+            <SavingDashboardPage onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/expense-forecast"
+        element={
+          <ProtectedRoute>
+            <ExpenseForecast onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saving-forecast"
+        element={
+          <ProtectedRoute>
+            <SavingForecast onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />

@@ -1,37 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
+
 import Header from '../components/Header';
 import DateRangePicker from '../components/DateRangePicker';
-import ExpenseSumLineChart from '../components/charts/ExpenseSumLineChart';
-import ExpenseSumBarChart from '../components/charts/ExpenseSumBarChart';
 import ChartCard from '../components/charts/ChartCard';
-import { SpendFields } from '../utils/fieldEnums';
-import { useExpenseChartData } from '../hooks/useExpenseChartData';
-import { getDefaultLast7DaysRange } from '../utils/dateRangeDefaults';
-import { getDateRangeFromStorage, saveDateRangeToStorage } from '../utils/dateRangeStorage';
-import './SpendChartsPage.scss';
+import usePersistentDateRange from '../hooks/usePersistentDateRange';
+import './Dashboard.scss';
 
-const SpendChartsPage = ({ onSignOut }) => {
-  const storedRange = getDateRangeFromStorage();
-  const [dateRange, setDateRange] = useState(storedRange || getDefaultLast7DaysRange());
-  const [chartTypes, setChartTypes] = useState({
-    date: 'LineChart',
+export default function Dashboard({
+  onSignOut,
+  title,
+  useChartData,
+  LineChartComponent,
+  BarChartComponent,
+  chartLabels
+}) {
+  const [dateRange, setDateRange] = usePersistentDateRange();
+  const [chartTypes, setChartTypes] = React.useState({
+    date: 'BarChart',
     category: 'BarChart',
     vendor: 'BarChart',
     paymentMode: 'BarChart',
     spendType: 'BarChart'
   });
-  const { loading, chartData } = useExpenseChartData(dateRange);
+  const { loading, chartData } = useChartData(dateRange);
+  const handleDateRangeChange = setDateRange;
 
   const toggleChartType = (field) => {
     setChartTypes(prev => ({
       ...prev,
       [field]: prev[field] === 'LineChart' ? 'BarChart' : 'LineChart'
     }));
-  };
-
-  const handleDateRangeChange = (startDate, endDate) => {
-    setDateRange({ start: startDate, end: endDate });
-    saveDateRangeToStorage({ start: startDate, end: endDate });
   };
 
   const isLargeDataset = {
@@ -47,7 +45,7 @@ const SpendChartsPage = ({ onSignOut }) => {
       <Header onSignOut={onSignOut} />
       <div className="charts-content">
         <div className="charts-header">
-          <h2>Expense Dashboard</h2>
+          <h2>{title}</h2>
           <div className="header-controls">
             <DateRangePicker value={dateRange} onChange={handleDateRangeChange} />
           </div>
@@ -64,66 +62,64 @@ const SpendChartsPage = ({ onSignOut }) => {
             <div className="empty-message">
               <div className="empty-icon">📊</div>
               <h3>No Chart Data Available</h3>
-              <p>Please select a date range using the date picker above to view your expense analytics.</p>
+              <p>Please select a date range using the date picker above to view your analytics.</p>
             </div>
           </div>
         ) : (
           <div className="dashboard-grid">
             <ChartCard
-              title="Expenses by Date"
+              title={chartLabels.date}
               chartType={chartTypes.date}
               onToggleChartType={() => toggleChartType('date')}
               isLargeDataset={isLargeDataset.date}
               chartData={chartData.date}
-              spendField={SpendFields.DATE}
-              LineChartComponent={ExpenseSumLineChart}
-              BarChartComponent={ExpenseSumBarChart}
+              spendField={'date'}
+              LineChartComponent={LineChartComponent}
+              BarChartComponent={BarChartComponent}
             />
             <ChartCard
-              title="Expenses by Category"
+              title={chartLabels.category}
               chartType={chartTypes.category}
               onToggleChartType={() => toggleChartType('category')}
               isLargeDataset={isLargeDataset.category}
               chartData={chartData.category}
-              spendField={SpendFields.CATEGORY}
-              LineChartComponent={ExpenseSumLineChart}
-              BarChartComponent={ExpenseSumBarChart}
+              spendField={'category'}
+              LineChartComponent={LineChartComponent}
+              BarChartComponent={BarChartComponent}
             />
             <ChartCard
-              title="Expenses by Vendor"
+              title={chartLabels.vendor}
               chartType={chartTypes.vendor}
               onToggleChartType={() => toggleChartType('vendor')}
               isLargeDataset={isLargeDataset.vendor}
               chartData={chartData.vendor}
-              spendField={SpendFields.VENDOR}
-              LineChartComponent={ExpenseSumLineChart}
-              BarChartComponent={ExpenseSumBarChart}
+              spendField={'vendor'}
+              LineChartComponent={LineChartComponent}
+              BarChartComponent={BarChartComponent}
             />
             <ChartCard
-              title="Expenses by Payment Mode"
+              title={chartLabels.paymentMode}
               chartType={chartTypes.paymentMode}
               onToggleChartType={() => toggleChartType('paymentMode')}
               isLargeDataset={isLargeDataset.paymentMode}
               chartData={chartData.paymentMode}
-              spendField={SpendFields.PAYMENT_MODE}
-              LineChartComponent={ExpenseSumLineChart}
-              BarChartComponent={ExpenseSumBarChart}
+              spendField={'paymentMode'}
+              LineChartComponent={LineChartComponent}
+              BarChartComponent={BarChartComponent}
             />
             <ChartCard
-              title="Expenses by Spend Type"
+              title={chartLabels.spendType}
               chartType={chartTypes.spendType}
               onToggleChartType={() => toggleChartType('spendType')}
               isLargeDataset={isLargeDataset.spendType}
               chartData={chartData.spendType}
-              spendField={SpendFields.SPEND_TYPE}
-              LineChartComponent={ExpenseSumLineChart}
-              BarChartComponent={ExpenseSumBarChart}
+              spendField={'spendType'}
+              LineChartComponent={LineChartComponent}
+              BarChartComponent={BarChartComponent}
             />
           </div>
         )}
       </div>
     </div>
   );
-};
-
-export default SpendChartsPage;
+}

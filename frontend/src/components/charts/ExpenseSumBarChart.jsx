@@ -11,9 +11,7 @@ export default function ExpenseSumBarChart({ data = [], spendField }) {
   
   return (
     <div className="expense-sum-bar-chart">
-      <div className="chart-header">
-        <h3>Expense Summary</h3>
-      </div>
+      {/* Chart header removed as requested */}
       <ResponsiveContainer width="100%" height="90%" minHeight={250} minWidth={300}>
         <BarChart 
           data={validData} 

@@ -15,10 +15,28 @@ function Header({ onSignOut }) {
           Home
         </Link>
         <Link 
-          to="/charts" 
-          className={location.pathname === "/charts" ? "active" : ""}
+          to="/expense-dashboard" 
+          className={location.pathname === "/expense-dashboard" ? "active" : ""}
         >
-          Spend Charts
+          Expense Dashboard
+        </Link>
+        <Link 
+          to="/saving-dashboard" 
+          className={location.pathname === "/saving-dashboard" ? "active" : ""}
+        >
+          Saving Dashboard
+        </Link>
+        <Link 
+          to="/expense-forecast" 
+          className={location.pathname === "/expense-forecast" ? "active" : ""}
+        >
+          Expense Forecast
+        </Link>
+        <Link 
+          to="/saving-forecast" 
+          className={location.pathname === "/saving-forecast" ? "active" : ""}
+        >
+          Saving Forecast
         </Link>
       </nav>
       <div className="header-actions">

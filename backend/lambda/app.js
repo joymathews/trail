@@ -18,7 +18,7 @@ function createApp() {
   app.use(express.json());
   app.use(cors({
     origin: CORS_ORIGIN,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type'],
     credentials: true
   }));
