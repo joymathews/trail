@@ -24,7 +24,8 @@ export default function SpendEditableRow({
   onFieldEdit,
   autocomplete = {},
   isNew = false,
-  saving
+  saving,
+  onDelete
 }) {
   return (
     <tr>
@@ -88,7 +89,9 @@ export default function SpendEditableRow({
           </>
         ) : isNew ? (
           <button className="save-btn" onClick={onSave} disabled={saving}>Add</button>
-        ) : null}
+        ) : (
+          onDelete && <button className="delete-btn" onClick={onDelete} disabled={saving}>Delete</button>
+        )}
       </td>
     </tr>
   );
