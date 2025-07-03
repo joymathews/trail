@@ -69,7 +69,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     ssl_support_method  = "sni-only"
   }
 
-  aliases = [var.cloudfront_alias_domain]
+  aliases = var.cloudfront_alias_domains
 }
 
 # ACM certificate for the custom domain (must be in us-east-1 for CloudFront)
@@ -78,7 +78,7 @@ resource "aws_acm_certificate" "frontend" {
   provider                  = aws.us_east_1
   domain_name               = var.certificate_domain_name
   validation_method         = "DNS"
-  subject_alternative_names = var.certificate_san
+  subject_alternative_names = var.certificate_sans
   lifecycle {
     create_before_destroy = true
   }
