@@ -73,7 +73,6 @@ resource "aws_cloudfront_distribution" "frontend" {
 }
 
 # ACM certificate for the custom domain (must be in us-east-1 for CloudFront)
-# ACM certificate for the custom domain (must be in us-east-1 for CloudFront)
 resource "aws_acm_certificate" "frontend" {
   provider                  = aws.us_east_1
   domain_name               = var.certificate_domain_name
@@ -109,7 +108,9 @@ resource "aws_acm_certificate_validation" "frontend" {
 # Route53 record for the CloudFront distribution
 resource "aws_route53_record" "frontend_alias" {
   zone_id = var.hosted_zone_id
-  name    = var.cloudfront_alias_domain
+  # Create an alias record for each domain in the list
+  for_each = toset(var.cloudfront_alias_domains)
+  name    = each.value
   type    = "A"
   alias {
     name                   = aws_cloudfront_distribution.frontend.domain_name

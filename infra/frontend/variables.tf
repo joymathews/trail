@@ -29,5 +29,4 @@ variable "hosted_zone_id" {
 variable "aws_region" {
   description = "AWS region for resources (except ACM for CloudFront)"
   type        = string
-  default     = "ap-south-1"
 }
