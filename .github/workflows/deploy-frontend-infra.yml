@@ -14,7 +14,7 @@ jobs:
       TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
       TF_STATE_LOCK_TABLE: ${{ secrets.TF_STATE_LOCK_TABLE }}
       TRAIL_AWS_OIDC_ROLE: ${{ secrets.TRAIL_AWS_OIDC_ROLE }}
-      TRAIL_AWS_REGION: ${{ vars.TRAIL_AWS_REGION }}
+      TRAIL_AWS_REGION: ${{ secrets.TRAIL_AWS_REGION }}
       FRONTEND_BUCKET_NAME: ${{ vars.FRONTEND_BUCKET_NAME }}
       FRONTEND_CLOUDFRONT_ALIAS_DOMAINS: ${{ vars.FRONTEND_CLOUDFRONT_ALIAS_DOMAINS }}
       FRONTEND_CERTIFICATE_DOMAIN_NAME: ${{ vars.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
@@ -24,6 +24,21 @@ jobs:
       run:
         working-directory: infra/frontend
     steps:
+      - name: Check required environment variables
+        run: |
+          missing=0
+          for var in TF_STATE_BUCKET TF_STATE_LOCK_TABLE TRAIL_AWS_OIDC_ROLE TRAIL_AWS_REGION FRONTEND_BUCKET_NAME FRONTEND_CLOUDFRONT_ALIAS_DOMAINS FRONTEND_CERTIFICATE_DOMAIN_NAME FRONTEND_CERTIFICATE_SANS FRONTEND_HOSTED_ZONE_ID; do
+            if [ -z "${!var}" ]; then
+              echo "Missing required environment variable: $var"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "One or more required environment variables are missing. Exiting."
+            exit 1
+          fi
+        shell: bash
+        
       - name: Checkout code
         uses: actions/checkout@v4
 
