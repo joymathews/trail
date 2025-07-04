@@ -70,6 +70,7 @@ jobs:
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
           TF_VAR_certificate_sans: ${{ env.FRONTEND_CERTIFICATE_SANS }}
           TF_VAR_hosted_zone_id: ${{ env.FRONTEND_HOSTED_ZONE_ID }}
+          TF_VAR_aws_region: ${{ env.TRAIL_AWS_REGION }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -79,3 +80,4 @@ jobs:
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
           TF_VAR_certificate_sans: ${{ env.FRONTEND_CERTIFICATE_SANS }}
           TF_VAR_hosted_zone_id: ${{ env.FRONTEND_HOSTED_ZONE_ID }}
+          TF_VAR_aws_region: ${{ env.TRAIL_AWS_REGION }}
