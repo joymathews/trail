@@ -27,6 +27,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check required environment variables
+        run: |
+          missing=0
+          for var in TF_STATE_BUCKET TF_STATE_LOCK_TABLE TRAIL_AWS_OIDC_ROLE TRAIL_AWS_REGION FRONTEND_BUCKET_NAME FRONTEND_CLOUDFRONT_ALIAS_DOMAINS FRONTEND_CERTIFICATE_DOMAIN_NAME FRONTEND_CERTIFICATE_SANS FRONTEND_HOSTED_ZONE_ID; do
+            if [ -z "${!var}" ]; then
+              echo "Missing required environment variable: $var"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "One or more required environment variables are missing. Exiting."
+            exit 1
+          fi
+        shell: bash
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -38,6 +53,9 @@ jobs:
           role-to-assume: ${{ env.TRAIL_AWS_OIDC_ROLE }}
           aws-region: ${{ env.TRAIL_AWS_REGION }}
 
+
+
+
       - name: Terraform Init
         run: |
           terraform init \
@@ -47,6 +65,7 @@ jobs:
             -backend-config="dynamodb_table=${{ env.TF_STATE_LOCK_TABLE }}" \
             -backend-config="encrypt=true"
 
+
       - name: Terraform Plan
         run: terraform plan
         env:
@@ -55,6 +74,8 @@ jobs:
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
           TF_VAR_certificate_sans: ${{ env.FRONTEND_CERTIFICATE_SANS }}
           TF_VAR_hosted_zone_id: ${{ env.FRONTEND_HOSTED_ZONE_ID }}
+          TF_VAR_aws_region: ${{ env.TRAIL_AWS_REGION }}
+
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -64,3 +85,4 @@ jobs:
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
           TF_VAR_certificate_sans: ${{ env.FRONTEND_CERTIFICATE_SANS }}
           TF_VAR_hosted_zone_id: ${{ env.FRONTEND_HOSTED_ZONE_ID }}
+          TF_VAR_aws_region: ${{ env.TRAIL_AWS_REGION }}
