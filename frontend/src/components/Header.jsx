@@ -1,54 +1,83 @@
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
+function NavLinks({ onClick = () => {}, location }) {
+  return (
+    <>
+      <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={onClick}>
+        Home
+      </Link>
+      <Link 
+        to="/expense-dashboard" 
+        className={location.pathname === "/expense-dashboard" ? "active" : ""}
+        onClick={onClick}
+      >
+        Expense Dashboard
+      </Link>
+      <Link 
+        to="/saving-dashboard" 
+        className={location.pathname === "/saving-dashboard" ? "active" : ""}
+        onClick={onClick}
+      >
+        Saving Dashboard
+      </Link>
+      <Link 
+        to="/expense-forecast" 
+        className={location.pathname === "/expense-forecast" ? "active" : ""}
+        onClick={onClick}
+      >
+        Expense Forecast
+      </Link>
+      <Link 
+        to="/saving-forecast" 
+        className={location.pathname === "/saving-forecast" ? "active" : ""}
+        onClick={onClick}
+      >
+        Saving Forecast
+      </Link>
+    </>
+  );
+}
+
+NavLinks.propTypes = {
+  onClick: PropTypes.func,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }).isRequired
+};
+
 function Header({ onSignOut }) {
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const handleMenuToggle = () => setMenuOpen(open => !open);
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header className="header">
-      <Link to="/" className="header-title">
+      <Link to="/" className="header-title" onClick={closeMenu}>
         Trail
       </Link>
-      <nav className="header-nav">
-        <Link to="/" className={location.pathname === "/" ? "active" : ""}>
-          Home
-        </Link>
-        <Link 
-          to="/expense-dashboard" 
-          className={location.pathname === "/expense-dashboard" ? "active" : ""}
-        >
-          Expense Dashboard
-        </Link>
-        <Link 
-          to="/saving-dashboard" 
-          className={location.pathname === "/saving-dashboard" ? "active" : ""}
-        >
-          Saving Dashboard
-        </Link>
-        <Link 
-          to="/expense-forecast" 
-          className={location.pathname === "/expense-forecast" ? "active" : ""}
-        >
-          Expense Forecast
-        </Link>
-        <Link 
-          to="/saving-forecast" 
-          className={location.pathname === "/saving-forecast" ? "active" : ""}
-        >
-          Saving Forecast
-        </Link>
-      </nav>
-      <div className="header-actions">
-        <button className="signout-btn" onClick={onSignOut}>
+      <button className="hamburger" aria-label="Menu" aria-haspopup="true" aria-expanded={menuOpen} aria-controls="header-nav-mobile" onClick={handleMenuToggle}>
+        <span className="hamburger-bar"></span>
+        <span className="hamburger-bar"></span>
+        <span className="hamburger-bar"></span>
+      </button>
+      <nav id="header-nav-mobile" className={`header-nav-mobile${menuOpen ? ' open' : ''}`}> 
+        <button className="signout-btn" onClick={() => { onSignOut(); closeMenu(); }} aria-label="Sign Out">
           <span className="btn-text">Sign Out</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M16 17L21 12L16 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <span className="signout-icon" aria-hidden="true"></span>
         </button>
-      </div>
+        <NavLinks onClick={closeMenu} location={location} />
+      </nav>
+      <nav className="header-nav-desktop">
+        <NavLinks location={location} />
+        <button className="signout-btn" onClick={onSignOut} aria-label="Sign Out">
+          <span className="btn-text">Sign Out</span>
+          <span className="signout-icon" aria-hidden="true"></span>
+        </button>
+      </nav>
     </header>
   );
 }
