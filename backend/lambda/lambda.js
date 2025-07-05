@@ -10,4 +10,7 @@ try {
   throw err;
 }
 
-exports.handler = serverlessExpress({ app });
+const handler = serverlessExpress({ app });
+exports.handler = async (event, context) => {
+  return handler(event, context);
+};

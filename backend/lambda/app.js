@@ -11,7 +11,8 @@ const userExtractor = require('./middleware/userExtractor');
 
 function createApp() {
   const app = express();
-  app.set('trust proxy', true);
+  // Only trust the first proxy (API Gateway) to avoid IP spoofing
+  app.set('trust proxy', (ip, i) => i === 0);
 
   if (!IS_LOCAL) {
     app.use(ipLimiter); // Only apply in non-local environments
