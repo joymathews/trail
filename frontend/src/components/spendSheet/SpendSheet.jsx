@@ -61,7 +61,6 @@ function SpendSheet() {
         <table className="spend-table">
           <thead>
             <tr>
-              <th>Date</th>
               {spendFieldConfig.map(field => (
                 <th key={field.key}>{field.label}</th>
               ))}
