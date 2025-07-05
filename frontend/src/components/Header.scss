@@ -212,14 +212,13 @@
     }
   }
 
-  // .header-nav and .header-actions removed as dead code
+// ...existing code...
 }
 
 @media (max-width: 768px) {
   .header {
     padding: 0.8rem 1rem;
     flex-wrap: wrap;
-    // .header-nav removed as dead code
   }
 }
 
