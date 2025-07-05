@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DateRangePicker from "../DateRangePicker";
 import SpendEditableRow from "./SpendEditableRow";
 import { SpendFields } from "../../utils/fieldEnums";
@@ -21,6 +21,23 @@ function SpendSheet() {
     handleDeleteSpend,
     handleEditSpend,
   } = useSpendInput(dateRange.start, dateRange.end);
+
+
+
+  const [lastUsedDate, setLastUsedDate] = useState(null);
+
+  const handleSaveInputRowWithDate = async () => {
+    const dateValue = inputRow[SpendFields.DATE];
+    await handleSaveInputRow();
+    if (dateValue) setLastUsedDate(dateValue);
+  };
+
+  useEffect(() => {
+  // Only update if lastUsedDate is set and inputRow's date is different
+  if (lastUsedDate && inputRow[SpendFields.DATE] !== lastUsedDate) {
+    handleInputRowChange(SpendFields.DATE, lastUsedDate);
+  }
+  }, [lastUsedDate, inputRow[SpendFields.DATE]]);
 
   // State for editing (row id and field for inline edit)
   const [editing, setEditing] = useState({ id: null, field: null });
@@ -74,7 +91,7 @@ function SpendSheet() {
               isEditing={false}
               editingField={null}
               onFieldChange={handleAddRowInputChange}
-              onSave={handleSaveInputRow}
+              onSave={handleSaveInputRowWithDate}
               isNew={true}
               saving={saving}
               autocomplete={addRowAutocomplete}
