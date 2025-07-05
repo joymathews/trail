@@ -16,8 +16,10 @@ function createApp() {
     app.use(ipLimiter); // Only apply in non-local environments
   }
   app.use(express.json());
+  // Minimal change: support multiple CORS origins (comma-separated in CORS_ORIGIN)
+  const allowedOrigins = CORS_ORIGIN.split(',').map(origin => origin.trim());
   app.use(cors({
-    origin: CORS_ORIGIN,
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type'],
     credentials: true
