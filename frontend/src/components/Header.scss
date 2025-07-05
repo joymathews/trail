@@ -1,8 +1,8 @@
 
 
+// All @use rules must be at the very top
 @use "sass:color";
 @use "../styles/variables.scss" as *;
-// All @use rules must be at the very top
 
 .signout-icon {
   display: inline-block;
