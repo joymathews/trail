@@ -15,14 +15,7 @@
 }
 
 // Hide text on mobile, show icon
-@media (max-width: 480px) {
-  .signout-btn .btn-text {
-    display: none;
-  }
-  .signout-btn .signout-icon {
-    display: inline-block;
-  }
-}
+// Consolidated into single media query block below
 
 // Hamburger styles
 .hamburger {
@@ -133,6 +126,7 @@
       padding: 1rem 0.5rem 0.5rem 0.5rem;
     }
   }
+  // Hide text on mobile, show icon (consolidated)
   .signout-btn .btn-text {
     display: none;
   }

@@ -26,11 +26,11 @@ function createApp() {
   }));
 
   if (!IS_LOCAL) {
-    app.use(ipLimiter); // Only apply in non-local environments
+    app.use(ipLimiter); 
   }
 
 
-  // Health check route: only healthLimiter, no userExtractor or apiLimiter
+
   if (!IS_LOCAL) {
     app.use('/health', healthLimiter, healthCheck);
   } else {
