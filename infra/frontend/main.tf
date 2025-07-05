@@ -130,3 +130,13 @@ resource "aws_route53_record" "frontend_alias" {
 }
 
 # ACM certificate and Route53 records will be added
+
+# Output the current AWS region variable
+output "current_aws_region" {
+  value = var.aws_region
+}
+
+# Output the actual S3 bucket region
+output "s3_bucket_region" {
+  value = aws_s3_bucket.frontend.region
+}

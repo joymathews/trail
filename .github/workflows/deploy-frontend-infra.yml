@@ -76,7 +76,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
         env:
-          TF_LOG: DEBUG
           TF_VAR_bucket_name: ${{ env.FRONTEND_BUCKET_NAME }}
           TF_VAR_cloudfront_alias_domains: ${{ env.FRONTEND_CLOUDFRONT_ALIAS_DOMAINS }}
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
@@ -88,7 +87,6 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         env:
-          TF_LOG: DEBUG
           TF_VAR_bucket_name: ${{ env.FRONTEND_BUCKET_NAME }}
           TF_VAR_cloudfront_alias_domains: ${{ env.FRONTEND_CLOUDFRONT_ALIAS_DOMAINS }}
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
