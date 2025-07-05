@@ -12,5 +12,5 @@ try {
 
 const handler = serverlessExpress({ app });
 exports.handler = async (event, context) => {
-  return handler(event, context);
+  return await handler(event, context);
 };

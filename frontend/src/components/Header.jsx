@@ -2,11 +2,47 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
+function NavLinks({ onClick, location }) {
+  return (
+    <>
+      <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={onClick}>
+        Home
+      </Link>
+      <Link 
+        to="/expense-dashboard" 
+        className={location.pathname === "/expense-dashboard" ? "active" : ""}
+        onClick={onClick}
+      >
+        Expense Dashboard
+      </Link>
+      <Link 
+        to="/saving-dashboard" 
+        className={location.pathname === "/saving-dashboard" ? "active" : ""}
+        onClick={onClick}
+      >
+        Saving Dashboard
+      </Link>
+      <Link 
+        to="/expense-forecast" 
+        className={location.pathname === "/expense-forecast" ? "active" : ""}
+        onClick={onClick}
+      >
+        Expense Forecast
+      </Link>
+      <Link 
+        to="/saving-forecast" 
+        className={location.pathname === "/saving-forecast" ? "active" : ""}
+        onClick={onClick}
+      >
+        Saving Forecast
+      </Link>
+    </>
+  );
+}
+
 function Header({ onSignOut }) {
   const location = useLocation();
-
   const [menuOpen, setMenuOpen] = useState(false);
-
   const handleMenuToggle = () => setMenuOpen(open => !open);
   const closeMenu = () => setMenuOpen(false);
 
@@ -15,7 +51,7 @@ function Header({ onSignOut }) {
       <Link to="/" className="header-title" onClick={closeMenu}>
         Trail
       </Link>
-      <button className="hamburger" aria-label="Menu" onClick={handleMenuToggle}>
+      <button className="hamburger" aria-label="Menu" aria-expanded={menuOpen} onClick={handleMenuToggle}>
         <span className="hamburger-bar"></span>
         <span className="hamburger-bar"></span>
         <span className="hamburger-bar"></span>
@@ -25,66 +61,10 @@ function Header({ onSignOut }) {
           <span className="btn-text">Sign Out</span>
           <span className="signout-icon" aria-hidden="true"></span>
         </button>
-        <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={closeMenu}>
-          Home
-        </Link>
-        <Link 
-          to="/expense-dashboard" 
-          className={location.pathname === "/expense-dashboard" ? "active" : ""}
-          onClick={closeMenu}
-        >
-          Expense Dashboard
-        </Link>
-        <Link 
-          to="/saving-dashboard" 
-          className={location.pathname === "/saving-dashboard" ? "active" : ""}
-          onClick={closeMenu}
-        >
-          Saving Dashboard
-        </Link>
-        <Link 
-          to="/expense-forecast" 
-          className={location.pathname === "/expense-forecast" ? "active" : ""}
-          onClick={closeMenu}
-        >
-          Expense Forecast
-        </Link>
-        <Link 
-          to="/saving-forecast" 
-          className={location.pathname === "/saving-forecast" ? "active" : ""}
-          onClick={closeMenu}
-        >
-          Saving Forecast
-        </Link>
+        <NavLinks onClick={closeMenu} location={location} />
       </nav>
       <nav className="header-nav-desktop">
-        <Link to="/" className={location.pathname === "/" ? "active" : ""}>
-          Home
-        </Link>
-        <Link 
-          to="/expense-dashboard" 
-          className={location.pathname === "/expense-dashboard" ? "active" : ""}
-        >
-          Expense Dashboard
-        </Link>
-        <Link 
-          to="/saving-dashboard" 
-          className={location.pathname === "/saving-dashboard" ? "active" : ""}
-        >
-          Saving Dashboard
-        </Link>
-        <Link 
-          to="/expense-forecast" 
-          className={location.pathname === "/expense-forecast" ? "active" : ""}
-        >
-          Expense Forecast
-        </Link>
-        <Link 
-          to="/saving-forecast" 
-          className={location.pathname === "/saving-forecast" ? "active" : ""}
-        >
-          Saving Forecast
-        </Link>
+        <NavLinks location={location} />
         <button className="signout-btn" onClick={onSignOut}>
           <span className="btn-text">Sign Out</span>
           <span className="signout-icon" aria-hidden="true"></span>
