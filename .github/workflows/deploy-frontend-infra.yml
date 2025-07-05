@@ -54,14 +54,7 @@ jobs:
           aws-region: ${{ env.TRAIL_AWS_REGION }}
 
 
-      - name: Print region variables
-        run: |
-          echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
-          echo "TF_VAR_aws_region: $TF_VAR_aws_region"
-          echo "env.TF_VAR_aws_region: ${{ env.TF_VAR_aws_region }}"
-          echo "TRAIL_AWS_REGION: $TRAIL_AWS_REGION"
-          echo "env.TRAIL_AWS_REGION: ${{ env.TRAIL_AWS_REGION }}"
-          env | grep REGION || true
+
 
       - name: Terraform Init
         run: |
