@@ -11,6 +11,7 @@ const userExtractor = require('./middleware/userExtractor');
 
 function createApp() {
   const app = express();
+  app.set('trust proxy', true);
 
   if (!IS_LOCAL) {
     app.use(ipLimiter); // Only apply in non-local environments
