@@ -14,18 +14,21 @@ function createApp() {
   // Only trust the first proxy (API Gateway) to avoid IP spoofing
   app.set('trust proxy', (ip, i) => i === 0);
 
-  if (!IS_LOCAL) {
-    app.use(ipLimiter); // Only apply in non-local environments
-  }
   app.use(express.json());
+  
   // Minimal change: support multiple CORS origins (comma-separated in CORS_ORIGIN)
   const allowedOrigins = CORS_ORIGIN.split(',').map(origin => origin.trim());
   app.use(cors({
     origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type'],
     credentials: true
   }));
+
+  if (!IS_LOCAL) {
+    app.use(ipLimiter); // Only apply in non-local environments
+  }
+
 
   // Health check route: only healthLimiter, no userExtractor or apiLimiter
   if (!IS_LOCAL) {
