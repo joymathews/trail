@@ -53,6 +53,16 @@ jobs:
           role-to-assume: ${{ env.TRAIL_AWS_OIDC_ROLE }}
           aws-region: ${{ env.TRAIL_AWS_REGION }}
 
+
+      - name: Print region variables
+        run: |
+          echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
+          echo "TF_VAR_aws_region: $TF_VAR_aws_region"
+          echo "env.TF_VAR_aws_region: ${{ env.TF_VAR_aws_region }}"
+          echo "TRAIL_AWS_REGION: $TRAIL_AWS_REGION"
+          echo "env.TRAIL_AWS_REGION: ${{ env.TRAIL_AWS_REGION }}"
+          env | grep REGION || true
+
       - name: Terraform Init
         run: |
           terraform init \
@@ -62,9 +72,11 @@ jobs:
             -backend-config="dynamodb_table=${{ env.TF_STATE_LOCK_TABLE }}" \
             -backend-config="encrypt=true"
 
+
       - name: Terraform Plan
         run: terraform plan
         env:
+          TF_LOG: DEBUG
           TF_VAR_bucket_name: ${{ env.FRONTEND_BUCKET_NAME }}
           TF_VAR_cloudfront_alias_domains: ${{ env.FRONTEND_CLOUDFRONT_ALIAS_DOMAINS }}
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
@@ -72,9 +84,11 @@ jobs:
           TF_VAR_hosted_zone_id: ${{ env.FRONTEND_HOSTED_ZONE_ID }}
           TF_VAR_aws_region: ${{ env.TRAIL_AWS_REGION }}
 
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
         env:
+          TF_LOG: DEBUG
           TF_VAR_bucket_name: ${{ env.FRONTEND_BUCKET_NAME }}
           TF_VAR_cloudfront_alias_domains: ${{ env.FRONTEND_CLOUDFRONT_ALIAS_DOMAINS }}
           TF_VAR_certificate_domain_name: ${{ env.FRONTEND_CERTIFICATE_DOMAIN_NAME }}
