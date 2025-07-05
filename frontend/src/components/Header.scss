@@ -15,14 +15,11 @@
 }
 
 // Hide text on mobile, show icon
-.signout-btn .btn-text {
-  @media (max-width: 480px) {
+@media (max-width: 480px) {
+  .signout-btn .btn-text {
     display: none;
   }
-}
-.signout-btn .signout-icon {
-  display: none;
-  @media (max-width: 480px) {
+  .signout-btn .signout-icon {
     display: inline-block;
   }
 }
@@ -123,6 +120,11 @@
 
 @media (max-width: 480px) {
   .header {
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+
     .header-title {
       margin-bottom: 0.3rem;
     }
@@ -130,6 +132,12 @@
       top: 56px;
       padding: 1rem 0.5rem 0.5rem 0.5rem;
     }
+  }
+  .signout-btn .btn-text {
+    display: none;
+  }
+  .signout-btn .signout-icon {
+    display: inline-block;
   }
 }
 

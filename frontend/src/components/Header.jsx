@@ -51,12 +51,12 @@ function Header({ onSignOut }) {
       <Link to="/" className="header-title" onClick={closeMenu}>
         Trail
       </Link>
-      <button className="hamburger" aria-label="Menu" aria-expanded={menuOpen} onClick={handleMenuToggle}>
+      <button className="hamburger" aria-label="Menu" aria-expanded={menuOpen} aria-controls="header-nav-mobile" onClick={handleMenuToggle}>
         <span className="hamburger-bar"></span>
         <span className="hamburger-bar"></span>
         <span className="hamburger-bar"></span>
       </button>
-      <nav className={`header-nav-mobile${menuOpen ? ' open' : ''}`}>
+      <nav id="header-nav-mobile" className={`header-nav-mobile${menuOpen ? ' open' : ''}`}> 
         <button className="signout-btn" onClick={() => { onSignOut(); closeMenu(); }}>
           <span className="btn-text">Sign Out</span>
           <span className="signout-icon" aria-hidden="true"></span>
