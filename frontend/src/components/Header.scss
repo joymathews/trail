@@ -130,9 +130,6 @@
   .signout-btn .btn-text {
     display: none;
   }
-  .signout-btn .signout-icon {
-    display: inline-block;
-  }
 }
 
 .header {
@@ -203,13 +200,7 @@
 
     // .btn-text mobile hide rule is consolidated above
 
-    svg {
-      display: none;
-
-      @media (max-width: 480px) {
-        display: block;
-      }
-    }
+    // svg display is not used in .signout-btn; remove redundant rule
   }
 
 // ...existing code...
