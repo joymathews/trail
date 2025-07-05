@@ -57,7 +57,7 @@ function Header({ onSignOut }) {
         <span className="hamburger-bar"></span>
       </button>
       <nav id="header-nav-mobile" className={`header-nav-mobile${menuOpen ? ' open' : ''}`}> 
-        <button className="signout-btn" onClick={() => { onSignOut(); closeMenu(); }}>
+        <button className="signout-btn" onClick={() => { onSignOut(); closeMenu(); }} aria-label="Sign Out">
           <span className="btn-text">Sign Out</span>
           <span className="signout-icon" aria-hidden="true"></span>
         </button>
@@ -65,7 +65,7 @@ function Header({ onSignOut }) {
       </nav>
       <nav className="header-nav-desktop">
         <NavLinks location={location} />
-        <button className="signout-btn" onClick={onSignOut}>
+        <button className="signout-btn" onClick={onSignOut} aria-label="Sign Out">
           <span className="btn-text">Sign Out</span>
           <span className="signout-icon" aria-hidden="true"></span>
         </button>

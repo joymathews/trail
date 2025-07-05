@@ -25,13 +25,9 @@ function createApp() {
     credentials: true
   }));
 
-  if (!IS_LOCAL) {
-    app.use(ipLimiter); 
-  }
-
-
 
   if (!IS_LOCAL) {
+    app.use(ipLimiter);
     app.use('/health', healthLimiter, healthCheck);
   } else {
     app.use('/health', healthCheck);
