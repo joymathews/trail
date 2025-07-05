@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
-function NavLinks({ onClick, location }) {
+function NavLinks({ onClick = () => {}, location }) {
   return (
     <>
       <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={onClick}>

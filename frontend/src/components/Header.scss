@@ -207,11 +207,7 @@
       transform: translateY(0);
     }
 
-    .btn-text {
-      @media (max-width: 480px) {
-        display: none;
-      }
-    }
+    // .btn-text mobile hide rule is consolidated above
 
     svg {
       display: none;
@@ -222,60 +218,14 @@
     }
   }
 
-  .header-nav {
-    display: flex;
-    gap: 2rem;
-    margin-left: auto;
-    margin-right: 2rem;
-
-    a {
-      color: $text;
-      text-decoration: none;
-      font-weight: 500;
-      position: relative;
-      padding: 0.5rem 0;
-
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: $gradient-primary;
-        transition: width 0.2s;
-      }
-
-      &.active::after {
-        width: 100%;
-      }
-
-      &.active {
-        color: $accent;
-      }
-    }
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+  // .header-nav and .header-actions removed as dead code
 }
 
 @media (max-width: 768px) {
   .header {
     padding: 0.8rem 1rem;
     flex-wrap: wrap;
-
-    .header-nav {
-      order: 3;
-      width: 100%;
-      justify-content: center;
-      margin: 0.5rem 0 0;
-      padding-top: 0.5rem;
-      border-top: 1px solid $border-light;
-    }
+    // .header-nav removed as dead code
   }
 }
 
