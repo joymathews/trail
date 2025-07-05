@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
@@ -40,6 +41,13 @@ function NavLinks({ onClick = () => {}, location }) {
   );
 }
 
+NavLinks.propTypes = {
+  onClick: PropTypes.func,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired
+  }).isRequired
+};
+
 function Header({ onSignOut }) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,7 +59,7 @@ function Header({ onSignOut }) {
       <Link to="/" className="header-title" onClick={closeMenu}>
         Trail
       </Link>
-      <button className="hamburger" aria-label="Menu" aria-expanded={menuOpen} aria-controls="header-nav-mobile" onClick={handleMenuToggle}>
+      <button className="hamburger" aria-label="Menu" aria-haspopup="true" aria-expanded={menuOpen} aria-controls="header-nav-mobile" onClick={handleMenuToggle}>
         <span className="hamburger-bar"></span>
         <span className="hamburger-bar"></span>
         <span className="hamburger-bar"></span>
