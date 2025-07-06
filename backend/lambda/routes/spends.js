@@ -62,7 +62,7 @@ router.patch('/:id', validateEditSpend, async (req, res) => {
     const userId = req.user.id;
     const { date, updates } = req.body;
     const result = await editSpend({ userId, id: req.params.id, date, updates });
-    await addAllDistinctValues(userId, req.body);
+    await addAllDistinctValues(userId, updates);
     res.json({ message: 'Spend updated successfully.', result });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update spend.', details: err.message });
