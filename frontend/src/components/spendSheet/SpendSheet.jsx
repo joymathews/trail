@@ -57,7 +57,8 @@ function SpendSheet() {
         if (filterValue === "(blank)") {
           return spend[field.key] == null || spend[field.key] === "";
         }
-        return String(spend[field.key] || "") === filterValue;
+        // Only coerce to string for comparison, do not coerce falsy values to blank
+        return String(spend[field.key]) === filterValue;
       })
     ),
     [spends, filters]
