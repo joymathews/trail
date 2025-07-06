@@ -7,7 +7,11 @@ import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
 import usePersistentDateRange from '../../hooks/usePersistentDateRange';
 function getDistinctValues(data, key) {
-  return Array.from(new Set(data.map(row => row[key]).filter(v => v != null && v !== "")));
+  // Include blanks as a filter option
+  const values = data.map(row => row[key]);
+  const nonBlank = Array.from(new Set(values.filter(v => v != null && v !== "")));
+  const hasBlank = values.some(v => v == null || v === "");
+  return hasBlank ? [...nonBlank, "(blank)"] : nonBlank;
 }
 
 function SpendSheet() {
@@ -48,6 +52,9 @@ function SpendSheet() {
     spendFieldConfig.every(field => {
       const filterValue = filters[field.key];
       if (!filterValue) return true;
+      if (filterValue === "(blank)") {
+        return spend[field.key] == null || spend[field.key] === "";
+      }
       return String(spend[field.key] || "") === filterValue;
     })
   );
@@ -88,7 +95,7 @@ function SpendSheet() {
                   >
                     <option value="">All</option>
                     {distinctValues[field.key].map(val => (
-                      <option key={val} value={val}>{val}</option>
+                      <option key={val} value={val}>{val === "(blank)" ? "(blank)" : val}</option>
                     ))}
                   </select>
                 </th>
