@@ -1,6 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { getNextFieldKey } from '../utils/spendInputFields';
 import { fetchSuggestions } from '../utils/api';
+
+import debounce from 'lodash.debounce';
 
 export function useAutocomplete(fields) {
   const [suggestions, setSuggestions] = useState(
@@ -14,18 +16,35 @@ export function useAutocomplete(fields) {
   );
   const inputRefs = Object.fromEntries(fields.map(f => [f, useRef(null)]));
 
-  const fetchFieldSuggestions = async (field, value) => {
-    if (!value) {
-      setSuggestions(s => ({ ...s, [field]: [] }));
-      return;
-    }
-    try {
-      const data = await fetchSuggestions(field, value);
-      setSuggestions(s => ({ ...s, [field]: data }));
-    } catch {
-      setSuggestions(s => ({ ...s, [field]: [] }));
-    }
-  };
+
+
+  // Debounced fetch function
+  const debouncedFetchFieldSuggestions = useMemo(() =>
+    debounce(async (field, value) => {
+      if (!value) {
+        setSuggestions(s => ({ ...s, [field]: [] }));
+        return;
+      }
+      try {
+        const data = await fetchSuggestions(field, value);
+        setSuggestions(s => ({ ...s, [field]: data }));
+      } catch {
+        setSuggestions(s => ({ ...s, [field]: [] }));
+      }
+    }, 300), []
+  );
+
+  // Cleanup effect to cancel debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFetchFieldSuggestions.cancel();
+    };
+  }, [debouncedFetchFieldSuggestions]);
+
+  // Wrapper to match previous API, stable reference
+  const fetchFieldSuggestions = useCallback((field, value) => {
+    debouncedFetchFieldSuggestions(field, value);
+  }, [debouncedFetchFieldSuggestions]);
 
   const handleSuggestionClick = (field, suggestion, onChange) => {
     onChange(field, suggestion);

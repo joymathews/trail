@@ -6,7 +6,7 @@ const savingRouter = require('./routes/saving');
 const autoComplete = require('./routes/autocomplete');
 const healthCheck = require('./routes/health');
 const { CORS_ORIGIN, IS_LOCAL } = require('./config');
-const { ipLimiter, apiLimiter, healthLimiter } = require('./middleware/rateLimiter');
+const { ipLimiter, apiLimiter, healthLimiter, autocompleteLimiter } = require('./middleware/rateLimiter');
 const userExtractor = require('./middleware/userExtractor');
 
 function createApp() {
@@ -35,11 +35,11 @@ function createApp() {
 
   app.use(userExtractor);
 
-  if (!IS_LOCAL) {
+   if (!IS_LOCAL) {
     app.use('/spends', apiLimiter, spendsRouter);
     app.use('/expense', apiLimiter, expenseRouter);
     app.use('/saving', apiLimiter, savingRouter);
-    app.use('/autocomplete', apiLimiter, autoComplete);
+    app.use('/autocomplete', autocompleteLimiter, autoComplete);
   } else {
     app.use('/spends', spendsRouter);
     app.use('/expense', expenseRouter);
