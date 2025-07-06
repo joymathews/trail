@@ -3,7 +3,6 @@ import DateRangePicker from "../DateRangePicker";
 import SpendEditableRow from "./SpendEditableRow";
 import { SpendFields } from "../../utils/fieldEnums";
 import { spendFieldConfig } from "./spendFieldConfig";
-import { useAutocomplete } from "../../hooks/useAutocomplete";
 import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
 import usePersistentDateRange from '../../hooks/usePersistentDateRange';
@@ -13,7 +12,12 @@ function SpendSheet() {
   const {
     inputRow,
     handleInputRowChange,
-    handleSaveInputRow,
+    handleAddRowInputChange,
+    handleEditRowInputChange,
+    handleSaveInputRowWithDate,
+    lastUsedDate,
+    addRowAutocomplete,
+    editRowAutocomplete,
     saving,
     spends,
     loading,
@@ -24,48 +28,20 @@ function SpendSheet() {
 
 
 
-  const [lastUsedDate, setLastUsedDate] = useState(null);
 
-  const handleSaveInputRowWithDate = async () => {
-    const dateValue = inputRow[SpendFields.DATE];
-    await handleSaveInputRow();
-    if (dateValue) setLastUsedDate(dateValue);
-  };
 
   useEffect(() => {
-  // Only update if lastUsedDate is set and inputRow's date is different
-  if (lastUsedDate && inputRow[SpendFields.DATE] !== lastUsedDate) {
-    handleInputRowChange(SpendFields.DATE, lastUsedDate);
-  }
+    // Only update if lastUsedDate is set and inputRow's date is different
+    if (lastUsedDate && inputRow[SpendFields.DATE] !== lastUsedDate) {
+      handleInputRowChange(SpendFields.DATE, lastUsedDate);
+    }
   }, [lastUsedDate, inputRow[SpendFields.DATE]]);
 
   // State for editing (row id and field for inline edit)
   const [editing, setEditing] = useState({ id: null, field: null });
   const [editRow, setEditRow] = useState({});
 
-  // Use the API-based autocomplete for all fields that need it
-  const autoCompleteFields = spendFieldConfig.filter(f => f.autoComplete).map(f => f.key);
-  // Separate autocomplete for add row and edit row (only one edit row at a time)
-  const addRowAutocomplete = useAutocomplete(autoCompleteFields);
-  const editRowAutocomplete = useAutocomplete(autoCompleteFields);
 
-  // For add row, fetch suggestions on input change
-  const handleAddRowInputChange = (key, value) => {
-    handleInputRowChange(key, value);
-    if (autoCompleteFields.includes(key)) {
-      addRowAutocomplete.fetchFieldSuggestions(key, value);
-      addRowAutocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
-    }
-  };
-
-  // For edit row, fetch suggestions on input change
-  const handleEditRowInputChange = (key, value) => {
-    setEditRow(r => ({ ...r, [key]: value }));
-    if (autoCompleteFields.includes(key)) {
-      editRowAutocomplete.fetchFieldSuggestions(key, value);
-      editRowAutocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
-    }
-  };
 
   return (
     <div className="spend-sheet-container wide">
@@ -119,7 +95,7 @@ function SpendSheet() {
                     setEditing({ id: spend.id, field: fieldKey });
                     setEditRow(spend);
                   }}
-                  onFieldChange={isEditingRow ? handleEditRowInputChange : undefined}
+              onFieldChange={isEditingRow ? (key, value) => handleEditRowInputChange(key, value, setEditRow) : undefined}
                   onSave={() => {
                     handleEditSpend(spend.id, spend[SpendFields.DATE], editRow);
                     setEditing({ id: null, field: null });
