@@ -27,7 +27,7 @@ export function useSpendInput(startDate, endDate) {
   const addRowAutocomplete = useAutocomplete(autoCompleteFields);
   const editRowAutocomplete = useAutocomplete(autoCompleteFields);
 
-  const [lastUsedDate, setLastUsedDate] = useState(null);
+  // No need for lastUsedDate state; just use the last added date directly
   const [inputRow, setInputRow] = useState(() => ({
     ...blankSpend,
     [SpendFields.DATE]: blankSpend[SpendFields.DATE],
@@ -65,18 +65,10 @@ export function useSpendInput(startDate, endDate) {
   const handleSaveInputRowWithDate = async () => {
     const dateValue = inputRow[SpendFields.DATE];
     await handleSaveInputRow();
-    if (dateValue) {
-      setLastUsedDate(dateValue);
-      setInputRow(row => ({
-        ...blankSpend,
-        [SpendFields.DATE]: dateValue,
-      }));
-    } else {
-      setInputRow(row => ({
-        ...blankSpend,
-        [SpendFields.DATE]: blankSpend[SpendFields.DATE],
-      }));
-    }
+    setInputRow(row => ({
+      ...blankSpend,
+      [SpendFields.DATE]: dateValue || blankSpend[SpendFields.DATE],
+    }));
   };
 
   const handleSaveInputRow = async () => {
