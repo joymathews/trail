@@ -43,22 +43,24 @@ export function useSpendInput(startDate, endDate) {
     }));
   };
 
+  // Shared suggestion-fetching helper
+  const fetchSuggestionsForField = (key, value, autocomplete) => {
+    if (autoCompleteFields.includes(key)) {
+      autocomplete.fetchFieldSuggestions(key, value);
+      autocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
+    }
+  };
+
   // Handler for add row input change (with autocomplete)
   const handleAddRowInputChange = (key, value) => {
     handleInputRowChange(key, value);
-    if (autoCompleteFields.includes(key)) {
-      addRowAutocomplete.fetchFieldSuggestions(key, value);
-      addRowAutocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
-    }
+    fetchSuggestionsForField(key, value, addRowAutocomplete);
   };
 
   // Handler for edit row input change (with autocomplete)
   const handleEditRowInputChange = (key, value, setEditRow) => {
     setEditRow(r => ({ ...r, [key]: value }));
-    if (autoCompleteFields.includes(key)) {
-      editRowAutocomplete.fetchFieldSuggestions(key, value);
-      editRowAutocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
-    }
+    fetchSuggestionsForField(key, value, editRowAutocomplete);
   };
 
   // Handler for saving add row and updating last used date
