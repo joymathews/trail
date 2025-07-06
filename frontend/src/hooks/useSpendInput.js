@@ -77,12 +77,10 @@ export function useSpendInput(startDate, endDate) {
     const spend = inputRow;
     if (
       !spend[SpendFields.DATE] ||
-      !spend[SpendFields.CATEGORY] ||
-      !spend[SpendFields.DESCRIPTION] ||
       !spend[SpendFields.AMOUNT_SPENT] ||
       !spend[SpendFields.SPEND_TYPE]
     ) {
-      setError("Please fill all required fields.");
+      setError("Please fill DATE, AMOUNT_SPENT, SPEND_TYPE fields.");
       return;
     }
     setSaving(true);
