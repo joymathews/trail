@@ -27,12 +27,14 @@ export function useSpendInput(startDate, endDate) {
   const addRowAutocomplete = useAutocomplete(autoCompleteFields);
   const editRowAutocomplete = useAutocomplete(autoCompleteFields);
 
-  const [inputRow, setInputRow] = useState({ ...blankSpend });
+  const [lastUsedDate, setLastUsedDate] = useState(null);
+  const [inputRow, setInputRow] = useState(() => ({
+    ...blankSpend,
+    [SpendFields.DATE]: blankSpend[SpendFields.DATE],
+  }));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const { spends, setSpends, loading, error: fetchError } = useSpends(startDate, endDate);
-
-  const [lastUsedDate, setLastUsedDate] = useState(null);
 
   const handleInputRowChange = (field, value) => {
     setInputRow((row) => ({
@@ -64,6 +66,11 @@ export function useSpendInput(startDate, endDate) {
     const dateValue = inputRow[SpendFields.DATE];
     await handleSaveInputRow();
     if (dateValue) setLastUsedDate(dateValue);
+    // After saving, set the input row's date to last used date for the next add
+    setInputRow(row => ({
+      ...blankSpend,
+      [SpendFields.DATE]: dateValue || blankSpend[SpendFields.DATE],
+    }));
   };
 
   const handleSaveInputRow = async () => {
@@ -126,20 +133,15 @@ export function useSpendInput(startDate, endDate) {
 
   return {
     inputRow,
-    setInputRow,
     handleInputRowChange,
-    handleSaveInputRow,
     handleAddRowInputChange,
     handleEditRowInputChange,
     handleSaveInputRowWithDate,
-    lastUsedDate,
-    setLastUsedDate,
     addRowAutocomplete,
     editRowAutocomplete,
     saving,
     error,
     spends,
-    setSpends,
     loading,
     fetchError,
     handleDeleteSpend,

@@ -11,16 +11,15 @@ function SpendSheet() {
   const handleDateChange = setDateRange;
   const {
     inputRow,
-    handleInputRowChange,
     handleAddRowInputChange,
     handleEditRowInputChange,
     handleSaveInputRowWithDate,
-    lastUsedDate,
     addRowAutocomplete,
     editRowAutocomplete,
     saving,
     spends,
     loading,
+    error,
     fetchError,
     handleDeleteSpend,
     handleEditSpend,
@@ -30,12 +29,6 @@ function SpendSheet() {
 
 
 
-  useEffect(() => {
-    // Only update if lastUsedDate is set and inputRow's date is different
-    if (lastUsedDate && inputRow[SpendFields.DATE] !== lastUsedDate) {
-      handleInputRowChange(SpendFields.DATE, lastUsedDate);
-    }
-  }, [lastUsedDate, inputRow[SpendFields.DATE], handleInputRowChange]);
 
   // State for editing (row id and field for inline edit)
   const [editing, setEditing] = useState({ id: null, field: null });
@@ -50,6 +43,12 @@ function SpendSheet() {
         onChange={handleDateChange}
       />
       <h3>Spends Sheet</h3>
+      {/* Show error message if present */}
+      {error && (
+        <div className="spend-sheet-error">
+          {error}
+        </div>
+      )}
       <div className="spend-table-wrapper">
         <table className="spend-table">
           <thead>
