@@ -35,11 +35,12 @@ function createApp() {
 
   app.use(userExtractor);
 
+  const { autocompleteLimiter } = require('./middleware/rateLimiter');
   if (!IS_LOCAL) {
     app.use('/spends', apiLimiter, spendsRouter);
     app.use('/expense', apiLimiter, expenseRouter);
     app.use('/saving', apiLimiter, savingRouter);
-    app.use('/autocomplete', apiLimiter, autoComplete);
+    app.use('/autocomplete', autocompleteLimiter, autoComplete);
   } else {
     app.use('/spends', spendsRouter);
     app.use('/expense', expenseRouter);

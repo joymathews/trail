@@ -10,8 +10,8 @@ const ipLimiter = rateLimit({
   legacyHeaders: false
 });
 
-// Per-user rate limiter for authenticated endpoints
-// This runs AFTER authentication, so it can use req.user.id for fair user-based limiting.
+
+// Per-user rate limiter for authenticated endpoints (default)
 const apiLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 30,
@@ -19,6 +19,16 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => req.user?.id || req.ip // Prefer user.id, fallback to IP
+});
+
+// Higher rate limit for autocomplete endpoints
+const autocompleteLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 120, // Allow more frequent autocomplete
+  message: 'Too many autocomplete requests, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user?.id || req.ip
 });
 
 // Stricter limiter for health checks (to prevent DoS on /health)
@@ -29,4 +39,4 @@ const healthLimiter = rateLimit({
 });
 
 // Export all limiters for use in routes
-module.exports = { apiLimiter, ipLimiter, healthLimiter };
+module.exports = { apiLimiter, ipLimiter, healthLimiter, autocompleteLimiter };
