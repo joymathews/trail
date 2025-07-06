@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { getNextFieldKey } from '../utils/spendInputFields';
 import { fetchSuggestions } from '../utils/api';
 
@@ -17,6 +17,7 @@ export function useAutocomplete(fields) {
   const inputRefs = Object.fromEntries(fields.map(f => [f, useRef(null)]));
 
 
+
   // Debounced fetch function
   const debouncedFetchFieldSuggestions = useMemo(() =>
     debounce(async (field, value) => {
@@ -32,6 +33,13 @@ export function useAutocomplete(fields) {
       }
     }, 300), []
   );
+
+  // Cleanup effect to cancel debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFetchFieldSuggestions.cancel();
+    };
+  }, [debouncedFetchFieldSuggestions]);
 
   // Wrapper to match previous API
   const fetchFieldSuggestions = (field, value) => {

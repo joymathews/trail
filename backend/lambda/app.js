@@ -6,7 +6,7 @@ const savingRouter = require('./routes/saving');
 const autoComplete = require('./routes/autocomplete');
 const healthCheck = require('./routes/health');
 const { CORS_ORIGIN, IS_LOCAL } = require('./config');
-const { ipLimiter, apiLimiter, healthLimiter, autocompleteLimiter} = require('./middleware/rateLimiter');
+const { ipLimiter, apiLimiter, healthLimiter, autocompleteLimiter } = require('./middleware/rateLimiter');
 const userExtractor = require('./middleware/userExtractor');
 
 function createApp() {
