@@ -82,14 +82,10 @@ function validateSumFieldQuery(req, res, next) {
 function validateSpendFields(req, res, next) {
   if (
     !req.body[SpendFields.DATE] ||
-    !req.body[SpendFields.DESCRIPTION] ||
     !req.body[SpendFields.AMOUNT_SPENT] ||
-    !req.body[SpendFields.CATEGORY] ||
-    !req.body[SpendFields.VENDOR] ||
-    !req.body[SpendFields.PAYMENT_MODE] ||
     !req.body[SpendFields.SPEND_TYPE]
   ) {
-    return res.status(400).json({ error: 'All spend fields are required.' });
+    return res.status(400).json({ error: 'DATE, AMOUNT_SPENT, SPEND_TYPE fields are required.' });
   }
   const SpendType = req.body[SpendFields.SPEND_TYPE];
   const allowedSpendTypes = ['fixed', 'dynamic', 'saving'];

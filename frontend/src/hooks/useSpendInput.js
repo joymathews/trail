@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useAutocomplete } from "./useAutocomplete";
+import { spendFieldConfig } from "../components/spendSheet/spendFieldConfig";
 import { formatDate } from "../utils/date";
 import { SpendFields } from "../utils/fieldEnums";
 import { useSpends } from "../hooks/useSpends";
@@ -11,11 +13,25 @@ const blankSpend = {
   [SpendFields.AMOUNT_SPENT]: "",
   [SpendFields.VENDOR]: "",
   [SpendFields.PAYMENT_MODE]: "",
-  [SpendFields.SPEND_TYPE]: "",
+  [SpendFields.SPEND_TYPE]: "dynamic", // Default to dynamic
 };
 
 export function useSpendInput(startDate, endDate) {
-  const [inputRow, setInputRow] = useState({ ...blankSpend });
+  // Memoize autocomplete fields for performance
+  const autoCompleteFields = useMemo(
+    () => spendFieldConfig.filter(f => f.autoComplete).map(f => f.key),
+    []
+  );
+
+  // Autocomplete hooks for add and edit row
+  const addRowAutocomplete = useAutocomplete(autoCompleteFields);
+  const editRowAutocomplete = useAutocomplete(autoCompleteFields);
+
+  // No need for lastUsedDate state; just use the last added date directly
+  const [inputRow, setInputRow] = useState(() => ({
+    ...blankSpend,
+    [SpendFields.DATE]: blankSpend[SpendFields.DATE],
+  }));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const { spends, setSpends, loading, error: fetchError } = useSpends(startDate, endDate);
@@ -27,16 +43,44 @@ export function useSpendInput(startDate, endDate) {
     }));
   };
 
+  // Shared suggestion-fetching helper
+  const fetchSuggestionsForField = (key, value, autocomplete) => {
+    if (autoCompleteFields.includes(key)) {
+      autocomplete.fetchFieldSuggestions(key, value);
+      autocomplete.setShowSuggestions(s => ({ ...s, [key]: true }));
+    }
+  };
+
+  // Handler for add row input change (with autocomplete)
+  const handleAddRowInputChange = (key, value) => {
+    handleInputRowChange(key, value);
+    fetchSuggestionsForField(key, value, addRowAutocomplete);
+  };
+
+  // Handler for edit row input change (with autocomplete)
+  const handleEditRowInputChange = (key, value, setEditRow) => {
+    setEditRow(r => ({ ...r, [key]: value }));
+    fetchSuggestionsForField(key, value, editRowAutocomplete);
+  };
+
+  // Handler for saving add row and updating last used date
+  const handleSaveInputRowWithDate = async () => {
+    const dateValue = inputRow[SpendFields.DATE];
+    await handleSaveInputRow();
+    setInputRow(row => ({
+      ...blankSpend,
+      [SpendFields.DATE]: dateValue || blankSpend[SpendFields.DATE],
+    }));
+  };
+
   const handleSaveInputRow = async () => {
     const spend = inputRow;
     if (
       !spend[SpendFields.DATE] ||
-      !spend[SpendFields.CATEGORY] ||
-      !spend[SpendFields.DESCRIPTION] ||
       !spend[SpendFields.AMOUNT_SPENT] ||
       !spend[SpendFields.SPEND_TYPE]
     ) {
-      setError("Please fill all required fields.");
+      setError("Please fill DATE, AMOUNT_SPENT, SPEND_TYPE fields.");
       return;
     }
     setSaving(true);
@@ -74,6 +118,7 @@ export function useSpendInput(startDate, endDate) {
       setError('Failed to edit spend.');
     }
   };
+
   const handleDeleteSpend = async (id, date) => {
     if (!window.confirm('Are you sure you want to delete this spend?')) return;
     try {
@@ -83,15 +128,18 @@ export function useSpendInput(startDate, endDate) {
       setError('Failed to delete spend.');
     }
   };
+
   return {
     inputRow,
-    setInputRow,
     handleInputRowChange,
-    handleSaveInputRow,
+    handleAddRowInputChange,
+    handleEditRowInputChange,
+    handleSaveInputRowWithDate,
+    addRowAutocomplete,
+    editRowAutocomplete,
     saving,
     error,
     spends,
-    setSpends,
     loading,
     fetchError,
     handleDeleteSpend,
