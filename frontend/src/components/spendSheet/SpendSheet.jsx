@@ -7,9 +7,10 @@ import "./SpendSheet.scss";
 import { useSpendInput } from "../../hooks/useSpendInput";
 import usePersistentDateRange from '../../hooks/usePersistentDateRange';
 function getDistinctValues(data, key) {
-  // Include blanks as a filter option
+  // Include blanks as a filter option and sort values
   const values = data.map(row => row[key]);
   const nonBlank = Array.from(new Set(values.filter(v => v != null && v !== "")));
+  nonBlank.sort((a, b) => String(a).localeCompare(String(b)));
   const hasBlank = values.some(v => v == null || v === "");
   return hasBlank ? [...nonBlank, "(blank)"] : nonBlank;
 }
@@ -47,16 +48,19 @@ function SpendSheet() {
     return result;
   }, [spends]);
 
-  // Compute filtered spends
-  const filteredSpends = spends.filter(spend =>
-    spendFieldConfig.every(field => {
-      const filterValue = filters[field.key];
-      if (!filterValue) return true;
-      if (filterValue === "(blank)") {
-        return spend[field.key] == null || spend[field.key] === "";
-      }
-      return String(spend[field.key] || "") === filterValue;
-    })
+  // Memoize filtered spends
+  const filteredSpends = useMemo(() =>
+    spends.filter(spend =>
+      spendFieldConfig.every(field => {
+        const filterValue = filters[field.key];
+        if (!filterValue) return true;
+        if (filterValue === "(blank)") {
+          return spend[field.key] == null || spend[field.key] === "";
+        }
+        return String(spend[field.key] || "") === filterValue;
+      })
+    ),
+    [spends, filters]
   );
 
   return (
