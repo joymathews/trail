@@ -35,7 +35,7 @@ function SpendSheet() {
     if (lastUsedDate && inputRow[SpendFields.DATE] !== lastUsedDate) {
       handleInputRowChange(SpendFields.DATE, lastUsedDate);
     }
-  }, [lastUsedDate, inputRow[SpendFields.DATE]]);
+  }, [lastUsedDate, inputRow[SpendFields.DATE], handleInputRowChange]);
 
   // State for editing (row id and field for inline edit)
   const [editing, setEditing] = useState({ id: null, field: null });

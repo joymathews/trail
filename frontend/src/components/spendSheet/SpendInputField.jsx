@@ -56,9 +56,9 @@ function SpendInputField({
           onChange={e => onChange(field.key, e.target.value)}
           required={field.required}
         >
-          <option value="">Type</option>
-          <option value="fixed">Fixed</option>
+          {/* Remove the generic 'Type' option and default to 'dynamic' */}
           <option value="dynamic">Dynamic</option>
+          <option value="fixed">Fixed</option>
           <option value="saving">Saving</option>
         </select>
       </div>

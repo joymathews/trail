@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAutocomplete } from "./useAutocomplete";
 import { spendFieldConfig } from "../components/spendSheet/spendFieldConfig";
 import { formatDate } from "../utils/date";
@@ -13,12 +13,15 @@ const blankSpend = {
   [SpendFields.AMOUNT_SPENT]: "",
   [SpendFields.VENDOR]: "",
   [SpendFields.PAYMENT_MODE]: "",
-  [SpendFields.SPEND_TYPE]: "",
+  [SpendFields.SPEND_TYPE]: "dynamic", // Default to dynamic
 };
 
 export function useSpendInput(startDate, endDate) {
-  // Helper to get autocomplete fields
-  const autoCompleteFields = spendFieldConfig.filter(f => f.autoComplete).map(f => f.key);
+  // Memoize autocomplete fields for performance
+  const autoCompleteFields = useMemo(
+    () => spendFieldConfig.filter(f => f.autoComplete).map(f => f.key),
+    []
+  );
 
   // Autocomplete hooks for add and edit row
   const addRowAutocomplete = useAutocomplete(autoCompleteFields);
