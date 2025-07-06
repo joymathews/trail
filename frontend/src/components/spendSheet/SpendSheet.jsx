@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import DateRangePicker from "../DateRangePicker";
 import SpendEditableRow from "./SpendEditableRow";
 import { SpendFields } from "../../utils/fieldEnums";
@@ -34,6 +34,15 @@ function SpendSheet() {
   const [editRow, setEditRow] = useState({});
   const [filters, setFilters] = useState({});
 
+  // Memoize distinct values for each field
+  const distinctValues = useMemo(() => {
+    const result = {};
+    for (const field of spendFieldConfig) {
+      result[field.key] = getDistinctValues(spends, field.key);
+    }
+    return result;
+  }, [spends]);
+
   // Compute filtered spends
   const filteredSpends = spends.filter(spend =>
     spendFieldConfig.every(field => {
@@ -66,22 +75,24 @@ function SpendSheet() {
               <th></th>
             </tr>
             <tr>
-              {spendFieldConfig.map(field => {
-                const distinct = getDistinctValues(spends, field.key);
-                return (
-                  <th key={field.key}>
-                    <select
-                      value={filters[field.key] || ""}
-                      onChange={e => setFilters(f => ({ ...f, [field.key]: e.target.value }))}
-                    >
-                      <option value="">All</option>
-                      {distinct.map(val => (
-                        <option key={val} value={val}>{val}</option>
-                      ))}
-                    </select>
-                  </th>
-                );
-              })}
+              {spendFieldConfig.map(field => (
+                <th key={field.key}>
+                  <label htmlFor={`filter-${field.key}`} className="visually-hidden">
+                    Filter by {field.label}
+                  </label>
+                  <select
+                    id={`filter-${field.key}`}
+                    aria-label={`Filter by ${field.label}`}
+                    value={filters[field.key] || ""}
+                    onChange={e => setFilters(f => ({ ...f, [field.key]: e.target.value }))}
+                  >
+                    <option value="">All</option>
+                    {distinctValues[field.key].map(val => (
+                      <option key={val} value={val}>{val}</option>
+                    ))}
+                  </select>
+                </th>
+              ))}
               <th></th>
             </tr>
           </thead>
