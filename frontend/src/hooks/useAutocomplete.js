@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { getNextFieldKey } from '../utils/spendInputFields';
 import { fetchSuggestions } from '../utils/api';
 
@@ -41,10 +41,10 @@ export function useAutocomplete(fields) {
     };
   }, [debouncedFetchFieldSuggestions]);
 
-  // Wrapper to match previous API
-  const fetchFieldSuggestions = (field, value) => {
+  // Wrapper to match previous API, stable reference
+  const fetchFieldSuggestions = useCallback((field, value) => {
     debouncedFetchFieldSuggestions(field, value);
-  };
+  }, [debouncedFetchFieldSuggestions]);
 
   const handleSuggestionClick = (field, suggestion, onChange) => {
     onChange(field, suggestion);
