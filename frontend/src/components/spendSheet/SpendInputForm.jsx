@@ -54,10 +54,10 @@ function SpendInputForm({
             <SpendInputField
               field={field}
               as="row"
-              inputRefs={inputRefs}
-              suggestions={suggestions}
-              showSuggestions={showSuggestions}
-              activeSuggestion={activeSuggestion}
+              inputRef={inputRefs[field.key]}
+              suggestions={suggestions[field.key] || []}
+              showSuggestions={showSuggestions[field.key] || false}
+              activeSuggestion={activeSuggestion[field.key] || -1}
               onChange={onChange}
               onInputChange={handleInputChange}
               onSuggestionClick={handleSuggestionClick}
@@ -83,10 +83,10 @@ function SpendInputForm({
           key={field.key}
           field={field}
           as="form"
-          inputRefs={inputRefs}
-          suggestions={suggestions}
-          showSuggestions={showSuggestions}
-          activeSuggestion={activeSuggestion}
+          inputRef={inputRefs[field.key]}
+          suggestions={suggestions[field.key] || []}
+          showSuggestions={showSuggestions[field.key] || false}
+          activeSuggestion={activeSuggestion[field.key] || -1}
           onChange={onChange}
           onInputChange={handleInputChange}
           onSuggestionClick={handleSuggestionClick}
