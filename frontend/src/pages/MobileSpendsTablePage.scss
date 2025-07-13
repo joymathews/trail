@@ -1,0 +1,89 @@
+@use "../styles/variables.scss" as *;
+
+
+.mobile-spends-table-page {
+  background: $background;
+  min-height: 100vh;
+  padding: 1rem 0.5rem 2rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  h2 {
+    color: $primary;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    .clear-filter {
+      background: $accent;
+      color: $white;
+      border: none;
+      border-radius: $border-radius-sm;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+  }
+
+  .table-wrapper {
+    background: $table-bg;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.2rem;
+    flex: 1 1 auto;
+    max-height: 60vh;
+  }
+
+  .spends-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.98rem;
+    th, td {
+      padding: 0.45rem 0.3rem;
+      text-align: left;
+      border-bottom: 1px solid $border-light;
+    }
+    th {
+      background: $thead-bg;
+      color: $white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .loading, .empty, .error {
+    text-align: center;
+    color: $text;
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .mobile-spends-table-page {
+    padding: 0.5rem 0.1rem 1.5rem 0.1rem;
+    h2 {
+      font-size: 1.1rem;
+    }
+    .spends-table th, .spends-table td {
+      font-size: 0.93rem;
+      padding: 0.32rem 0.15rem;
+    }
+    .table-wrapper {
+      max-height: 55vh;
+    }
+  }
+}

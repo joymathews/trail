@@ -9,6 +9,13 @@ function NavLinks({ onClick = () => {}, location }) {
       <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={onClick}>
         Home
       </Link>
+      <Link
+        to="/mobile-spends"
+        className={location.pathname === "/mobile-spends" ? "active" : ""}
+        onClick={onClick}
+      >
+        Spends Table
+      </Link>
       <Link 
         to="/expense-dashboard" 
         className={location.pathname === "/expense-dashboard" ? "active" : ""}

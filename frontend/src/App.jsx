@@ -6,7 +6,8 @@ import ExpenseDashboardPage from "./pages/ExpenseDashboardPage";
 import ExpenseForecast from "./pages/ExpenseForecastPage";
 import SavingForecast from "./pages/SavingForecastPage";
 import SavingDashboardPage from "./pages/SavingDashboardPage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import MobileSpendsTablePage from "./pages/MobileSpendsTablePage";
+import ProtectedRoute from "../src/components/ProtectedRoute";
 import { signOutCurrentUser } from "./utils/auth";
 
 function App() {
@@ -55,6 +56,14 @@ function App() {
         element={
           <ProtectedRoute>
             <SavingForecast onSignOut={handleSignOut} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mobile-spends"
+        element={
+          <ProtectedRoute>
+            <MobileSpendsTablePage onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />
