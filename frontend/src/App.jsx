@@ -63,7 +63,7 @@ function App() {
         path="/mobile-spends"
         element={
           <ProtectedRoute>
-            <MobileSpendsTablePage />
+            <MobileSpendsTablePage onSignOut={handleSignOut} />
           </ProtectedRoute>
         }
       />

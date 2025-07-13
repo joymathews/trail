@@ -87,16 +87,3 @@
     }
   }
 }
-
-@media (max-width: 600px) {
-  .mobile-spends-table-page {
-    padding: 0.5rem 0.1rem 1.5rem 0.1rem;
-    h2 {
-      font-size: 1.1rem;
-    }
-    .spends-table th, .spends-table td {
-      font-size: 0.93rem;
-      padding: 0.32rem 0.15rem;
-    }
-  }
-}

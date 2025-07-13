@@ -12,7 +12,7 @@ function getUniqueVendors(spends) {
   return Array.from(new Set(vendors)).sort();
 }
 
-export default function MobileSpendsTablePage() {
+export default function MobileSpendsTablePage({ onSignOut }) {
   const isMobile = useIsMobile(1024);
   const [dateRange, setDateRange] = usePersistentDateRange();
   const { spends, loading, error } = useSpends(dateRange.start, dateRange.end);
@@ -45,7 +45,7 @@ export default function MobileSpendsTablePage() {
 
   return (
     <div className="mobile-spends-table-page">
-      <Header />
+      <Header onSignOut={onSignOut} />
       <h2>Spends</h2>
       <DateRangePicker value={dateRange} onChange={setDateRange} />
       <div className="filter-row">
