@@ -1,21 +1,25 @@
 import React, { useState } from "react";
+import useIsMobile from "../hooks/useIsMobile";
 import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
 function NavLinks({ onClick = () => {}, location }) {
+  const isMobile = useIsMobile();
   return (
     <>
       <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={onClick}>
         Home
       </Link>
-      <Link
-        to="/mobile-spends"
-        className={location.pathname === "/mobile-spends" ? "active" : ""}
-        onClick={onClick}
-      >
-        Spends Table
-      </Link>
+      {isMobile && (
+        <Link
+          to="/mobile-spends"
+          className={location.pathname === "/mobile-spends" ? "active" : ""}
+          onClick={onClick}
+        >
+          Spends Table
+        </Link>
+      )}
       <Link 
         to="/expense-dashboard" 
         className={location.pathname === "/expense-dashboard" ? "active" : ""}
