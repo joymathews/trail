@@ -1,19 +1,19 @@
 # IntegrationTests Folder
 
-This folder contains all the files and scripts needed to run integration tests for the expense backend API.
+This folder contains all files and scripts needed to run integration tests for the Trail backend API.
 
 ## Folder Structure and Purpose
 
 - **tests/**  
   Contains all integration test files, split by feature:
   - `spends.test.js`  
-    Tests for the `/spends` endpoint (fetching, filtering, etc.)
+    Tests for the `/spends` endpoint: fetch, create, edit, delete spends, and verify lifecycle.
   - `expense.test.js`  
-    Tests for the `/expense` endpoint (sum, total, forecast, etc.)
+    Tests for the `/expense` endpoint: sum by field, total, forecast, and fetch expenses by date range.
   - `saving.test.js`  
-    Tests for the `/saving` endpoint (total, sum by category, etc.)
+    Tests for the `/saving` endpoint: total, sum by field, and fetch savings by date range.
   - `autocomplete.test.js`  
-    Tests for the `/autocomplete` endpoint (suggestions, error handling, etc.)
+    Tests for the `/autocomplete` endpoint: suggestions for description, category, vendor, payment mode, and error handling for invalid types.
 
 - **testData/**  
   Contains test data preparation scripts:
@@ -24,6 +24,8 @@ This folder contains all the files and scripts needed to run integration tests f
   Utility functions for tests:
   - `csvUtils.js`  
     CSV parsing helper used by test data scripts.
+  - `fieldEnums.js`  
+    Enum for spend fields, matching backend field names.
 
 - **mock_data.csv**  
   CSV file with mock expense data. Used to populate the backend and validate API results.
@@ -49,6 +51,21 @@ This folder contains all the files and scripts needed to run integration tests f
   - Stops the backend and DynamoDB containers
   - Shows test results
 
+## How Integration Tests Work
+
+- **Test Data Loading:**
+  - The `setup.js` script loads all spends from `mock_data.csv` into the backend using the `/spends` API before tests run.
+  - Spend data is parsed and normalized using `testData/spends.js` and `utils/csvUtils.js`.
+
+- **Test Coverage:**
+  - **Spends:** Full lifecycle (create, edit, delete, fetch by date/id).
+  - **Expense:** Sum by field, total, forecast, and fetch by date range.
+  - **Saving:** Total, sum by field, fetch by date range.
+  - **Autocomplete:** Suggestions for all supported fields and error handling.
+
+- **Field Names:**
+  - All test scripts use field names defined in `utils/fieldEnums.js` to ensure consistency with backend API.
+
 ## How to Run the Integration Tests
 
 1. **Open a terminal (PowerShell or Command Prompt) in the `IntegrationTests` folder.**
@@ -67,3 +84,8 @@ This folder contains all the files and scripts needed to run integration tests f
 ---
 
 All test logic and data are in this folder. Use `start_test.bat` to run the full integration test suite automatically. Results and cleanup are handled for you.
+
+## Notes
+- The integration tests require the backend and DynamoDB to be running locally.
+- Test data is reset before each test run using the global setup script.
+- All API endpoints and field names are validated against the backend contracts.
