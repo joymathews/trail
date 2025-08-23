@@ -1,12 +1,12 @@
 # Backend Calculation Logic
 
-This document explains all the calculation logic implemented in the backend of the Daily Expense application. The calculations are primarily handled in `backend/services/calculationService.js` and are used by the API endpoints for expenses and savings.
+This document explains all the calculation logic implemented in the backend of the Trail personal finance application. The calculations are primarily handled in `lambda/db/dynamodb/calculationService.js` and are used by the API endpoints for expenses and savings.
 
 ---
 
 ## 1. Filtering Logic
 
-Filtering is performed using functions from `filterService.js`:
+Filtering is performed using functions from `lambda/services/filterService.js`:
 - **filterExpenseType(spend):** Returns true if `SpendType` is `fixed` or `dynamic`.
 - **filterSaving(spend):** Returns true if `SpendType` is `saving`.
 - **filterDynamic(spend):** Returns true if `SpendType` is `dynamic`.
@@ -62,7 +62,7 @@ Filtering is performed using functions from `filterService.js`:
 
 ## 5. Data Source
 
-All calculations use spends fetched from DynamoDB via `getSpendsByDateRange(startDate, endDate)`, which returns all spends where `Date` is between the given range (inclusive).
+All calculations use spends fetched from DynamoDB via `getSpendsByDateRange(startDate, endDate)` in `lambda/db/dynamodb/spendDb.js`, which returns all spends where `Date` is between the given range (inclusive).
 
 ---
 

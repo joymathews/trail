@@ -140,6 +140,24 @@
 
 ---
 
+## /autocomplete
+
+### GET /autocomplete
+- **Description:** Get unique values for a field (Category, Vendor, PaymentMode, SpendType) for autocomplete suggestions.
+- **Query Parameters:**
+  - `field` (string, required)
+- **Response:** Array of unique values for the requested field.
+
+---
+
+## /health
+
+### GET /health
+- **Description:** Health check endpoint for backend and database connectivity.
+- **Response:** `{ status: "ok" }` or error details.
+
+---
+
 ## Spend Object Schema
 
 ```json
